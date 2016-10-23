@@ -4,7 +4,7 @@ int main(void)
 {
     // Open an video and get the reference image and feature points
     cv::VideoCapture video;
-    if (!video.open("images/traffic.avi")) return -1;
+    if (!video.open("data/traffic.avi")) return -1;
 
     cv::Mat gray_ref;
     video >> gray_ref;
@@ -36,9 +36,9 @@ int main(void)
         // Extract optical flow and calculate planar homography
         std::vector<cv::Point2f> point;
         std::vector<uchar> m_status;
-        cv::Mat err;
+        cv::Mat err, inlier_mask;
         cv::calcOpticalFlowPyrLK(gray_ref, gray, point_ref, point, m_status, err);
-        cv::Mat H = cv::findHomography(point, point_ref, cv::RANSAC);
+        cv::Mat H = cv::findHomography(point, point_ref, inlier_mask, cv::RANSAC);
 
         // Synthesize a stabilized image
         cv::Mat warp;
@@ -46,7 +46,10 @@ int main(void)
 
         // Show the original and rectified images together
         for (size_t i = 0; i < point_ref.size(); i++)
-            cv::line(image, point_ref[i], point[i], cv::Scalar(0, 0, 255));
+        {
+            if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_ref[i], point[i], cv::Scalar(0, 0, 255));
+            else cv::line(image, point_ref[i], point[i], cv::Scalar(0, 255, 0));
+        }
         cv::hconcat(image, warp, image);
         cv::imshow("3DVT Tutorial: Video Stabilization", image);
         if (cv::waitKey(1) == 27) break; // "ESC" key
