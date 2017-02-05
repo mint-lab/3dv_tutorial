@@ -31,6 +31,7 @@ int main(void)
     fclose(fin);
     X = X.reshape(1, X.rows / 4).t(); // Convert to a 4 x N matrix
 
+    // Generate images for each camera pose
     cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
     for (int i = 0; i < sizeof(camera_pos) / sizeof(cv::Point3d); i++)
     {

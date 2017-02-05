@@ -5,11 +5,11 @@ int main(void)
     cv::Size board_pattern(10, 7);
     double board_cellsize = 0.025;
 
-    // Open an video and get the initial image
+    // Open an video
     cv::VideoCapture video;
     if (!video.open("data/chessboard.avi")) return -1;
 
-    // Find 2D points from selected images
+    // Select images and find 2D corner points from them
     cv::Size image_size;
     std::vector<std::vector<cv::Point2f> > image_points;
     while (true)
@@ -23,16 +23,16 @@ int main(void)
         // Show the image and keep it if necessary
         cv::imshow("3DV Tutorial: Camera Calibration", image);
         int key = cv::waitKey(1);
-        if (key == 27) break;               // "ESC" key
-        else if (key == 32)                 // "Space" key
+        if (key == 27) break;                   // "ESC" key
+        else if (key == 32)                     // "Space" key
         {
             std::vector<cv::Point2f> pts;
             bool complete = cv::findChessboardCorners(image, board_pattern, pts);
             cv::drawChessboardCorners(image, board_pattern, pts, complete);
             cv::imshow("3DV Tutorial: Camera Calibration", image);
             key = cv::waitKey();
-            if (key == 27) break;           // "ESC" key
-            else if (complete && key == 13) // "Enter" key
+            if (key == 27) break;               // "ESC" key
+            else if (complete && key == 13)     // "Enter" key
             {
                 image_points.push_back(pts);
                 std::cout << image_points.size() << " images are selected for camera calibration." << std::endl;

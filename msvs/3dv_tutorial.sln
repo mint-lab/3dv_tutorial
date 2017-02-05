@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "image_generation", "image_g
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera_calibration", "camera_calibration\camera_calibration.vcxproj", "{8FE6C6CB-6D5D-4745-A4CE-0621BC8633B9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "distortion_correction", "distortion_correction\distortion_correction.vcxproj", "{E5444B55-196A-4A71-9BDE-C42E830B87B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -33,6 +35,10 @@ Global
 		{8FE6C6CB-6D5D-4745-A4CE-0621BC8633B9}.Debug|Win32.Build.0 = Debug|Win32
 		{8FE6C6CB-6D5D-4745-A4CE-0621BC8633B9}.Release|Win32.ActiveCfg = Release|Win32
 		{8FE6C6CB-6D5D-4745-A4CE-0621BC8633B9}.Release|Win32.Build.0 = Release|Win32
+		{E5444B55-196A-4A71-9BDE-C42E830B87B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5444B55-196A-4A71-9BDE-C42E830B87B0}.Debug|Win32.Build.0 = Debug|Win32
+		{E5444B55-196A-4A71-9BDE-C42E830B87B0}.Release|Win32.ActiveCfg = Release|Win32
+		{E5444B55-196A-4A71-9BDE-C42E830B87B0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
