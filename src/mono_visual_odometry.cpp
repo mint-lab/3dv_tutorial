@@ -72,7 +72,7 @@ int main(void)
         }
         cv::imshow("3DV Tutorial: Monocular Visual Odometry", image);
         fprintf(camera_traj, "%.6f, %.6f, %.6f\n", camera_pose.at<double>(0, 3), camera_pose.at<double>(1, 3), camera_pose.at<double>(2, 3));
-        if (cv::waitKey(1) == 27) break; // "ESC" key
+        if (cv::waitKey(1) == 27) break; // 'ESC' key
     }
 
     video.release();

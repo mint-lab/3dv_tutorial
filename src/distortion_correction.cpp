@@ -2,8 +2,8 @@
 
 int main(void)
 {
-    cv::Mat K = (cv::Mat_<double>(3, 3) << 864.43, 0, 952.16, 0, 861.90, 581.92, 0, 0, 1);
-    cv::Mat dist_coeff = (cv::Mat_<double>(5, 1) << -0.2862454796798899, 0.104008092811024, -0.000707339764553983, 6.557555700709726e-005, -0.01922363820734248);
+    cv::Mat K = (cv::Mat_<double>(3, 3) << 434.3588729143197, 0, 476.1230925877231, 0, 432.7138830286992, 289.2709802508451, 0, 0, 1);
+    cv::Mat dist_coeff = (cv::Mat_<double>(5, 1) << -0.2918143346191932, 0.1095347774113121, -0.000105133686343854, 4.350475599617356e-005, -0.02083205595737927);
 
     // Open an video
     cv::VideoCapture video;
@@ -30,13 +30,13 @@ int main(void)
         // Show the image
         cv::imshow("3DV Tutorial: Distortion Correction", image);
         int key = cv::waitKey(1);
-        if (key == 27) break;                                   // "ESC" key
-        else if (key == 9) show_rectify = !show_rectify;        // "Tab" key
-        else if (key == 32)                                     // "Space" key
+        if (key == 27) break;                                   // 'ESC' key
+        else if (key == 9) show_rectify = !show_rectify;        // 'Tab' key
+        else if (key == 32)                                     // 'Space' key
         {
             key = cv::waitKey();
-            if (key == 27) break;                               // "ESC" key
-            else if (key == 9) show_rectify = !show_rectify;    // "Tab" key
+            if (key == 27) break;                               // 'ESC' key
+            else if (key == 9) show_rectify = !show_rectify;    // 'Tab' key
         }
     }
 
