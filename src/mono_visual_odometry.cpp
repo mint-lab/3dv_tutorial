@@ -7,8 +7,7 @@ int main(void)
     cv::Point2d camera_center(607.1928, 185.2157);
 
     // Open a file to write camera trajectory
-    FILE* camera_traj = NULL;
-    camera_traj = fopen("camera_trajectory.csv", "wt");
+    FILE* camera_traj = fopen("camera_trajectory.csv", "wt");
     if (camera_traj == NULL) return -1;
 
     // Open an video and get the initial image

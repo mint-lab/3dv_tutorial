@@ -59,6 +59,7 @@ int main(void)
         cv::waitKey(0);
 
         std::ofstream fout(cv::format("camera_points%d.csv", i));
+        if (!fout.is_open()) break;
         fout << cv::format(x.t(), cv::Formatter::FMT_CSV);
         fout.close();
     }
