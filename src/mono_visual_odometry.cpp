@@ -24,7 +24,7 @@ int main(void)
     }
     if (gray_prev.channels() > 1) cv::cvtColor(gray_prev, gray_prev, CV_RGB2GRAY);
 
-    // Run and show video stabilization
+    // Run and record monocular visual odometry
     cv::Mat camera_pose = cv::Mat::eye(4, 4, CV_64F);
     while (true)
     {
