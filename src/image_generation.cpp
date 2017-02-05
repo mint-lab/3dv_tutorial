@@ -55,7 +55,7 @@ int main(void)
             if (p.x >= 0 && p.x < camera_res.width && p.y >= 0 && p.y < camera_res.height)
                 cv::circle(image, p, 2, 255, -1);
         }
-        cv::imshow(cv::format("camera_image%d", i), image);
+        cv::imshow(cv::format("3DV_Tutorial: Image Generation %d", i), image);
         cv::waitKey(0);
 
         std::ofstream fout(cv::format("camera_points%d.csv", i));

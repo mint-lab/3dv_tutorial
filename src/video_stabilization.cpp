@@ -51,7 +51,7 @@ int main(void)
             else cv::line(image, point_ref[i], point[i], cv::Scalar(0, 255, 0));
         }
         cv::hconcat(image, warp, image);
-        cv::imshow("3DVT Tutorial: Video Stabilization", image);
+        cv::imshow("3DV Tutorial: Video Stabilization", image);
         if (cv::waitKey(1) == 27) break; // "ESC" key
     }
 
