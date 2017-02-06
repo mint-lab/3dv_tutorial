@@ -30,13 +30,13 @@ int main(void)
         // Show the image
         cv::imshow("3DV Tutorial: Distortion Correction", image);
         int key = cv::waitKey(1);
-        if (key == 27) break;                                   // 'ESC' key
-        else if (key == 9) show_rectify = !show_rectify;        // 'Tab' key
-        else if (key == 32)                                     // 'Space' key
+        if (key == 27) break;                                   // 'ESC' key: Exit
+        else if (key == 9) show_rectify = !show_rectify;        // 'Tab' key: Toggle rectificaiton
+        else if (key == 32)                                     // 'Space' key: Pause
         {
             key = cv::waitKey();
-            if (key == 27) break;                               // 'ESC' key
-            else if (key == 9) show_rectify = !show_rectify;    // 'Tab' key
+            if (key == 27) break;                               // 'ESC' key: Exit
+            else if (key == 9) show_rectify = !show_rectify;    // 'Tab' key: Toggle rectificaiton
         }
     }
 

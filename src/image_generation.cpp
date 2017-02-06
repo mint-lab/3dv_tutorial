@@ -10,8 +10,9 @@ int main(void)
     double camera_focal = 1000;
     cv::Point2d camera_center(320, 240);
     cv::Size camera_res(640, 480);
-    cv::Point3d camera_pos[] = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0) };
-    cv::Point3d camera_ori[] = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0) };
+    cv::Point3d camera_pos[] = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0), cv::Point3d(-2, 2, 0), cv::Point3d(2, -2, 0) };
+    cv::Point3d camera_ori[] = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0), cv::Point3d(CV_PI / 12, CV_PI / 12, 0), cv::Point3d(-CV_PI / 12, -CV_PI / 12, 0) };
+    double camera_noise = 0;
 
     // Load a point cloud in the homogeneous coordinate
     FILE* fin = fopen("data/box.xyz", "rt");
@@ -48,6 +49,10 @@ int main(void)
         x.row(1) = x.row(1) / x.row(2);
         x.row(2) = 1;
 
+        cv::Mat noise(2, x.cols, x.type());
+        cv::randn(noise, cv::Scalar(0), cv::Scalar(camera_noise));
+        x.rowRange(0, 2) = x.rowRange(0, 2) + noise; // Add noise
+
         // Show and store the points
         cv::Mat image = cv::Mat::zeros(camera_res, CV_8UC1);
         for (int c = 0; c < x.cols; c++)
@@ -57,7 +62,6 @@ int main(void)
                 cv::circle(image, p, 2, 255, -1);
         }
         cv::imshow(cv::format("3DV_Tutorial: Image Generation %d", i), image);
-        cv::waitKey(0);
 
         std::ofstream fout(cv::format("image_generation%d.csv", i));
         if (!fout.is_open()) break;
@@ -65,5 +69,7 @@ int main(void)
         fout.close();
     }
 
+    std::cout << "Press any key to terminate tihs program!" << std::endl;
+    cv::waitKey(0);
     return 0;
 }

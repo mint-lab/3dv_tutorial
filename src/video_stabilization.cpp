@@ -52,7 +52,7 @@ int main(void)
         }
         cv::hconcat(image, warp, image);
         cv::imshow("3DV Tutorial: Video Stabilization", image);
-        if (cv::waitKey(1) == 27) break; // 'ESC' key
+        if (cv::waitKey(1) == 27) break; // 'ESC' key: Exit
     }
 
     video.release();

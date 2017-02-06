@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    // Load two images (c.f. Assume that two images have the same size and type)
+    // Load two images (c.f. We assume that two images have the same size and type)
     cv::Mat image1 = cv::imread("data/hill01.jpg");
     cv::Mat image2 = cv::imread("data/hill02.jpg");
     if (image1.empty() || image2.empty()) return -1;

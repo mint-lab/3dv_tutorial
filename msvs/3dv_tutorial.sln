@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "perspective_correction", "p
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "image_stitching", "image_stitching\image_stitching.vcxproj", "{C6A12B5E-7F27-4316-9B09-BD93595A033A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "triangulation", "triangulation\triangulation.vcxproj", "{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -57,6 +59,10 @@ Global
 		{C6A12B5E-7F27-4316-9B09-BD93595A033A}.Debug|Win32.Build.0 = Debug|Win32
 		{C6A12B5E-7F27-4316-9B09-BD93595A033A}.Release|Win32.ActiveCfg = Release|Win32
 		{C6A12B5E-7F27-4316-9B09-BD93595A033A}.Release|Win32.Build.0 = Release|Win32
+		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Debug|Win32.Build.0 = Debug|Win32
+		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Release|Win32.ActiveCfg = Release|Win32
+		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

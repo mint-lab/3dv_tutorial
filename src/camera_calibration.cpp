@@ -21,11 +21,11 @@ int main(void)
 
         if (select_images)
         {
-            // Show the image and keep it if necessary
+            // Show the image and keep it if selected
             cv::imshow("3DV Tutorial: Camera Calibration", image);
             int key = cv::waitKey(1);
-            if (key == 27) break;                               // 'ESC' key
-            else if (key == 32)                                 // 'Space' key
+            if (key == 27) break;                               // 'ESC' key: Exit
+            else if (key == 32)                                 // 'Space' key: Pause
             {
                 std::vector<cv::Point2f> pts;
                 bool complete = cv::findChessboardCorners(image, board_pattern, pts);
@@ -33,8 +33,8 @@ int main(void)
                 cv::drawChessboardCorners(display, board_pattern, pts, complete);
                 cv::imshow("3DV Tutorial: Camera Calibration", display);
                 key = cv::waitKey();
-                if (key == 27) break;                           // 'ESC' key
-                else if (key == 13) images.push_back(image);    // 'Enter' key
+                if (key == 27) break;                           // 'ESC' key: Exit
+                else if (key == 13) images.push_back(image);    // 'Enter' key: Select
             }
         }
         else images.push_back(image);
@@ -52,7 +52,7 @@ int main(void)
     }
     if (image_points.empty()) return -1;
 
-    // Prepare 3D points from the chess board
+    // Prepare 3D points of the chess board
     std::vector<std::vector<cv::Point3f> > object_points(1);
     for (int r = 0; r < board_pattern.height; r++)
         for (int c = 0; c < board_pattern.width; c++)

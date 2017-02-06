@@ -13,14 +13,14 @@ void MouseEventHandler(int event, int x, int y, int flags, void* param)
 
 int main(void)
 {
-    cv::Size plate_size(450, 250);
+    cv::Size card_size(450, 250);
 
     // Prepare the rectified points
     std::vector<cv::Point> points_dst;
     points_dst.push_back(cv::Point(0, 0));
-    points_dst.push_back(cv::Point(plate_size.width, 0));
-    points_dst.push_back(cv::Point(0, plate_size.height));
-    points_dst.push_back(cv::Point(plate_size.width, plate_size.height));
+    points_dst.push_back(cv::Point(card_size.width, 0));
+    points_dst.push_back(cv::Point(0, card_size.height));
+    points_dst.push_back(cv::Point(card_size.width, card_size.height));
 
     // Load an image
     cv::Mat original = cv::imread("data/sunglok.jpg");
@@ -33,18 +33,18 @@ int main(void)
     while (points_src.size() < 4)
     {
         cv::Mat display = original.clone();
-        cv::rectangle(display, cv::Rect(cv::Point(10, 10), plate_size), cv::Scalar(0, 0, 255), 2);
+        cv::rectangle(display, cv::Rect(cv::Point(10, 10), card_size), cv::Scalar(0, 0, 255), 2);
         int idx = cv::min(points_src.size(), points_dst.size() - 1);
         cv::circle(display, points_dst[idx] + cv::Point(10, 10), 5, cv::Scalar(0, 255, 0), -1);
         cv::imshow("3DV Tutorial: Perspective Correction", display);
-        if (cv::waitKey(1) == 27) break; // 'ESC' key
+        if (cv::waitKey(1) == 27) break; // 'ESC' key: Exit
     }
     if (points_src.size() < 4) return -1;
 
     // Calculate planar homography and rectify perspective distortion
     cv::Mat H = cv::findHomography(points_src, points_dst);
     cv::Mat rectify;
-    cv::warpPerspective(original, rectify, H, plate_size);
+    cv::warpPerspective(original, rectify, H, card_size);
 
     // Show the rectified image
     cv::imshow("3DV Tutorial: Perspective Correction", rectify);
