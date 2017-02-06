@@ -2,44 +2,54 @@
 
 int main(void)
 {
+    bool select_images = false;
     cv::Size board_pattern(10, 7);
     double board_cellsize = 0.025;
 
     // Open an video
     cv::VideoCapture video;
-    if (!video.open("data/chessboard.avi")) return -1;
+    if (!video.open("data/chessboard/%02d.png")) return -1;
 
-    // Select images and find 2D corner points from them
-    cv::Size image_size;
-    std::vector<std::vector<cv::Point2f> > image_points;
+    // Select images
+    std::vector<cv::Mat> images;
     while (true)
     {
         // Grab an image from the video
         cv::Mat image;
         video >> image;
         if (image.empty()) break;
-        image_size = image.size();
 
-        // Show the image and keep it if necessary
-        cv::imshow("3DV Tutorial: Camera Calibration", image);
-        int key = cv::waitKey(1);
-        if (key == 27) break;                   // 'ESC' key
-        else if (key == 32)                     // 'Space' key
+        if (select_images)
         {
-            std::vector<cv::Point2f> pts;
-            bool complete = cv::findChessboardCorners(image, board_pattern, pts);
-            cv::drawChessboardCorners(image, board_pattern, pts, complete);
+            // Show the image and keep it if necessary
             cv::imshow("3DV Tutorial: Camera Calibration", image);
-            key = cv::waitKey();
-            if (key == 27) break;               // 'ESC' key
-            else if (complete && key == 13)     // 'Enter' key
+            int key = cv::waitKey(1);
+            if (key == 27) break;                               // 'ESC' key
+            else if (key == 32)                                 // 'Space' key
             {
-                image_points.push_back(pts);
-                std::cout << image_points.size() << " images are selected for camera calibration." << std::endl;
+                std::vector<cv::Point2f> pts;
+                bool complete = cv::findChessboardCorners(image, board_pattern, pts);
+                cv::Mat display = image.clone();
+                cv::drawChessboardCorners(display, board_pattern, pts, complete);
+                cv::imshow("3DV Tutorial: Camera Calibration", display);
+                key = cv::waitKey();
+                if (key == 27) break;                           // 'ESC' key
+                else if (key == 13) images.push_back(image);    // 'Enter' key
             }
         }
+        else images.push_back(image);
     }
     video.release();
+    if (images.empty()) return -1;
+
+    // Find 2D corner points from the given images
+    std::vector<std::vector<cv::Point2f> > image_points;
+    for (size_t i = 0; i < images.size(); i++)
+    {
+        std::vector<cv::Point2f> pts;
+        if (cv::findChessboardCorners(images[i], board_pattern, pts))
+            image_points.push_back(pts);
+    }
     if (image_points.empty()) return -1;
 
     // Prepare 3D points from the chess board
@@ -53,7 +63,7 @@ int main(void)
     cv::Mat K = cv::Mat::eye(3, 3, CV_64F);
     cv::Mat dist_coeff = cv::Mat::zeros(4, 1, CV_64F);
     std::vector<cv::Mat> rvecs, tvecs;
-    double rms = cv::calibrateCamera(object_points, image_points, image_size, K, dist_coeff, rvecs, tvecs);
+    double rms = cv::calibrateCamera(object_points, image_points, images[0].size(), K, dist_coeff, rvecs, tvecs);
 
     // Report calibration results
     std::ofstream report("camera_calibration.txt");
