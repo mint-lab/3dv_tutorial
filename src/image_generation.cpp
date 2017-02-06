@@ -59,7 +59,7 @@ int main(void)
         cv::imshow(cv::format("3DV_Tutorial: Image Generation %d", i), image);
         cv::waitKey(0);
 
-        std::ofstream fout(cv::format("camera_points%d.csv", i));
+        std::ofstream fout(cv::format("image_generation%d.csv", i));
         if (!fout.is_open()) break;
         fout << cv::format(x.t(), cv::Formatter::FMT_CSV);
         fout.close();

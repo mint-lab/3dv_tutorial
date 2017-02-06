@@ -2,13 +2,13 @@
 
 int main(void)
 {
-    bool select_images = false;
+    bool select_images = true;
     cv::Size board_pattern(10, 7);
     double board_cellsize = 0.025;
 
     // Open an video
     cv::VideoCapture video;
-    if (!video.open("data/chessboard/%02d.png")) return -1;
+    if (!video.open("data/chessboard.avi")) return -1;
 
     // Select images
     std::vector<cv::Mat> images;
