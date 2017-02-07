@@ -27,14 +27,14 @@ int main(void)
     for (int r = 0; r < board_pattern.height; r++)
         for (int c = 0; c < board_pattern.width; c++)
             object_points.push_back(cv::Point3f(board_cellsize * c, board_cellsize * r, 0));
-     while (true)
+    while (true)
     {
         // Grab an image from the video
         cv::Mat image;
         video >> image;
         if (image.empty()) break;
 
-        // Esimate camera pose
+        // Estimate camera pose
         std::vector<cv::Point2f> image_points;
         bool complete = cv::findChessboardCorners(image, board_pattern, image_points, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
         if (complete)

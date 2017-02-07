@@ -19,7 +19,7 @@ int main(void)
         gray1 = image1.clone();
         gray2 = image2.clone();
     }
-    cv::Ptr<cv::FeatureDetector> detector = cv::xfeatures2d::SURF::create(); // SURF features
+    cv::Ptr<cv::FeatureDetector> detector = cv::xfeatures2d::SURF::create();  // SURF features
     std::vector<cv::KeyPoint> keypoint1, keypoint2;
     detector->detect(gray1, keypoint1);
     detector->detect(gray2, keypoint2);

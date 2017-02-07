@@ -43,7 +43,7 @@ int main(void)
         cv::hconcat(Rc.t(), -Rc.t() * tc, Rt);
         cv::Mat P = K * Rt;
 
-        // Project the points (c.f. OpenCV provide 'cv::projectPoints' with consideration of distortion.)
+        // Project the points (c.f. OpenCV provide 'cv::projectPoints()' with consideration of distortion.)
         cv::Mat x = P * X;
         x.row(0) = x.row(0) / x.row(2);
         x.row(1) = x.row(1) / x.row(2);
@@ -61,9 +61,9 @@ int main(void)
             if (p.x >= 0 && p.x < camera_res.width && p.y >= 0 && p.y < camera_res.height)
                 cv::circle(image, p, 2, 255, -1);
         }
-        cv::imshow(cv::format("3DV_Tutorial: Image Generation %d", i), image);
+        cv::imshow(cv::format("3DV_Tutorial: Image Formation %d", i), image);
 
-        FILE* fout = fopen(cv::format("image_generation%d.xyz", i).c_str(), "wt");
+        FILE* fout = fopen(cv::format("image_formation%d.xyz", i).c_str(), "wt");
         if (fout == NULL) return -1;
         for (int c = 0; c < x.cols; c++)
             fprintf(fout, "%f %f 1\n", x.at<double>(0, c), x.at<double>(1, c));
