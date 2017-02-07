@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video_stabilization", "video_stabilization\video_stabilization.vcxproj", "{5CCD570B-06A1-48B8-A7EF-756587CA45C0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mono_visual_odometry", "mono_visual_odometry\mono_visual_odometry.vcxproj", "{5549C427-BA0F-48AF-B3A0-029A8B57E71F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visual_odometry_epipolar", "visual_odometry_epipolar\visual_odometry_epipolar.vcxproj", "{5549C427-BA0F-48AF-B3A0-029A8B57E71F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "image_generation", "image_generation\image_generation.vcxproj", "{27C07F93-22C6-4ACD-A55B-B449F2212937}"
 EndProject

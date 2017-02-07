@@ -7,7 +7,7 @@ int main(void)
     cv::Point2d camera_center(607.1928, 185.2157);
 
     // Open a file to write camera trajectory
-    FILE* camera_traj = fopen("mono_visual_odometry.xyz", "wt");
+    FILE* camera_traj = fopen("visual_odometry_epipolar.xyz", "wt");
     if (camera_traj == NULL) return -1;
 
     // Open an video and get the initial image
@@ -70,7 +70,7 @@ int main(void)
             if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_prev[i], point[i], cv::Scalar(0, 0, 255));
             else cv::line(image, point_prev[i], point[i], cv::Scalar(0, 255, 0));
         }
-        cv::imshow("3DV Tutorial: Monocular Visual Odometry", image);
+        cv::imshow("3DV Tutorial: Visual Odometry (Epipolar)", image);
         fprintf(camera_traj, "%.6f %.6f %.6f\n", camera_pose.at<double>(0, 3), camera_pose.at<double>(1, 3), camera_pose.at<double>(2, 3));
         if (cv::waitKey(1) == 27) break; // 'ESC' key: Exit
     }

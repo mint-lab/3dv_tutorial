@@ -6,7 +6,7 @@ int main(void)
     cv::Point2d camera_center(320, 240);
 
     // Load two views of 'box.xyz'
-    // c.f. You need to run 'image_generation.cpp' to generate point observation.
+    // c.f. You need to run 'image_generation%02d.cpp' to generate point observation.
     //      You can apply Gaussian noise by change value of 'camera_noise' if necessay.
     std::vector<cv::Point2d> points0, points1;
     FILE* fin0 = fopen("image_generation0.xyz", "rt");
