@@ -6,18 +6,18 @@ int main(void)
     cv::Point2d camera_center(320, 240);
 
     // Load two views of 'box.xyz'
-    // c.f. You need to run 'image_generation.cpp' to generate two files for point observation.
+    // c.f. You need to run 'image_generation.cpp' to generate point observation.
     //      You can apply Gaussian noise by change value of 'camera_noise' if necessay.
     std::vector<cv::Point2d> points0, points1;
-    FILE* fin0 = fopen("image_generation0.csv", "rt");
-    FILE* fin1 = fopen("image_generation1.csv", "rt");
+    FILE* fin0 = fopen("image_generation0.xyz", "rt");
+    FILE* fin1 = fopen("image_generation1.xyz", "rt");
     if (fin0 == NULL || fin1 == NULL) return -1;
     while (!feof(fin0) || !feof(fin1))
     {
         double x, y, w;
-        if (!feof(fin0) && fscanf(fin0, "%lf, %lf, %lf", &x, &y, &w) == 3)
+        if (!feof(fin0) && fscanf(fin0, "%lf %lf %lf", &x, &y, &w) == 3)
             points0.push_back(cv::Point2d(x, y));
-        if (!feof(fin1) && fscanf(fin1, "%lf, %lf, %lf", &x, &y, &w) == 3)
+        if (!feof(fin1) && fscanf(fin1, "%lf %lf %lf", &x, &y, &w) == 3)
             points1.push_back(cv::Point2d(x, y));
     }
     fclose(fin0);

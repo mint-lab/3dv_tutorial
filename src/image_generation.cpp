@@ -12,7 +12,7 @@ int main(void)
     cv::Size camera_res(640, 480);
     cv::Point3d camera_pos[] = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0), cv::Point3d(-2, 2, 0), cv::Point3d(2, -2, 0) };
     cv::Point3d camera_ori[] = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0), cv::Point3d(CV_PI / 12, CV_PI / 12, 0), cv::Point3d(-CV_PI / 12, -CV_PI / 12, 0) };
-    double camera_noise = 0;
+    double camera_noise = 1;
 
     // Load a point cloud in the homogeneous coordinate
     FILE* fin = fopen("data/box.xyz", "rt");
@@ -63,10 +63,11 @@ int main(void)
         }
         cv::imshow(cv::format("3DV_Tutorial: Image Generation %d", i), image);
 
-        std::ofstream fout(cv::format("image_generation%d.csv", i));
-        if (!fout.is_open()) break;
-        fout << cv::format(x.t(), cv::Formatter::FMT_CSV);
-        fout.close();
+        FILE* fout = fopen(cv::format("image_generation%d.xyz", i).c_str(), "wt");
+        if (fout == NULL) return -1;
+        for (int c = 0; c < x.cols; c++)
+            fprintf(fout, "%f %f 1\n", x.at<double>(0, c), x.at<double>(1, c));
+        fclose(fout);
     }
 
     std::cout << "Press any key to terminate tihs program!" << std::endl;
