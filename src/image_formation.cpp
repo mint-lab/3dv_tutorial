@@ -70,7 +70,6 @@ int main(void)
         fclose(fout);
     }
 
-    std::cout << "Press any key to terminate tihs program!" << std::endl;
     cv::waitKey(0);
     return 0;
 }

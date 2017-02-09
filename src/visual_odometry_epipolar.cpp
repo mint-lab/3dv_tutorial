@@ -21,7 +21,7 @@ int main(void)
         video.release();
         return -1;
     }
-    if (gray_prev.channels() > 1) cv::cvtColor(gray_prev, gray_prev, CV_RGB2GRAY);
+    if (gray_prev.channels() > 1) cv::cvtColor(gray_prev, gray_prev, cv::COLOR_RGB2GRAY);
 
     // Run and record monocular visual odometry
     cv::Mat camera_pose = cv::Mat::eye(4, 4, CV_64F);
@@ -31,7 +31,7 @@ int main(void)
         cv::Mat image, gray;
         video >> image;
         if (image.empty()) break;
-        if (image.channels() > 1) cv::cvtColor(image, gray, CV_RGB2GRAY);
+        if (image.channels() > 1) cv::cvtColor(image, gray, cv::COLOR_RGB2GRAY);
         else                      gray = image.clone();
 
         // Extract optical flow
@@ -64,7 +64,7 @@ int main(void)
         camera_pose = camera_pose * T.inv();
 
         // Show the image and write camera pose 
-        if (image.channels() < 3) cv::cvtColor(image, image, CV_GRAY2RGB);
+        if (image.channels() < 3) cv::cvtColor(image, image, cv::COLOR_GRAY2RGB);
         for (size_t i = 0; i < point_prev.size(); i++)
         {
             if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_prev[i], point[i], cv::Scalar(0, 0, 255));

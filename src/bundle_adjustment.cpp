@@ -8,7 +8,7 @@ int main(void)
     int n_views = 5;
 
     // Load multiple views of 'box.xyz'
-    // c.f. You need to run 'image_formation%02d.cpp' to generate point observation.
+    // c.f. You need to run 'image_formation.cpp' to generate point observation.
     //      You can apply Gaussian noise by change value of 'camera_noise' if necessay.
     std::vector<std::vector<cv::Point2d> > xs;
     for (int i = 0; i < n_views; i++)

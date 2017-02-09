@@ -1,5 +1,6 @@
 #include "opencv_all.hpp"
 
+// Convert a line format, [n_x, n_y, x, y] to [a, b, c]
 #define CONVERT_LINE(line) (cv::Vec3d(line(0), -line(1), -line(0) * line(2) + line(1) * line(3)))
 
 int main(void)
@@ -40,7 +41,7 @@ int main(void)
             sample.push_back(data[index]);
         }
         cv::Vec4d vvxy;
-        cv::fitLine(sample, vvxy, CV_DIST_L2, 0, 0.01, 0.01);
+        cv::fitLine(sample, vvxy, cv::DIST_L2, 0, 0.01, 0.01);
         cv::Vec3d line = CONVERT_LINE(vvxy);
 
         // Step 2: Hypothesis evaluation
@@ -60,13 +61,12 @@ int main(void)
 
     // Estimate a line using least-squares method (for reference)
     cv::Vec4d vvxy;
-    cv::fitLine(data, vvxy, CV_DIST_L2, 0, 0.01, 0.01);
+    cv::fitLine(data, vvxy, cv::DIST_L2, 0, 0.01, 0.01);
     cv::Vec3d lsm_line = CONVERT_LINE(vvxy);
 
     // Display estimates
     printf("* The Truth: %.3f, %.3f, %.3f\n", truth(0), truth(1), truth(2));
     printf("* Estimate (RANSAC): %.3f, %.3f, %.3f (Score: %d)\n", best_line(0), best_line(1), best_line(2), best_score);
     printf("* Estimate (LSM): %.3f, %.3f, %.3f\n", lsm_line(0), lsm_line(1), lsm_line(2));
-
     return 0;
 }

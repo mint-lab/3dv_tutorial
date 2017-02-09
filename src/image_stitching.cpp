@@ -11,25 +11,22 @@ int main(void)
     cv::Mat gray1, gray2;
     if (image1.channels() > 1)
     {
-        cv::cvtColor(image1, gray1, CV_RGB2GRAY);
-        cv::cvtColor(image2, gray2, CV_RGB2GRAY);
+        cv::cvtColor(image1, gray1, cv::COLOR_RGB2GRAY);
+        cv::cvtColor(image2, gray2, cv::COLOR_RGB2GRAY);
     }
     else
     {
         gray1 = image1.clone();
         gray2 = image2.clone();
     }
-    cv::Ptr<cv::FeatureDetector> detector = cv::xfeatures2d::SURF::create();  // SURF features
+    cv::Ptr<cv::FeatureDetector> fdetector = cv::ORB::create();
     std::vector<cv::KeyPoint> keypoint1, keypoint2;
-    detector->detect(gray1, keypoint1);
-    detector->detect(gray2, keypoint2);
-    cv::Ptr<cv::FeatureDetector> extractor = cv::xfeatures2d::SURF::create(); // SURF descriptors
     cv::Mat descriptor1, descriptor2;
-    extractor->compute(gray1, keypoint1, descriptor1);
-    extractor->compute(gray2, keypoint2, descriptor2);
-    cv::FlannBasedMatcher matcher; // Approximate Nearest Neighbors (ANN) matcher
+    fdetector->detectAndCompute(gray1, cv::Mat(), keypoint1, descriptor1);
+    fdetector->detectAndCompute(gray2, cv::Mat(), keypoint2, descriptor2);
+    cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
     std::vector<cv::DMatch> match;
-    matcher.match(descriptor1, descriptor2, match);
+    fmatcher->match(descriptor1, descriptor2, match);
 
     // Calculate planar homography and merge them
     std::vector<cv::Point2f> points1, points2;
@@ -38,14 +35,20 @@ int main(void)
         points1.push_back(keypoint1.at(match.at(i).queryIdx).pt);
         points2.push_back(keypoint2.at(match.at(i).trainIdx).pt);
     }
-    cv::Mat H = cv::findHomography(points2, points1, cv::RANSAC);
-    cv::Mat merge;
-    cv::warpPerspective(image2, merge, H, cv::Size(image1.cols * 2, image1.rows));
-    merge.colRange(0, image1.cols) = image1 * 1; // Copy
+    cv::Mat inlier_mask;
+    cv::Mat H = cv::findHomography(points2, points1, inlier_mask, cv::RANSAC);
+
+    cv::Mat merged;
+    cv::warpPerspective(image2, merged, H, cv::Size(image1.cols * 2, image1.rows));
+    merged.colRange(0, image1.cols) = image1 * 1; // Copy
 
     // Show the merged image
-    cv::imshow("3DV Tutorial: Image Stitching", merge);
-    printf("Press any key to terminate tihs program!\n");
+    cv::Mat original, matched;
+    cv::drawMatches(gray1, keypoint1, gray2, keypoint2, match, matched, cv::Scalar::all(-1), cv::Scalar::all(-1), inlier_mask);
+    cv::hconcat(image1, image2, original);
+    cv::vconcat(original, matched, matched);
+    cv::vconcat(matched, merged, merged);
+    cv::imshow("3DV Tutorial: Image Stitching", merged);
     cv::waitKey(0);
     return 0;
 }

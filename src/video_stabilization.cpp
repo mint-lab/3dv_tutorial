@@ -13,7 +13,7 @@ int main(void)
         video.release();
         return -1;
     }
-    if (gray_ref.channels() > 1) cv::cvtColor(gray_ref, gray_ref, CV_RGB2GRAY);
+    if (gray_ref.channels() > 1) cv::cvtColor(gray_ref, gray_ref, cv::COLOR_RGB2GRAY);
 
     std::vector<cv::Point2f> point_ref;
     cv::goodFeaturesToTrack(gray_ref, point_ref, 2000, 0.01, 10);
@@ -30,7 +30,7 @@ int main(void)
         cv::Mat image, gray;
         video >> image;
         if (image.empty()) break;
-        if (image.channels() > 1) cv::cvtColor(image, gray, CV_RGB2GRAY);
+        if (image.channels() > 1) cv::cvtColor(image, gray, cv::COLOR_RGB2GRAY);
         else                      gray = image.clone();
 
         // Extract optical flow and calculate planar homography

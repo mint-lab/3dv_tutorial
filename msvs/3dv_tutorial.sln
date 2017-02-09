@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera_calibration", "camer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "distortion_correction", "distortion_correction\distortion_correction.vcxproj", "{E5444B55-196A-4A71-9BDE-C42E830B87B0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation", "pose_estimation\pose_estimation.vcxproj", "{E28D077A-B8C3-4391-AE2E-757E72C87BF6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_chessboard", "pose_estimation_chessboard\pose_estimation_chessboard.vcxproj", "{E28D077A-B8C3-4391-AE2E-757E72C87BF6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "perspective_correction", "perspective_correction\perspective_correction.vcxproj", "{53A4EA3F-D463-4D4F-A991-77A16129D664}"
 EndProject

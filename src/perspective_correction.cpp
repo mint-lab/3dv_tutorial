@@ -48,7 +48,6 @@ int main(void)
 
     // Show the rectified image
     cv::imshow("3DV Tutorial: Perspective Correction", rectify);
-    printf("Press any key to terminate tihs program!\n");
     cv::waitKey(0);
     return 0;
 }

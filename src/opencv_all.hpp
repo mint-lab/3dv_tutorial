@@ -32,30 +32,32 @@
 #include <opencv2/viz.hpp>
 
 // Include extra (contrib) modules
-#include <opencv2/opencv.hpp>
-#include <opencv2/aruco.hpp>
-#include <opencv2/bgsegm.hpp>
-#include <opencv2/bioinspired.hpp>
-#include <opencv2/ccalib.hpp>
-#include <opencv2/dataset.hpp>
-#include <opencv2/dpm.hpp>
-#include <opencv2/face.hpp>
-#include <opencv2/fuzzy.hpp>
-#include <opencv2/line_descriptor.hpp>
-#include <opencv2/optflow.hpp>
-#include <opencv2/phase_unwrapping.hpp>
-#include <opencv2/plot.hpp>
-#include <opencv2/rgbd.hpp>
-#include <opencv2/saliency.hpp>
-#include <opencv2/stereo.hpp>
-#include <opencv2/structured_light.hpp>
-#include <opencv2/surface_matching.hpp>
-#include <opencv2/text.hpp>
-#include <opencv2/tracking.hpp>
-#include <opencv2/xfeatures2d.hpp>
-#include <opencv2/ximgproc.hpp>
-#include <opencv2/xobjdetect.hpp>
-#include <opencv2/xphoto.hpp>
+#ifdef USE_OPENCV_CONTRIB
+#   include <opencv2/opencv.hpp>
+#   include <opencv2/aruco.hpp>
+#   include <opencv2/bgsegm.hpp>
+#   include <opencv2/bioinspired.hpp>
+#   include <opencv2/ccalib.hpp>
+#   include <opencv2/dataset.hpp>
+#   include <opencv2/dpm.hpp>
+#   include <opencv2/face.hpp>
+#   include <opencv2/fuzzy.hpp>
+#   include <opencv2/line_descriptor.hpp>
+#   include <opencv2/optflow.hpp>
+#   include <opencv2/phase_unwrapping.hpp>
+#   include <opencv2/plot.hpp>
+#   include <opencv2/rgbd.hpp>
+#   include <opencv2/saliency.hpp>
+#   include <opencv2/stereo.hpp>
+#   include <opencv2/structured_light.hpp>
+#   include <opencv2/surface_matching.hpp>
+#   include <opencv2/text.hpp>
+#   include <opencv2/tracking.hpp>
+#   include <opencv2/xfeatures2d.hpp>
+#   include <opencv2/ximgproc.hpp>
+#   include <opencv2/xobjdetect.hpp>
+#   include <opencv2/xphoto.hpp>
+#endif
 
 #ifdef _WIN32
 #   ifdef _DEBUG
