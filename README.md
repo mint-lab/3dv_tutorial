@@ -44,17 +44,17 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 ### Contact
  * [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok AT hanmail DOT net)
 
-[OpenCV][http://opencv.org/]
-[cvsba][https://www.uco.es/investiga/grupos/ava/node/39]
-[CLAPACK][http://www.netlib.org/clapack/]
-[image_formation.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/image_formation.cpp]
-[distortion_correction.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/distortion_correction.cpp]
-[camera_calibration.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/camera_calibration.cpp]
-[pose_estimation_chessboard.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_chessboard.cpp]
-[perspective_correction.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/perspective_correction.cpp]
-[image_stitching.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/image_stitching.cpp]
-[video_stabilization.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/video_stabilization.cpp]
-[visual_odometry_epipolar.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/visual_odometry_epipolar.cpp]
-[triangulation.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/triangulation.cpp]
-[bundle_adjustment.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment.cpp]
-[ransac_line.cpp][https://github.com/sunglok/3dv_tutorial/blob/master/src/ransac_line.cpp]
+[OpenCV]: http://opencv.org/
+[cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
+[CLAPACK]: http://www.netlib.org/clapack/
+[image_formation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_formation.cpp
+[distortion_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/distortion_correction.cpp
+[camera_calibration.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/camera_calibration.cpp
+[pose_estimation_chessboard.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_chessboard.cpp
+[perspective_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/perspective_correction.cpp
+[image_stitching.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_stitching.cpp
+[video_stabilization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/video_stabilization.cpp
+[visual_odometry_epipolar.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/visual_odometry_epipolar.cpp
+[triangulation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/triangulation.cpp
+[bundle_adjustment.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment.cpp
+[ransac_line.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/ransac_line.cpp
