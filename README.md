@@ -2,13 +2,13 @@
 
 _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. visual geometry or geometric vision). It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][]. In addition to tutorial slides, we provide a set of example codes. The example codes are written as short as possible (__less than 100 lines__) to improve readability and involve many interesting and practical applications.
 
-* Download tutorial slides [Link][https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf]
-* Download example codes in a ZIP file [Link][https://github.com/sunglok/3dv_tutorial/archive/master.zip]
-* Download binaries and headers for [OpenCV][] and [CLAPACK][] for Windows [Link][https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL4Windows.32bit.zip]
+ * Download tutorial slides [Link](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
+ * Download example codes in a ZIP file [Link](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
+ * Download binaries and headers for [OpenCV][] and [CLAPACK][] for Windows [Link](https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL4Windows.32bit.zip)
 
 ### What does its name come from?
-* The tutorial title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry][http://vision.ucla.edu/MASKS/]. We wish that this tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
-* The subtitle, _for everyone_, came from [Prof. Kim's online lecture][https://hunkim.github.io/ml/] (in Korean). This tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it without serious mathematical background.
+ * The tutorial title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that this tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
+ * The subtitle, _for everyone_, came from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). This tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
 
 ### Example descriptions
  * __Single-view Geometry__
@@ -33,13 +33,20 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
  * __Correspondence Problem__
   * Line Fitting with RANSAC: [ransac_line.cpp][]
 
-### Dependency
+### Dependencies
  * [OpenCV][] (> 3.0.0, 3-clause BSD License)
   * _OpenCV_ is a base of all example codes for linear algebra, vision algorithms, image/video manipulation, and GUI.
  * [cvsba][] (GPL): An OpenCV wrapper for sba library
-  * _cvsba_ is used for bundle adjustment and already included in EXTERNAL directory.
+  * _cvsba_ is used by bundle adjustment and already included in EXTERNAL directory. It is optional for bundle adjustment.
  * [CLAPACK][] (Public Domain): f2c'ed version of LAPACK
-  * _CLAPACK_ is necessary for cvsba.
+  * _CLAPACK_ is used by cvsba. It is optional for bundle adjustment.
+
+### Acknowledgement
+The authors thank the following contributors and projects.
+ * [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
+ * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
+ * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his traffic video for demonstrating video stabilization.
+ * [Dr. Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
 
 ### Contact
  * [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok AT hanmail DOT net)
