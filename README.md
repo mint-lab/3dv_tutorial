@@ -13,20 +13,20 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 ### Example descriptions
  * __Single-view Geometry__
   * Camera Projection Model
-   * Simple Camera Calibration and Object Localization
-   * Image Formation: [image_formation.cpp][]
-   * Geometric Distortion Correction: [distortion_correction.cpp][]
+    * Simple Camera Calibration and Object Localization
+    * Image Formation: [image_formation.cpp][]
+    * Geometric Distortion Correction: [distortion_correction.cpp][]
   * General 2D-3D Geometry
-   * Camera Calibration: [camera_calibration.cpp][]
-   * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
+    * Camera Calibration: [camera_calibration.cpp][]
+    * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
  * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-   * Perspective Distortion Correction: [perspective_correction.cpp][]
-   * Planar Image Stitching: [image_stitching.cpp][]
-   * 2D Video Stabilization: [video_stabilization.cpp][]
+    * Perspective Distortion Correction: [perspective_correction.cpp][]
+    * Planar Image Stitching: [image_stitching.cpp][]
+    * 2D Video Stabilization: [video_stabilization.cpp][]
   * General 2D-2D Geometry (Epipolar Geometry)
-   * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
-   * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
+    * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
+    * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
  * __Multi-view Geometry__
   * Bundle Adjustment using cvsba (Multiple-view Reconstruction): [bundle_adjustment.cpp][]
   * Sparse and Dense 3D Reconstruction using VisualSFM
