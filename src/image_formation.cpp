@@ -21,16 +21,10 @@ int main(void)
     while (!feof(fin))
     {
         double x, y, z;
-        if (fscanf(fin, "%lf %lf %lf", &x, &y, &z) == 3)
-        {
-            X.push_back<double>(x);
-            X.push_back<double>(y);
-            X.push_back<double>(z);
-            X.push_back<double>(1);
-        }
+        if (fscanf(fin, "%lf %lf %lf", &x, &y, &z) == 3) X.push_back(cv::Vec4d(x, y, z, 1));
     }
     fclose(fin);
-    X = X.reshape(1, X.rows / 4).t(); // Convert to a 4 x N matrix
+    X = X.reshape(1).t(); // Convert to a 4 x N matrix
 
     // Generate images for each camera pose
     cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
@@ -57,7 +51,7 @@ int main(void)
         cv::Mat image = cv::Mat::zeros(camera_res, CV_8UC1);
         for (int c = 0; c < x.cols; c++)
         {
-            cv::Point p(x.at<double>(0, c), x.at<double>(1, c));
+            cv::Point p(x.col(c).rowRange(0, 2));
             if (p.x >= 0 && p.x < camera_res.width && p.y >= 0 && p.y < camera_res.height)
                 cv::circle(image, p, 2, 255, -1);
         }

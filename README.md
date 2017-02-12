@@ -8,25 +8,25 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 
 ### What does its name come from?
  * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
- * The subtitle, _for everyone_, came from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
+ * The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
 
 ### Example descriptions
  * __Single-view Geometry__
   * Camera Projection Model
-    * Simple Camera Calibration and Object Localization
-    * Image Formation: [image_formation.cpp][]
-    * Geometric Distortion Correction: [distortion_correction.cpp][]
-   * General 2D-3D Geometry
-    * Camera Calibration: [camera_calibration.cpp][]
-    * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
+   * Simple Camera Calibration and Object Localization
+   * Image Formation: [image_formation.cpp][]
+   * Geometric Distortion Correction: [distortion_correction.cpp][]
+  * General 2D-3D Geometry
+   * Camera Calibration: [camera_calibration.cpp][]
+   * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
  * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][]
-    * Planar Image Stitching: [image_stitching.cpp][]
-    * 2D Video Stabilization: [video_stabilization.cpp][]
+   * Perspective Distortion Correction: [perspective_correction.cpp][]
+   * Planar Image Stitching: [image_stitching.cpp][]
+   * 2D Video Stabilization: [video_stabilization.cpp][]
   * General 2D-2D Geometry (Epipolar Geometry)
-    * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
-    * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
+   * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
+   * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
  * __Multi-view Geometry__
   * Bundle Adjustment using cvsba (Multiple-view Reconstruction): [bundle_adjustment.cpp][]
   * Sparse and Dense 3D Reconstruction using VisualSFM
@@ -45,7 +45,7 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 The authors thank the following contributors and projects.
  * [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
  * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
- * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his traffic video for demonstrating video stabilization.
+ * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his shaking CCTV video for demonstrating video stabilization.
  * [Dr. Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
 
 ### License
