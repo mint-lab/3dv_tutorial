@@ -14,14 +14,14 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
  * __Single-view Geometry__
   * Camera Projection Model
     * Simple Camera Calibration and Object Localization
-    * Image Formation: [image_formation.cpp][] (screenshots:[0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
+    * Image Formation: [image_formation.cpp][] (screenshots: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
     * Geometric Distortion Correction: [distortion_correction.cpp][]
   * General 2D-3D Geometry
     * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
     * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
  * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][] ([screenshot:original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [screenshot:rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
+    * Perspective Distortion Correction: [perspective_correction.cpp][] (screenshot: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
     * Planar Image Stitching: [image_stitching.cpp][] ([screenshot](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing))
     * 2D Video Stabilization: [video_stabilization.cpp][]
   * General 2D-2D Geometry (Epipolar Geometry)

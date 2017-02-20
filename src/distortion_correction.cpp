@@ -20,12 +20,15 @@ int main(void)
         if (image.empty()) break;
 
         // Rectify geometric distortion (c.f. 'cv::undistort()' can be applied for one-time remapping.)
+        cv::String info = "Original";
         if (show_rectify)
         {
             if (map1.empty() || map2.empty())
                 cv::initUndistortRectifyMap(K, dist_coeff, cv::Mat(), cv::Mat(), image.size(), CV_32FC1, map1, map2);
             cv::remap(image, image, map1, map2, cv::InterpolationFlags::INTER_LINEAR);
+            info = "Rectified";
         }
+        cv::putText(image, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 255, 0));
 
         // Show the image
         cv::imshow("3DV Tutorial: Distortion Correction", image);
