@@ -14,15 +14,15 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
  * __Single-view Geometry__
   * Camera Projection Model
     * Simple Camera Calibration and Object Localization
-    * Image Formation: [image_formation.cpp][]
+    * Image Formation: [image_formation.cpp][] (screenshots:[0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
     * Geometric Distortion Correction: [distortion_correction.cpp][]
   * General 2D-3D Geometry
-    * Camera Calibration: [camera_calibration.cpp][]
+    * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
     * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
  * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][] [Screenshot(Original)](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing) [Screenshot(Rectified)](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing)
-    * Planar Image Stitching: [image_stitching.cpp][] [Screenshot](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing)
+    * Perspective Distortion Correction: [perspective_correction.cpp][] ([screenshot:original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [screenshot:rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
+    * Planar Image Stitching: [image_stitching.cpp][] ([screenshot](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing))
     * 2D Video Stabilization: [video_stabilization.cpp][]
   * General 2D-2D Geometry (Epipolar Geometry)
     * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
@@ -52,8 +52,8 @@ The authors thank the following contributors and projects.
  * [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
  * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
  * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his shaking CCTV video for demonstrating video stabilization.
- * Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
  * [Dr. Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
+ * Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
 
 [OpenCV]: http://opencv.org/
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
