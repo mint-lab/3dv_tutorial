@@ -2,9 +2,9 @@
 
 _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. visual geometry or geometric vision). It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][]. In addition to tutorial slides, we provide a set of example codes. The example codes are written as short as possible (__less than 100 lines__) to improve readability and involve many interesting and practical applications.
 
- * Download tutorial slides [Link](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
- * Download example codes in a ZIP file [Link](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
- * Download binaries and headers for [OpenCV][] and [CLAPACK][] for Windows [Link](https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL4Windows.32bit.zip)
+ * [Download tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
+ * [Download example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
+ * [Download binaries and headers for OpenCV and CLAPACK for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL4Windows.32bit.zip)
 
 ### What does its name come from?
  * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
@@ -21,8 +21,8 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
     * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
  * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][]
-    * Planar Image Stitching: [image_stitching.cpp][]
+    * Perspective Distortion Correction: [perspective_correction.cpp][] [Screenshot(Original)](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing) [Screenshot(Rectified)](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing)
+    * Planar Image Stitching: [image_stitching.cpp][] [Screenshot](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing)
     * 2D Video Stabilization: [video_stabilization.cpp][]
   * General 2D-2D Geometry (Epipolar Geometry)
     * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
@@ -41,18 +41,19 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
  * [CLAPACK][] (Public Domain): f2c'ed version of LAPACK
   * _CLAPACK_ is used by cvsba. It is optional for bundle adjustment.
 
+### License
+ * [Beerware](http://en.wikipedia.org/wiki/Beerware)
+
+### Authors
+ * [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok AT hanmail DOT net)
+
 ### Acknowledgement
 The authors thank the following contributors and projects.
  * [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
  * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
  * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his shaking CCTV video for demonstrating video stabilization.
+ * Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
  * [Dr. Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
-
-### License
- * [Beerware](http://en.wikipedia.org/wiki/Beerware)
-
-### Contact
- * [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok AT hanmail DOT net)
 
 [OpenCV]: http://opencv.org/
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
