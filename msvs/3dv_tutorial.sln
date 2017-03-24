@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment", "bundle
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ransac_line", "ransac_line\ransac_line.vcxproj", "{53D993B4-1B33-4C18-B279-B77B17517278}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_proposal", "simple_object_proposal\simple_object_proposal.vcxproj", "{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -75,6 +77,10 @@ Global
 		{53D993B4-1B33-4C18-B279-B77B17517278}.Debug|Win32.Build.0 = Debug|Win32
 		{53D993B4-1B33-4C18-B279-B77B17517278}.Release|Win32.ActiveCfg = Release|Win32
 		{53D993B4-1B33-4C18-B279-B77B17517278}.Release|Win32.Build.0 = Release|Win32
+		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Debug|Win32.Build.0 = Debug|Win32
+		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Release|Win32.ActiveCfg = Release|Win32
+		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
