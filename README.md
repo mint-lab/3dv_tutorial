@@ -13,7 +13,7 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 ### Example descriptions
 * __Single-view Geometry__
   * Camera Projection Model
-    * Simple Camera Calibration and Object Localization: [simple_object_proposal,cpp][]
+    * Simple Camera Calibration and Object Localization: [simple_object_proposal.cpp][]
     * Image Formation: [image_formation.cpp][] (screenshots: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
     * Geometric Distortion Correction: [distortion_correction.cpp][]
   * General 2D-3D Geometry
