@@ -4,7 +4,7 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 
 * [Download tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * [Download example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
-* [Download binaries and headers for OpenCV and CLAPACK for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL4Windows.32bit.zip)
+* [Download binaries and headers for OpenCV and CLAPACK for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL_for_Windows_32bit.zip)
 
 ### What does its name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.

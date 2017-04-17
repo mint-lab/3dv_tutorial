@@ -61,9 +61,9 @@
 
 #ifdef _WIN32
 #   ifdef _DEBUG
-#       pragma comment(lib, "opencv_world310d.lib")
+#       pragma comment(lib, "opencv_world320d.lib")
 #   else
-#       pragma comment(lib, "opencv_world310.lib")
+#       pragma comment(lib, "opencv_world320.lib")
 #   endif // End of '_DEBUG'
 #   pragma comment(lib, "opengl32.lib")
 #   pragma comment(lib, "vfw32.lib")
