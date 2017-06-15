@@ -59,8 +59,8 @@ int main(void)
 
         // Accumulate pose
         cv::Mat T = cv::Mat::eye(4, 4, R.type());
-        T(cv::Range(0, 3), cv::Range(0, 3)) = R * 1.0;
-        T(cv::Range(0, 3), cv::Range(3, 4)) = t * 1.0;
+        T(cv::Rect(0, 0, 3, 3)) = R * 1.0;
+        T.col(3).rowRange(0, 3) = t * 1.0;
         camera_pose = camera_pose * T.inv();
 
         // Show the image and write camera pose 
