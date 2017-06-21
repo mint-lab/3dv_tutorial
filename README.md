@@ -13,7 +13,8 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 ### Example descriptions
 * __Single-view Geometry__
   * Camera Projection Model
-    * Simple Camera Calibration and Object Localization: [simple_object_proposal.cpp][]
+    * Simple Object Filtering (Detection and Localization): [simple_object_filtering.cpp][]
+    * Simple Object Proposal: [simple_object_proposal.cpp][]
     * Image Formation: [image_formation.cpp][] (screenshots: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
     * Geometric Distortion Correction: [distortion_correction.cpp][]
   * General 2D-3D Geometry
@@ -60,8 +61,9 @@ The authors thank the following contributors and projects.
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
 [CLAPACK]: http://www.netlib.org/clapack/
 
-[image_formation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_formation.cpp
+[simple_object_filtering.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/simple_object_filtering.cpp
 [simple_object_proposal.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/simple_object_proposal.cpp
+[image_formation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_formation.cpp
 [distortion_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/distortion_correction.cpp
 [camera_calibration.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/camera_calibration.cpp
 [pose_estimation_chessboard.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_chessboard.cpp
