@@ -27,9 +27,11 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
     * 2D Video Stabilization: [video_stabilization.cpp][]
   * General 2D-2D Geometry (Epipolar Geometry)
     * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
-    * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
+    * Triangulation: [triangulation.cpp][]
 * __Multi-view Geometry__
-  * Bundle Adjustment using cvsba (Multiple-view Reconstruction): [bundle_adjustment.cpp][]
+  * Bundle Adjustment using cvsba (Batch Version): [bundle_adjustment_batch.cpp][]
+  * Bundle Adjustment using cvsba (Incremental Version): [bundle_adjustment_inc.cpp][]
+  * Incremental Structure-from-Motion using cvsba
   * Sparse and Dense 3D Reconstruction using VisualSFM
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [ransac_line.cpp][]
@@ -72,5 +74,6 @@ The authors thank the following contributors and projects.
 [video_stabilization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/video_stabilization.cpp
 [visual_odometry_epipolar.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/visual_odometry_epipolar.cpp
 [triangulation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/triangulation.cpp
-[bundle_adjustment.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment.cpp
+[bundle_adjustment_batch.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_batch.cpp
+[bundle_adjustment_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_inc.cpp
 [ransac_line.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/ransac_line.cpp

@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{968A197A-66E1-499E-B3DE-E7760D74081B}</ProjectGuid>
+    <ProjectGuid>{64E65811-6F72-479E-BEAB-1DADE0952A7B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>3dv_tutorial</RootNamespace>
   </PropertyGroup>
@@ -92,7 +92,7 @@
     <ClCompile Include="..\..\EXTERNAL\cvsba\src\sba_lapack.c" />
     <ClCompile Include="..\..\EXTERNAL\cvsba\src\sba_levmar.c" />
     <ClCompile Include="..\..\EXTERNAL\cvsba\src\sba_levmar_wrap.c" />
-    <ClCompile Include="..\..\src\bundle_adjustment.cpp" />
+    <ClCompile Include="..\..\src\bundle_adjustment_batch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
