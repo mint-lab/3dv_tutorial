@@ -23,7 +23,7 @@ int main(void)
     points_dst.push_back(cv::Point(card_size.width, card_size.height));
 
     // Load an image
-    cv::Mat original = cv::imread("data/sunglok.jpg");
+    cv::Mat original = cv::imread("data/sunglok_desk.jpg");
     if (original.empty()) return -1;
 
     // Get the matched points from a user's mouse

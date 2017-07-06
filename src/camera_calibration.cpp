@@ -6,7 +6,7 @@ int main(void)
     cv::Size board_pattern(10, 7);
     double board_cellsize = 0.025;
 
-    // Open an video
+    // Open a video
     cv::VideoCapture video;
     if (!video.open("data/chessboard.avi")) return -1;
 
@@ -43,33 +43,33 @@ int main(void)
     if (images.empty()) return -1;
 
     // Find 2D corner points from the given images
-    std::vector<std::vector<cv::Point2f> > image_points;
+    std::vector<std::vector<cv::Point2f> > img_points;
     for (size_t i = 0; i < images.size(); i++)
     {
         std::vector<cv::Point2f> pts;
         if (cv::findChessboardCorners(images[i], board_pattern, pts))
-            image_points.push_back(pts);
+            img_points.push_back(pts);
     }
-    if (image_points.empty()) return -1;
+    if (img_points.empty()) return -1;
 
     // Prepare 3D points of the chess board
-    std::vector<std::vector<cv::Point3f> > object_points(1);
+    std::vector<std::vector<cv::Point3f> > obj_points(1);
     for (int r = 0; r < board_pattern.height; r++)
         for (int c = 0; c < board_pattern.width; c++)
-            object_points[0].push_back(cv::Point3f(board_cellsize * c, board_cellsize * r, 0));
-    object_points.resize(image_points.size(), object_points[0]); // Copy
+            obj_points[0].push_back(cv::Point3f(board_cellsize * c, board_cellsize * r, 0));
+    obj_points.resize(img_points.size(), obj_points[0]); // Copy
 
     // Calibrate the camera
     cv::Mat K = cv::Mat::eye(3, 3, CV_64F);
     cv::Mat dist_coeff = cv::Mat::zeros(4, 1, CV_64F);
     std::vector<cv::Mat> rvecs, tvecs;
-    double rms = cv::calibrateCamera(object_points, image_points, images[0].size(), K, dist_coeff, rvecs, tvecs);
+    double rms = cv::calibrateCamera(obj_points, img_points, images[0].size(), K, dist_coeff, rvecs, tvecs);
 
     // Report calibration results
     std::ofstream report("camera_calibration.txt");
     if (!report.is_open()) return -1;
     report << "## Camera Calbration Results" << std::endl;
-    report << "* The number of applied images = " << image_points.size() << std::endl;
+    report << "* The number of applied images = " << img_points.size() << std::endl;
     report << "* RMS error = " << rms << std::endl;
     report << "* Camera matrix (K) = " << std::endl << "  " << K.row(0) << K.row(1) << K.row(2) << std::endl;
     report << "* Distortion coefficient (k1, k2, p1, p2, k3, ...) = " << std::endl << "  " << dist_coeff.t() << std::endl;

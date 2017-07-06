@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    // Open an video and get the reference image and feature points
+    // Open a video and get the reference image and feature points
     cv::VideoCapture video;
     if (!video.open("data/traffic.avi")) return -1;
 
@@ -48,7 +48,7 @@ int main(void)
         for (size_t i = 0; i < point_ref.size(); i++)
         {
             if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_ref[i], point[i], cv::Scalar(0, 0, 255));
-            else cv::line(image, point_ref[i], point[i], cv::Scalar(0, 255, 0));
+            else cv::line(image, point_ref[i], point[i], cv::Scalar(0, 127, 0));
         }
         cv::hconcat(image, warp, image);
         cv::imshow("3DV Tutorial: Video Stabilization", image);

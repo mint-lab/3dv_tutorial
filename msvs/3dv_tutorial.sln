@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_filtering", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_batch", "bundle_adjustment_batch\bundle_adjustment_batch.vcxproj", "{64E65811-6F72-479E-BEAB-1DADE0952A7B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book", "pose_estimation_book\pose_estimation_book.vcxproj", "{76D265CF-2EDE-4A28-B456-E499E55165E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -93,6 +95,10 @@ Global
 		{64E65811-6F72-479E-BEAB-1DADE0952A7B}.Debug|Win32.Build.0 = Debug|Win32
 		{64E65811-6F72-479E-BEAB-1DADE0952A7B}.Release|Win32.ActiveCfg = Release|Win32
 		{64E65811-6F72-479E-BEAB-1DADE0952A7B}.Release|Win32.Build.0 = Release|Win32
+		{76D265CF-2EDE-4A28-B456-E499E55165E8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{76D265CF-2EDE-4A28-B456-E499E55165E8}.Debug|Win32.Build.0 = Debug|Win32
+		{76D265CF-2EDE-4A28-B456-E499E55165E8}.Release|Win32.ActiveCfg = Release|Win32
+		{76D265CF-2EDE-4A28-B456-E499E55165E8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

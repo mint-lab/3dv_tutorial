@@ -20,6 +20,7 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
   * General 2D-3D Geometry
     * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
     * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
+    * Camera Calibration and Pose Estimation (Book Version): [pose_estimation_book.cpp][]
 * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
     * Perspective Distortion Correction: [perspective_correction.cpp][] (screenshot: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
@@ -31,7 +32,6 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 * __Multi-view Geometry__
   * Bundle Adjustment using cvsba (Batch Version): [bundle_adjustment_batch.cpp][]
   * Bundle Adjustment using cvsba (Incremental Version): [bundle_adjustment_inc.cpp][]
-  * Incremental Structure-from-Motion using cvsba
   * Sparse and Dense 3D Reconstruction using VisualSFM
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [ransac_line.cpp][]
@@ -56,7 +56,8 @@ The authors thank the following contributors and projects.
 * [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
 * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
 * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his shaking CCTV video for demonstrating video stabilization.
-* [Dr. Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
+* Richard Blais: We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
+* [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
 * Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
 
 [OpenCV]: http://opencv.org/
@@ -69,6 +70,7 @@ The authors thank the following contributors and projects.
 [distortion_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/distortion_correction.cpp
 [camera_calibration.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/camera_calibration.cpp
 [pose_estimation_chessboard.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_chessboard.cpp
+[pose_estimation_book.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_book.cpp
 [perspective_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/perspective_correction.cpp
 [image_stitching.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_stitching.cpp
 [video_stabilization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/video_stabilization.cpp

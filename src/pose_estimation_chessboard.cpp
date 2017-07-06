@@ -7,7 +7,7 @@ int main(void)
     cv::Size board_pattern(10, 7);
     double board_cellsize = 0.025;
 
-    // Open an video
+    // Open a video
     cv::VideoCapture video;
     if (!video.open("data/chessboard.avi")) return -1;
 
@@ -23,10 +23,10 @@ int main(void)
     box_upper.push_back(cv::Point3d(4 * board_cellsize, 4 * board_cellsize, -board_cellsize));
 
     // Run pose estimation
-    std::vector<cv::Point3d> object_points;
+    std::vector<cv::Point3d> obj_points;
     for (int r = 0; r < board_pattern.height; r++)
         for (int c = 0; c < board_pattern.width; c++)
-            object_points.push_back(cv::Point3d(board_cellsize * c, board_cellsize * r, 0));
+            obj_points.push_back(cv::Point3d(board_cellsize * c, board_cellsize * r, 0));
     while (true)
     {
         // Grab an image from the video
@@ -35,12 +35,12 @@ int main(void)
         if (image.empty()) break;
 
         // Estimate camera pose
-        std::vector<cv::Point2d> image_points;
-        bool complete = cv::findChessboardCorners(image, board_pattern, image_points, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
-        if (complete)
+        std::vector<cv::Point2d> img_points;
+        bool success = cv::findChessboardCorners(image, board_pattern, img_points, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
+        if (success)
         {
             cv::Mat rvec, tvec;
-            cv::solvePnP(object_points, image_points, K, dist_coeff, rvec, tvec);
+            cv::solvePnP(obj_points, img_points, K, dist_coeff, rvec, tvec);
 
             // Draw the box on the image
             cv::Mat line_lower, line_upper;

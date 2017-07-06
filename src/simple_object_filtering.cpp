@@ -9,7 +9,7 @@ int main(void)
     cv::Mat morph_kernel_small = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3, 3));
     cv::Mat morph_kernel_big = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 10));
 
-    // Open an video and create MOG2 background subtractor
+    // Open a video and create MOG2 background subtractor
     cv::VideoCapture video;
     cv::Ptr<cv::BackgroundSubtractorMOG2> backsub = cv::createBackgroundSubtractorMOG2(backsub_history, backsub_thresh);
     if (!video.open("data/daejeon.avi") || backsub.empty()) return -1;

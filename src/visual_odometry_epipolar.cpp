@@ -10,7 +10,7 @@ int main(void)
     FILE* camera_traj = fopen("visual_odometry_epipolar.xyz", "wt");
     if (camera_traj == NULL) return -1;
 
-    // Open an video and get the initial image
+    // Open a video and get the initial image
     cv::VideoCapture video;
     if (!video.open("data/KITTI_00_L/%06d.png")) return -1;
 
@@ -68,7 +68,7 @@ int main(void)
         for (size_t i = 0; i < point_prev.size(); i++)
         {
             if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_prev[i], point[i], cv::Scalar(0, 0, 255));
-            else cv::line(image, point_prev[i], point[i], cv::Scalar(0, 255, 0));
+            else cv::line(image, point_prev[i], point[i], cv::Scalar(0, 127, 0));
         }
         cv::imshow("3DV Tutorial: Visual Odometry (Epipolar)", image);
         fprintf(camera_traj, "%.6f %.6f %.6f\n", camera_pose.at<double>(0, 3), camera_pose.at<double>(1, 3), camera_pose.at<double>(2, 3));
