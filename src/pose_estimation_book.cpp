@@ -4,7 +4,7 @@ int main(void)
 {
     bool assume_plane = true, calib_camera = true;
     size_t min_inlier_num = 100;
-    double camera_f_min = 400, camera_f_max = 4000, camera_f_default = 1000, camera_cx_default = 320, camera_cy_default = 240;
+    double camera_f_min = 500, camera_f_max = 2000, camera_f_default = 1000, camera_cx_default = 320, camera_cy_default = 240;
 
     // Load the object image and extract features
     cv::Mat obj_image = cv::imread("data/blais.jpg", cv::ImreadModes::IMREAD_GRAYSCALE);

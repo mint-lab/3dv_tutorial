@@ -44,8 +44,8 @@ int main(void)
     cv::Mat E = K.t() * F * K;
     cv::Mat R, t;
     cv::recoverPose(E, xs[0], xs[1], K, R, t);
-    Rs.push_back(R);                                            // R for the second camera
-    ts.push_back(t);                                            // t for the second camera
+    Rs.push_back(R.clone());                                    // R for the second camera
+    ts.push_back(t.clone());                                    // t for the second camera
 
     // Reconstruct the initial 3D points of 'box.xyz' (triangulation)
     cv::Mat P0 = K * cv::Mat::eye(3, 4, CV_64F);
@@ -67,8 +67,8 @@ int main(void)
         cv::Mat rvec;
         cv::solvePnP(Xs, xs[i], Ks[i], dist_coeffs[i], rvec, t);
         cv::Rodrigues(rvec, R);
-        Rs.push_back(R);                                        // R for the third and other cameras
-        ts.push_back(t);                                        // t for the third and other cameras
+        Rs.push_back(R.clone());                                // R for the third and other cameras
+        ts.push_back(t.clone());                                // t for the third and other cameras
     }
 
     // Optimize camera pose and 3D points (bundle adjustment)

@@ -15,17 +15,17 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
   * Camera Projection Model
     * Simple Object Filtering (Detection and Localization): [simple_object_filtering.cpp][]
     * Simple Object Proposal: [simple_object_proposal.cpp][]
-    * Image Formation: [image_formation.cpp][] (screenshots: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
-    * Geometric Distortion Correction: [distortion_correction.cpp][]
+    * Image Formation: [image_formation.cpp][] (result: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
+    * Geometric Distortion Correction: [distortion_correction.cpp][] ([result](https://www.youtube.com/watch?v=HKetupWh4V8))
   * General 2D-3D Geometry
     * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
-    * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][]
-    * Camera Calibration and Pose Estimation (Book Version): [pose_estimation_book.cpp][]
+    * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][] ([result](https://www.youtube.com/watch?v=4nA1OQGL-ig))
+    * Camera Calibration and Pose Estimation (Book Version): [pose_estimation_book.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
 * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][] (screenshot: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
-    * Planar Image Stitching: [image_stitching.cpp][] ([screenshot](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing))
-    * 2D Video Stabilization: [video_stabilization.cpp][]
+    * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
+    * Planar Image Stitching: [image_stitching.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing))
+    * 2D Video Stabilization: [video_stabilization.cpp][] ([result](https://www.youtube.com/watch?v=be_dzYicEzI))
   * General 2D-2D Geometry (Epipolar Geometry)
     * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
     * Triangulation: [triangulation.cpp][]
