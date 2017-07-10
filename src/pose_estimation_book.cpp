@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    bool assume_plane = true, calib_camera = true, show_match = true;
+    bool assume_plane = true, calib_camera = true;
     size_t min_inlier_num = 100;
     double camera_f_min = 400, camera_f_max = 4000, camera_f_default = 1000, camera_cx_default = 320, camera_cy_default = 240;
 
@@ -73,8 +73,8 @@ int main(void)
                 for (size_t i = 0; i < inlier.size(); i++) inlier_mask.at<uchar>(inlier[i]) = 1;
             }
         }
-        cv::Mat image_result = image;
-        if (show_match) cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Scalar(0, 0, 255), cv::Scalar(0, 127, 0), inlier_mask);
+        cv::Mat image_result;
+        cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Scalar(0, 0, 255), cv::Scalar(0, 127, 0), inlier_mask);
 
         // Calibrate the camera and estimate its pose
         if (inlier_num > min_inlier_num)
@@ -120,12 +120,7 @@ int main(void)
         cv::putText(image_result, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 255, 0));
         cv::imshow("3DV Tutorial: Pose Estimation (Book)", image_result);
         int key = cv::waitKey(1);
-        if (key == 27) break;                                   // 'ESC' key: Exit
-        else if (key == 32)                                     // 'Space' key: Pause
-        {
-            key = cv::waitKey();
-            if (key == 27) break;                               // 'ESC' key: Exit
-        }
+        if (key == 27) break; // 'ESC' key: Exit
     }
 
     video.release();
