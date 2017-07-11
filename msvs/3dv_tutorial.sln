@@ -29,7 +29,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_proposal", "s
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_filtering", "simple_object_filtering\simple_object_filtering.vcxproj", "{90388B18-B94A-49D4-B5CB-BE9AA192BA90}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_batch", "bundle_adjustment_batch\bundle_adjustment_batch.vcxproj", "{64E65811-6F72-479E-BEAB-1DADE0952A7B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_global", "bundle_adjustment_global\bundle_adjustment_global.vcxproj", "{64E65811-6F72-479E-BEAB-1DADE0952A7B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book", "pose_estimation_book\pose_estimation_book.vcxproj", "{76D265CF-2EDE-4A28-B456-E499E55165E8}"
 EndProject

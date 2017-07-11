@@ -92,7 +92,7 @@
     <ClCompile Include="..\..\EXTERNAL\cvsba\src\sba_lapack.c" />
     <ClCompile Include="..\..\EXTERNAL\cvsba\src\sba_levmar.c" />
     <ClCompile Include="..\..\EXTERNAL\cvsba\src\sba_levmar_wrap.c" />
-    <ClCompile Include="..\..\src\bundle_adjustment_batch.cpp" />
+    <ClCompile Include="..\..\src\bundle_adjustment_global.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

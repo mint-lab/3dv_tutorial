@@ -61,7 +61,7 @@ int main(void)
     catch (cv::Exception) { }
 
     // Store the 3D points
-    FILE* fout = fopen("bundle_adjustment_batch.xyz", "wt");
+    FILE* fout = fopen("bundle_adjustment_global.xyz", "wt");
     if (fout == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
         fprintf(fout, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
