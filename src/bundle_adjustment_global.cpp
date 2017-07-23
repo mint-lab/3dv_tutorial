@@ -31,7 +31,11 @@ int main(void)
     std::vector<int> visible_all(xs.front().size(), 1);
     std::vector<std::vector<int> > visibility(n_views, visible_all);
 
-    // Prepare each camera projection matrix
+    // Initialize 3D points
+    std::vector<cv::Point3d> Xs;
+    Xs.resize(xs.front().size(), cv::Point3d(0, 0, 5.5));
+
+    // Initialize each camera projection matrix
     std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
     cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
     Ks.resize(n_views, K);                                      // K for all cameras
@@ -42,11 +46,7 @@ int main(void)
         ts.push_back(cv::Mat::zeros(3, 1, CV_64F));             // t for all cameras
     }
 
-    // Prepare initial 3D points
-    std::vector<cv::Point3d> Xs;
-    Xs.resize(xs.front().size(), cv::Point3d(0, 0, 5.5));
-
-    // Optimize camera pose and 3D points (bundle adjustment)
+    // Optimize camera pose and 3D points
     try
     {
         cvsba::Sba sba;

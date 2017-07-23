@@ -7,7 +7,7 @@ int main(void)
     double camera_f_min = 500, camera_f_max = 2000, camera_f_default = 1000, camera_cx_default = 320, camera_cy_default = 240;
 
     // Load the object image and extract features
-    cv::Mat obj_image = cv::imread("data/blais.jpg", cv::ImreadModes::IMREAD_GRAYSCALE);
+    cv::Mat obj_image = cv::imread("data/blais.jpg");
     if (obj_image.empty()) return -1;
 
     cv::Ptr<cv::FeatureDetector> fdetector = cv::ORB::create();
@@ -33,16 +33,14 @@ int main(void)
     while (true)
     {
         // Grab an image from the video
-        cv::Mat image, gray;
+        cv::Mat image;
         video >> image;
         if (image.empty()) break;
-        if (image.channels() > 1) cv::cvtColor(image, gray, cv::COLOR_RGB2GRAY);
-        else                      gray = image.clone();
 
         // Extract features and match them to the object features
         std::vector<cv::KeyPoint> img_keypoint;
         cv::Mat img_descriptor;
-        fdetector->detectAndCompute(gray, cv::Mat(), img_keypoint, img_descriptor);
+        fdetector->detectAndCompute(image, cv::Mat(), img_keypoint, img_descriptor);
         if (img_keypoint.empty() || img_descriptor.empty()) continue;
         std::vector<cv::DMatch> match;
         fmatcher->match(img_descriptor, match);
@@ -92,7 +90,7 @@ int main(void)
             if (calib_camera)
             {
                 std::vector<cv::Mat> rvecs, tvecs;
-                cv::calibrateCamera(std::vector<std::vector<cv::Point3f> >(1, obj_inlier), std::vector<std::vector<cv::Point2f> >(1, img_inlier), gray.size(), K, dist_coeff, rvecs, tvecs,
+                cv::calibrateCamera(std::vector<std::vector<cv::Point3f> >(1, obj_inlier), std::vector<std::vector<cv::Point2f> >(1, img_inlier), image.size(), K, dist_coeff, rvecs, tvecs,
                     cv::CALIB_FIX_ASPECT_RATIO | cv::CALIB_FIX_PRINCIPAL_POINT | cv::CALIB_ZERO_TANGENT_DIST | cv::CALIB_FIX_K1 | cv::CALIB_FIX_K2 | cv::CALIB_FIX_K3 | cv::CALIB_FIX_K4 | cv::CALIB_FIX_K5 | cv::CALIB_FIX_K6 | cv::CALIB_FIX_S1_S2_S3_S4 | cv::CALIB_FIX_TAUX_TAUY);
                 rvec = rvecs[0].clone();
                 tvec = tvecs[0].clone();

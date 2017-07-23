@@ -8,22 +8,11 @@ int main(void)
     if (image1.empty() || image2.empty()) return -1;
 
     // Retrieve matching points
-    cv::Mat gray1, gray2;
-    if (image1.channels() > 1)
-    {
-        cv::cvtColor(image1, gray1, cv::COLOR_RGB2GRAY);
-        cv::cvtColor(image2, gray2, cv::COLOR_RGB2GRAY);
-    }
-    else
-    {
-        gray1 = image1.clone();
-        gray2 = image2.clone();
-    }
-    cv::Ptr<cv::FeatureDetector> fdetector = cv::ORB::create();
+    cv::Ptr<cv::FeatureDetector> fdetector = cv::BRISK::create();
     std::vector<cv::KeyPoint> keypoint1, keypoint2;
     cv::Mat descriptor1, descriptor2;
-    fdetector->detectAndCompute(gray1, cv::Mat(), keypoint1, descriptor1);
-    fdetector->detectAndCompute(gray2, cv::Mat(), keypoint2, descriptor2);
+    fdetector->detectAndCompute(image1, cv::Mat(), keypoint1, descriptor1);
+    fdetector->detectAndCompute(image2, cv::Mat(), keypoint2, descriptor2);
     cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
     std::vector<cv::DMatch> match;
     fmatcher->match(descriptor1, descriptor2, match);
@@ -44,7 +33,7 @@ int main(void)
 
     // Show the merged image
     cv::Mat original, matched;
-    cv::drawMatches(gray1, keypoint1, gray2, keypoint2, match, matched, cv::Scalar::all(-1), cv::Scalar::all(-1), inlier_mask);
+    cv::drawMatches(image1, keypoint1, image2, keypoint2, match, matched, cv::Scalar::all(-1), cv::Scalar::all(-1), inlier_mask);
     cv::hconcat(image1, image2, original);
     cv::vconcat(original, matched, matched);
     cv::vconcat(matched, merged, merged);
