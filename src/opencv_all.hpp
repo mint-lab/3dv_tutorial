@@ -38,7 +38,6 @@
 #   include <opencv2/bgsegm.hpp>
 #   include <opencv2/bioinspired.hpp>
 #   include <opencv2/ccalib.hpp>
-#   include <opencv2/dataset.hpp>
 #   include <opencv2/dpm.hpp>
 #   include <opencv2/face.hpp>
 #   include <opencv2/fuzzy.hpp>

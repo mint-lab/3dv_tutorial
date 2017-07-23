@@ -1,5 +1,7 @@
 ## An Invitation to 3D Vision: A Tutorial for Everyone
-_An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. visual geometry or geometric vision). It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][]. In addition to tutorial slides, we provide a set of example codes. The example codes are written as short as possible (__less than 100 lines__) to improve readability and involve many interesting and practical applications.
+_An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. visual geometry or geometric vision).
+It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][].
+In addition to tutorial slides, we provide a set of example codes. The example codes are written as short as possible (mostly __less than 100 lines__) to improve readability and involve many interesting and practical applications.
 
 * [Download tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * [Download example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
@@ -31,6 +33,7 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 * __Multi-view Geometry__
   * Bundle Adjustment using cvsba (Global Version): [bundle_adjustment_global.cpp][]
   * Bundle Adjustment using cvsba (Incremental Version): [bundle_adjustment_inc.cpp][]
+  * Structure-from-Motion using cvsba (Global Version): [sfm_global.cpp][]
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [ransac_line.cpp][]
 
@@ -57,6 +60,7 @@ The authors thank the following contributors and projects.
 * Richard Blais: We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
 * [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
 * Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
+* Giseop Kim: He contributed the initial version of SfM codes with [cvsba][] and [Toy-SfM](https://github.com/royshil/SfM-Toy-Library).
 
 [OpenCV]: http://opencv.org/
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
@@ -76,4 +80,5 @@ The authors thank the following contributors and projects.
 [triangulation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/triangulation.cpp
 [bundle_adjustment_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_global.cpp
 [bundle_adjustment_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_inc.cpp
+[sfm_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_global.cpp
 [ransac_line.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/ransac_line.cpp
