@@ -5,7 +5,8 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 
 * [Download tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * [Download example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
-* [Download binaries and headers for OpenCV and CLAPACK for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/EXTERNAL_for_Windows_32bit.zip)
+* [Download OpenCV binary for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/OpenCV_v3.2.0_32bit.zip)
+* [Download CLAPACK binary for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/CLAPACK_v3.2.1_32bit.zip)
 
 ### What does its name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
@@ -21,7 +22,7 @@ In addition to tutorial slides, we provide a set of example codes. The example c
   * General 2D-3D Geometry
     * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
     * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][] ([result](https://www.youtube.com/watch?v=4nA1OQGL-ig))
-    * Camera Calibration and Pose Estimation (Book Version): [pose_estimation_book.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
+    * Camera Calibration and Pose Estimation (Book/Autofocus Version): [pose_estimation_book.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
 * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
     * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
@@ -29,11 +30,12 @@ In addition to tutorial slides, we provide a set of example codes. The example c
     * 2D Video Stabilization: [video_stabilization.cpp][] ([result](https://www.youtube.com/watch?v=be_dzYicEzI))
   * General 2D-2D Geometry (Epipolar Geometry)
     * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
-    * Triangulation: [triangulation.cpp][]
+    * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
 * __Multi-view Geometry__
-  * Bundle Adjustment using cvsba (Global Version): [bundle_adjustment_global.cpp][]
-  * Bundle Adjustment using cvsba (Incremental Version): [bundle_adjustment_inc.cpp][]
-  * Structure-from-Motion using cvsba (Global Version): [sfm_global.cpp][]
+  * Bundle Adjustment (Global Version): [bundle_adjustment_global.cpp][]
+  * Bundle Adjustment (Incremental Version): [bundle_adjustment_inc.cpp][]
+  * Global Structure-from-Motion: [sfm_global.cpp][]
+  * c.f. The above examples need [cvsba][] for bundle adjustment.
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [ransac_line.cpp][]
 

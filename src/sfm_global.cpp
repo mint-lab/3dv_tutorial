@@ -51,10 +51,11 @@ int main(void)
             cv::findFundamentalMat(src, dst, inlier_mask, cv::RANSAC);
             for (int k = 0; k < inlier_mask.rows; k++)
                 if (inlier_mask.at<uchar>(k)) inlier.push_back(match[k]);
+            printf("3DV Tutorial: Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
             if (inlier.size() < min_inlier_num) continue;
+            printf("3DV Tutorial: Image %d - %d are selected.\n", i, j);
             inlier_pair.push_back(std::pair<int, int>(i, j));
             inlier_match.push_back(inlier);
-            printf("3DV Tutorial: Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
             if (show_match)
             {
                 cv::Mat match_image;
@@ -122,7 +123,7 @@ int main(void)
             visibility[j].erase(visibility[j].begin() + *idx);
         }
     }
-    printf("3DV Tutorial: # of 3D points = %d (# of projections = %d).\n", Xs.size(), xs_visited.size());
+    printf("3DV Tutorial: # of 3D points = %d (# of rejected = %d, # of projections = %d).\n", Xs.size(), Xs_rejected.size(), xs_visited.size());
 
     // Initialize each camera projection matrix
     std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;

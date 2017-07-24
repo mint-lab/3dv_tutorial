@@ -27,24 +27,27 @@ int main(void)
         if (xs.front().size() != xs.back().size()) return -1;
     }
 
-    // Assume that all feature points are visible
+    // Assume that all cameras have the same and known camera matrix
+    // Assume that all feature points are visible on all views
+    cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
+    cv::Mat dist_coeff = cv::Mat::zeros(5, 1, CV_64F);
     std::vector<int> visible_all(xs.front().size(), 1);
-    std::vector<std::vector<int> > visibility(n_views, visible_all);
+
+    // Initialize each camera projection matrix
+    std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
+    std::vector<std::vector<int> > visibility;
+    for (int i = 0; i < n_views; i++)
+    {
+        visibility.push_back(visible_all);
+        Ks.push_back(K.clone());                                // K for all cameras
+        dist_coeffs.push_back(cv::Mat::zeros(5, 1, CV_64F));    // dist_coeff for all cameras
+        Rs.push_back(cv::Mat::eye(3, 3, CV_64F));               // R for all cameras
+        ts.push_back(cv::Mat::zeros(3, 1, CV_64F));             // t for all cameras
+    }
 
     // Initialize 3D points
     std::vector<cv::Point3d> Xs;
     Xs.resize(xs.front().size(), cv::Point3d(0, 0, 5.5));
-
-    // Initialize each camera projection matrix
-    std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
-    cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
-    Ks.resize(n_views, K);                                      // K for all cameras
-    dist_coeffs.resize(n_views, cv::Mat::zeros(5, 1, CV_64F));  // dist_coeff for all cameras
-    for (int i = 0; i < n_views; i++)
-    {
-        Rs.push_back(cv::Mat::eye(3, 3, CV_64F));               // R for all cameras
-        ts.push_back(cv::Mat::zeros(3, 1, CV_64F));             // t for all cameras
-    }
 
     // Optimize camera pose and 3D points
     try

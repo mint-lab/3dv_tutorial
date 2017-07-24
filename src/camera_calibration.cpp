@@ -4,7 +4,7 @@ int main(void)
 {
     bool select_images = true;
     cv::Size board_pattern(10, 7);
-    double board_cellsize = 0.025;
+    float board_cellsize = 0.025f;
 
     // Open a video
     cv::VideoCapture video;
