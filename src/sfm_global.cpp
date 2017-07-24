@@ -6,9 +6,9 @@
 
 int main(void)
 {
-    double default_camera_f = 1700, default_point_depth = 5;
+    double default_camera_f = 1000, default_point_depth = 5;
     size_t min_inlier_num = 500;
-    bool show_match = true;
+    bool half_res = true, show_match = true;
 
     // Load images and extract features
     cv::VideoCapture video;
@@ -21,6 +21,7 @@ int main(void)
         cv::Mat image;
         video >> image;
         if (image.empty()) break;
+        if (half_res) cv::resize(image, image, cv::Size(), 0.5, 0.5);
         std::vector<cv::KeyPoint> keypoint;
         cv::Mat descriptor;
         fdetector->detectAndCompute(image, cv::Mat(), keypoint, descriptor);
@@ -53,7 +54,7 @@ int main(void)
             if (inlier.size() < min_inlier_num) continue;
             inlier_pair.push_back(std::pair<int, int>(i, j));
             inlier_match.push_back(inlier);
-            printf("Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
+            printf("3DV Tutorial: Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
             if (show_match)
             {
                 cv::Mat match_image;
@@ -69,35 +70,59 @@ int main(void)
     std::vector<std::vector<int> > visibility(img_set.size());
     std::vector<cv::Point3d> Xs;
     std::unordered_map<uint, uint> xs_visited;
+    std::set<uint> Xs_rejected;
     for (size_t i = 0; i < inlier_pair.size(); i++)
     {
         for (size_t j = 0; j < inlier_match[i].size(); j++)
         {
-            uint Xid = 0;
-            const int &img1 = inlier_pair[i].first, &img2 = inlier_pair[i].second, &xid1 = inlier_match[i][j].queryIdx, &xid2 = inlier_match[i][j].trainIdx;
-            const uint key1 = MAKE_KEY(img1, xid1), key2 = MAKE_KEY(img2, xid2);
+            uint X_idx = 0;
+            const int &img1 = inlier_pair[i].first, &img2 = inlier_pair[i].second, &x1_idx = inlier_match[i][j].queryIdx, &x2_idx = inlier_match[i][j].trainIdx;
+            const uint key1 = MAKE_KEY(img1, x1_idx), key2 = MAKE_KEY(img2, x2_idx);
             auto value1 = xs_visited.find(key1), value2 = xs_visited.find(key2);
-            if (value1 != xs_visited.end()) Xid = value1->second;
-            else if (value2 != xs_visited.end()) Xid = value2->second;
+            if (value1 != xs_visited.end() && value2 != xs_visited.end())
+            {
+                // When the existing point correspondences are inconsistent, do not use these points.
+                if (value1->second != value2->second)
+                {
+                    Xs_rejected.insert(value1->second);
+                    Xs_rejected.insert(value2->second);
+                    continue;
+                }
+                X_idx = value1->second;
+            }
+            else if (value1 != xs_visited.end()) X_idx = value1->second;
+            else if (value2 != xs_visited.end()) X_idx = value2->second;
             else
             {
-                // When the point observations are not visited
+                // When the point observations are not visited, add a new point.
                 Xs.push_back(cv::Point3d(0, 0, default_point_depth));
                 for (size_t k = 0; k < img_set.size(); k++)
                 {
                     xs[k].push_back(cv::Point2d());
                     visibility[k].push_back(0);
                 }
-                Xid = Xs.size() - 1;
+                X_idx = Xs.size() - 1;
             }
-            xs[img1][Xid] = img_keypoint[img1][xid1].pt;
-            xs[img2][Xid] = img_keypoint[img2][xid2].pt;
-            visibility[img1][Xid] = 1;
-            visibility[img2][Xid] = 1;
-            xs_visited[key1] = Xid;
-            xs_visited[key2] = Xid;
+            xs[img1][X_idx] = img_keypoint[img1][x1_idx].pt;
+            xs[img2][X_idx] = img_keypoint[img2][x2_idx].pt;
+            visibility[img1][X_idx] = 1;
+            visibility[img2][X_idx] = 1;
+            xs_visited[key1] = X_idx;
+            xs_visited[key2] = X_idx;
         }
     }
+
+    // Remove rejected 3D points
+    for (auto idx = Xs_rejected.rbegin(); idx != Xs_rejected.rend(); idx++)
+    {
+        Xs.erase(Xs.begin() + *idx);
+        for (size_t j = 0; j < img_set.size(); j++)
+        {
+            xs[j].erase(xs[j].begin() + *idx);
+            visibility[j].erase(visibility[j].begin() + *idx);
+        }
+    }
+    printf("3DV Tutorial: # of 3D points = %d (# of projections = %d).\n", Xs.size(), xs_visited.size());
 
     // Initialize each camera projection matrix
     std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
@@ -116,8 +141,8 @@ int main(void)
         cvsba::Sba sba;
         cvsba::Sba::Params param;
         param.type = cvsba::Sba::MOTIONSTRUCTURE;
-        param.fixedIntrinsics = 0;
-        param.fixedDistortion = 0;
+        param.fixedIntrinsics = 4;
+        param.fixedDistortion = 5;
         param.verbose = true;
         sba.setParams(param);
         double error = sba.run(Xs, xs, visibility, Ks, Rs, ts, dist_coeffs);
@@ -138,6 +163,7 @@ int main(void)
     {
         cv::Mat p = -Rs[i].t() * ts[i];
         fprintf(fout, "%f %f %f\n", p.at<double>(0), p.at<double>(1), p.at<double>(2));
+        printf("3DV Tutorial: Camera %d's focal length = %.3f\n", i, Ks[i].at<double>(0, 0));
     }
     fclose(fout);
     return 0;
