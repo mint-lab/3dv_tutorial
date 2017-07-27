@@ -63,11 +63,21 @@ int main(void)
     }
     catch (cv::Exception) { }
 
-    // Store the 3D points
-    FILE* fout = fopen("bundle_adjustment_global.xyz", "wt");
-    if (fout == NULL) return -1;
+    // Store the 3D points to an XYZ file
+    FILE* fpts = fopen("bundle_adjustment_global(point).xyz", "wt");
+    if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
-        fprintf(fout, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
-    fclose(fout);
+        fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
+    fclose(fpts);
+
+    // Store the camera poses to an XYZ file 
+    FILE* fcam = fopen("bundle_adjustment_global(camera).xyz", "wt");
+    if (fcam == NULL) return -1;
+    for (size_t i = 0; i < Rs.size(); i++)
+    {
+        cv::Mat p = -Rs[i].t() * ts[i];
+        fprintf(fcam, "%f %f %f\n", p.at<double>(0), p.at<double>(1), p.at<double>(2));
+    }
+    fclose(fcam);
     return 0;
 }

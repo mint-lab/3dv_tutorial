@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book", "pos
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sfm_global", "sfm_global\sfm_global.vcxproj", "{CA9BFC0D-1372-4FE4-B1BF-3C92E682895B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sfm_inc", "sfm_inc\sfm_inc.vcxproj", "{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -105,6 +107,10 @@ Global
 		{CA9BFC0D-1372-4FE4-B1BF-3C92E682895B}.Debug|Win32.Build.0 = Debug|Win32
 		{CA9BFC0D-1372-4FE4-B1BF-3C92E682895B}.Release|Win32.ActiveCfg = Release|Win32
 		{CA9BFC0D-1372-4FE4-B1BF-3C92E682895B}.Release|Win32.Build.0 = Release|Win32
+		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Debug|Win32.Build.0 = Debug|Win32
+		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Release|Win32.ActiveCfg = Release|Win32
+		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

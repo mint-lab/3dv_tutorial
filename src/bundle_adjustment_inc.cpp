@@ -37,40 +37,45 @@ int main(void)
     std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
     std::vector<std::vector<int> > visibility;
     std::vector<std::vector<cv::Point2d> > xs;
+
+    xs.push_back(data[0]);
+    visibility.push_back(visible_all);
     Ks.push_back(K.clone());                                    // K for the first camera (index: 0)
     dist_coeffs.push_back(dist_coeff.clone());                  // dist_coeff for the first camera (index: 0)
     Rs.push_back(cv::Mat::eye(3, 3, CV_64F));                   // R for the first camera (index: 0)
     ts.push_back(cv::Mat::zeros(3, 1, CV_64F));                 // t for the first camera (index: 0)
 
-    // Estimate relative pose of the inital two views (epipolar geometry)
-    xs.push_back(data[0]);
-    xs.push_back(data[1]);
-    visibility.push_back(visible_all);
-    visibility.push_back(visible_all);
-    cv::Mat F = cv::findFundamentalMat(xs[0], xs[1], cv::FM_8POINT);
+    // 1) Select the best pair (skipped because all points are visible on all images)
+
+    // 2) Estimate relative pose of the inital two views (epipolar geometry)
+    cv::Mat F = cv::findFundamentalMat(data[0], data[1], cv::FM_8POINT);
     cv::Mat E = K.t() * F * K;
     cv::Mat R, t;
-    cv::recoverPose(E, xs[0], xs[1], K, R, t);
+    cv::recoverPose(E, data[0], data[1], K, R, t);
+
+    xs.push_back(data[1]);
+    visibility.push_back(visible_all);
     Ks.push_back(K.clone());                                    // K for the second camera
     dist_coeffs.push_back(dist_coeff.clone());                  // dist_coeff for the second camera
     Rs.push_back(R.clone());                                    // R for the second camera
     ts.push_back(t.clone());                                    // t for the second camera
 
-    // Reconstruct the initial 3D points of 'box.xyz' (triangulation)
-    cv::Mat P0 = K * cv::Mat::eye(3, 4, CV_64F);
-    cv::Mat Rt, X;
+    // 3) Reconstruct 3D points of the initial two views (triangulation)
+    cv::Mat Rt;
     cv::hconcat(R, t, Rt);
-    cv::Mat P1 = K * Rt;
+    cv::Mat P0 = K * cv::Mat::eye(3, 4, CV_64F);
+    cv::Mat P1 = K * Rt, X;
     cv::triangulatePoints(P0, P1, xs[0], xs[1], X);
+
     std::vector<cv::Point3d> Xs;
     X.row(0) = X.row(0) / X.row(3);
     X.row(1) = X.row(1) / X.row(3);
     X.row(2) = X.row(2) / X.row(3);
     X.row(3) = 1;
     for (int c = 0; c < X.cols; c++)
-        Xs.push_back(cv::Point3d(X.at<double>(0, c), X.at<double>(1, c), X.at<double>(2, c)));
+        Xs.push_back(cv::Point3d(X.col(c).rowRange(0, 3)));
 
-    // Optimize camera pose and 3D points one by one
+    // Incrementally add more views
     cvsba::Sba sba;
     cvsba::Sba::Params param;
     param.type = cvsba::Sba::MOTIONSTRUCTURE;
@@ -80,30 +85,42 @@ int main(void)
     sba.setParams(param);
     for (int i = 2; i < n_views; i++)
     {
-        // Estimate relative pose of other views (PnP)
+        // 4) Select the next image to add (skipped because all points are visible on all images)
+
+        // 5) Estimate relative pose of the next view (PnP)
+        cv::Mat rvec;
+        cv::solvePnP(Xs, data[i], K, dist_coeff, rvec, t);
+        cv::Rodrigues(rvec, R);
+
         xs.push_back(data[i]);
         visibility.push_back(visible_all);
-        cv::Mat rvec;
-        cv::solvePnP(Xs, xs[i], K, dist_coeff, rvec, t);
-        cv::Rodrigues(rvec, R);
         Ks.push_back(K.clone());                                // K for the third and other cameras
         dist_coeffs.push_back(dist_coeff.clone());              // dist_coeff for the third and other cameras
         Rs.push_back(R.clone());                                // R for the third and other cameras
         ts.push_back(t.clone());                                // t for the third and other cameras
 
-        // Reconstruct newly observed 3D points (triangulation)
-        // Skipped because all feature points are visible on all views
+        // 6) Reconstruct newly observed 3D points (triangulation, skipped because all points are visible on all images)
 
-        // Optimize camera pose and 3D points (bundle adjustment)
+        // 7) Optimize camera pose and 3D points (bundle adjustment)
         try { double error = sba.run(Xs, xs, visibility, Ks, Rs, ts, dist_coeffs); }
         catch (cv::Exception) { }
     }
 
-    // Store the 3D points
-    FILE* fout = fopen("bundle_adjustment_inc.xyz", "wt");
-    if (fout == NULL) return -1;
+    // Store the 3D points to an XYZ file
+    FILE* fpts = fopen("bundle_adjustment_inc(point).xyz", "wt");
+    if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
-        fprintf(fout, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
-    fclose(fout);
+        fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
+    fclose(fpts);
+
+    // Store the camera poses to an XYZ file 
+    FILE* fcam = fopen("bundle_adjustment_inc(camera).xyz", "wt");
+    if (fcam == NULL) return -1;
+    for (size_t i = 0; i < Rs.size(); i++)
+    {
+        cv::Mat p = -Rs[i].t() * ts[i];
+        fprintf(fcam, "%f %f %f\n", p.at<double>(0), p.at<double>(1), p.at<double>(2));
+    }
+    fclose(fcam);
     return 0;
 }

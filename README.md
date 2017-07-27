@@ -3,10 +3,9 @@ _An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. vis
 It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][].
 In addition to tutorial slides, we provide a set of example codes. The example codes are written as short as possible (mostly __less than 100 lines__) to improve readability and involve many interesting and practical applications.
 
-* [Download tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
-* [Download example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
-* [Download OpenCV binary for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/OpenCV_v3.2.0_32bit.zip)
-* [Download CLAPACK binary for Windows](https://github.com/sunglok/3dv_tutorial/releases/download/misc/CLAPACK_v3.2.1_32bit.zip)
+* Download [tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
+* Download [example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
+* Download [OpenCV binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/OpenCV_v3.2.0_32bit.zip) and [CLAPACK binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/CLAPACK_v3.2.1_32bit.zip) for Windows
 
 ### What does its name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
@@ -35,6 +34,7 @@ In addition to tutorial slides, we provide a set of example codes. The example c
   * Bundle Adjustment (Global Version): [bundle_adjustment_global.cpp][]
   * Bundle Adjustment (Incremental Version): [bundle_adjustment_inc.cpp][]
   * Global Structure-from-Motion: [sfm_global.cpp][]
+  * Incremental Structure-from-Motion: [sfm_inc.cpp][]
   * c.f. The above examples need [cvsba][] for bundle adjustment.
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [ransac_line.cpp][]
@@ -43,7 +43,8 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 * [OpenCV][] (> 3.0.0, 3-clause BSD License)
   * _OpenCV_ is a base of all example codes for linear algebra, vision algorithms, image/video manipulation, and GUI.
 * [cvsba][] (GPL): An OpenCV wrapper for sba library
-  * _cvsba_ is used by bundle adjustment. It is optional for bundle adjustment but included in EXTERNAL directory in the sake of your convenience.
+  * _cvsba_ is used by bundle adjustment. It is optional for bundle adjustment.
+  * It is included in EXTERNAL directory in the sake of your convenience.
 * [CLAPACK][] (Public Domain): f2c'ed version of LAPACK
   * _CLAPACK_ is used by cvsba. It is optional for bundle adjustment.
 
@@ -83,4 +84,5 @@ The authors thank the following contributors and projects.
 [bundle_adjustment_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_global.cpp
 [bundle_adjustment_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_inc.cpp
 [sfm_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_global.cpp
+[sfm_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_inc.cpp
 [ransac_line.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/ransac_line.cpp
