@@ -11,7 +11,7 @@ int main(void)
     cv::VideoCapture video;
     if (!video.open("data/chessboard.avi")) return -1;
 
-    // Prepare a box for simple AR
+    // Prepare a 3D box for simple AR
     std::vector<cv::Point3d> box_lower, box_upper;
     box_lower.push_back(cv::Point3d(4 * board_cellsize, 2 * board_cellsize, 0));
     box_lower.push_back(cv::Point3d(5 * board_cellsize, 2 * board_cellsize, 0));
@@ -22,11 +22,13 @@ int main(void)
     box_upper.push_back(cv::Point3d(5 * board_cellsize, 4 * board_cellsize, -board_cellsize));
     box_upper.push_back(cv::Point3d(4 * board_cellsize, 4 * board_cellsize, -board_cellsize));
 
-    // Run pose estimation
+    // Prepare 3D points on a chessboard
     std::vector<cv::Point3d> obj_points;
     for (int r = 0; r < board_pattern.height; r++)
         for (int c = 0; c < board_pattern.width; c++)
             obj_points.push_back(cv::Point3d(board_cellsize * c, board_cellsize * r, 0));
+
+    // Run pose estimation
     while (true)
     {
         // Grab an image from the video

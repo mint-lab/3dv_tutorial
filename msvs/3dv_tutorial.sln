@@ -23,7 +23,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "triangulation", "triangulat
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_inc", "bundle_adjustment_inc\bundle_adjustment_inc.vcxproj", "{968A197A-66E1-499E-B3DE-E7760D74081B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ransac_line", "ransac_line\ransac_line.vcxproj", "{53D993B4-1B33-4C18-B279-B77B17517278}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "line_fitting_ransac", "line_fitting_ransac\line_fitting_ransac.vcxproj", "{53D993B4-1B33-4C18-B279-B77B17517278}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_proposal", "simple_object_proposal\simple_object_proposal.vcxproj", "{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}"
 EndProject

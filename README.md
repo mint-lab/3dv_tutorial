@@ -21,7 +21,7 @@ In addition to tutorial slides, we provide a set of example codes. The example c
   * General 2D-3D Geometry
     * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
     * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][] ([result](https://www.youtube.com/watch?v=4nA1OQGL-ig))
-    * Camera Calibration and Pose Estimation (Book/Autofocus Version): [pose_estimation_book.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
+    * Camera Pose Estimation and Calibration (Book Version): [pose_estimation_book.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
 * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
     * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
@@ -31,13 +31,25 @@ In addition to tutorial slides, we provide a set of example codes. The example c
     * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
     * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
 * __Multi-view Geometry__
-  * Bundle Adjustment (Global Version): [bundle_adjustment_global.cpp][]
-  * Bundle Adjustment (Incremental Version): [bundle_adjustment_inc.cpp][]
-  * Global Structure-from-Motion: [sfm_global.cpp][]
-  * Incremental Structure-from-Motion: [sfm_inc.cpp][]
+  * Bundle Adjustment
+    * Global Version: [bundle_adjustment_global.cpp][]
+    * Incremental Version: [bundle_adjustment_inc.cpp][]
+  * Structure-from-Motion
+    * Global SfM: [sfm_global.cpp][]
+    * Incremental SfM: [sfm_inc.cpp][]
+  * Visual Odometry
+    * Epipolar Version: [visual_odometry_epipolar.cpp][]
+    * PnP Version
+    * Bundle Adjustment Version
+  * Visual SLAM
   * c.f. The above examples need [cvsba][] for bundle adjustment.
 * __Correspondence Problem__
-  * Line Fitting with RANSAC: [ransac_line.cpp][]
+  * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
+  * Line Fitting with M-estimators
+* **Appendix**
+  * Line Fitting
+  * Planar Homograph Estimation
+  * Fundamental Matrix Estimation
 
 ### Dependencies
 * [OpenCV][] (> 3.0.0, 3-clause BSD License)
@@ -63,7 +75,7 @@ The authors thank the following contributors and projects.
 * Richard Blais: We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
 * [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
 * Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
-* Giseop Kim: He contributed the initial version of SfM codes with [cvsba][] and [Toy-SfM](https://github.com/royshil/SfM-Toy-Library).
+* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes with [cvsba][] and [Toy-SfM](https://github.com/royshil/SfM-Toy-Library).
 
 [OpenCV]: http://opencv.org/
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
@@ -85,4 +97,4 @@ The authors thank the following contributors and projects.
 [bundle_adjustment_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_inc.cpp
 [sfm_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_global.cpp
 [sfm_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_inc.cpp
-[ransac_line.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/ransac_line.cpp
+[line_fitting_ransac.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/line_fitting_ransac.cpp
