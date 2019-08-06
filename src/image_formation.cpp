@@ -1,18 +1,18 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
+#include <vector>
 
-#define Rx(rx)  (cv::Mat_<double>(3, 3) << 1, 0, 0, 0, cos(rx), -sin(rx), 0, sin(rx), cos(rx))
-#define Ry(ry)  (cv::Mat_<double>(3, 3) << cos(ry), 0, sin(ry), 0, 1, 0, -sin(ry), 0, cos(ry))
-#define Rz(rz)  (cv::Mat_<double>(3, 3) << cos(rz), -sin(rz), 0, sin(rz), cos(rz), 0, 0, 0, 1)
+#define Rx(rx)      (cv::Mat_<double>(3, 3) << 1, 0, 0, 0, cos(rx), -sin(rx), 0, sin(rx), cos(rx))
+#define Ry(ry)      (cv::Mat_<double>(3, 3) << cos(ry), 0, sin(ry), 0, 1, 0, -sin(ry), 0, cos(ry))
+#define Rz(rz)      (cv::Mat_<double>(3, 3) << cos(rz), -sin(rz), 0, sin(rz), cos(rz), 0, 0, 0, 1)
+#define T(x, y, z)  (cv::Mat_<double>(3, 1) << x, y, z)
 
 int main(void)
 {
     // The given camera configuration: focal length, principal point, image resolution, position, and orientation
-    double camera_focal = 1000;
-    cv::Point2d camera_center(320, 240);
-    cv::Size camera_res(640, 480);
-    cv::Point3d camera_pos[] = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0), cv::Point3d(-2, 2, 0), cv::Point3d(2, -2, 0) };
-    cv::Point3d camera_ori[] = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0), cv::Point3d(CV_PI / 12, CV_PI / 12, 0), cv::Point3d(-CV_PI / 12, -CV_PI / 12, 0) };
-    double camera_noise = 1;
+    double f = 1000, cx = 320, cy = 240, noise_std = 1;
+    cv::Size img_res(640, 480);
+    std::vector<cv::Point3d> cam_pos = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0), cv::Point3d(-2, 2, 0), cv::Point3d(2, -2, 0) };
+    std::vector<cv::Point3d> cam_ori = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0), cv::Point3d(CV_PI / 12, CV_PI / 12, 0), cv::Point3d(-CV_PI / 12, -CV_PI / 12, 0) };
 
     // Load a point cloud in the homogeneous coordinate
     FILE* fin = fopen("data/box.xyz", "rt");
@@ -27,12 +27,12 @@ int main(void)
     X = X.reshape(1).t(); // Convert to a 4 x N matrix
 
     // Generate images for each camera pose
-    cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
-    for (int i = 0; i < sizeof(camera_pos) / sizeof(cv::Point3d); i++)
+    cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, cx, 0, f, cy, 0, 0, 1);
+    for (size_t i = 0; i < cam_pos.size(); i++)
     {
         // Derive a projection matrix
-        cv::Mat Rc = Rz(camera_ori[i].z) * Ry(camera_ori[i].y) * Rx(camera_ori[i].x);
-        cv::Mat tc = (cv::Mat_<double>(3, 1) << camera_pos[i].x, camera_pos[i].y, camera_pos[i].z);
+        cv::Mat Rc = Rz(cam_ori[i].z) * Ry(cam_ori[i].y) * Rx(cam_ori[i].x);
+        cv::Mat tc = T(cam_pos[i].x, cam_pos[i].y, cam_pos[i].z);
         cv::Mat Rt;
         cv::hconcat(Rc.t(), -Rc.t() * tc, Rt);
         cv::Mat P = K * Rt;
@@ -44,15 +44,15 @@ int main(void)
         x.row(2) = 1;
 
         cv::Mat noise(2, x.cols, x.type());
-        cv::randn(noise, cv::Scalar(0), cv::Scalar(camera_noise));
-        x.rowRange(0, 2) = x.rowRange(0, 2) + noise; // Add noise
+        cv::randn(noise, cv::Scalar(0), cv::Scalar(noise_std));
+        x.rowRange(0, 2) = x.rowRange(0, 2) + noise; // Add Gaussian noise
 
         // Show and store the points
-        cv::Mat image = cv::Mat::zeros(camera_res, CV_8UC1);
+        cv::Mat image = cv::Mat::zeros(img_res, CV_8UC1);
         for (int c = 0; c < x.cols; c++)
         {
             cv::Point p(x.col(c).rowRange(0, 2));
-            if (p.x >= 0 && p.x < camera_res.width && p.y >= 0 && p.y < camera_res.height)
+            if (p.x >= 0 && p.x < img_res.width && p.y >= 0 && p.y < img_res.height)
                 cv::circle(image, p, 2, 255, -1);
         }
         cv::imshow(cv::format("3DV_Tutorial: Image Formation %d", i), image);
