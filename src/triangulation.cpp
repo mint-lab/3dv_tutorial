@@ -2,15 +2,15 @@
 
 int main()
 {
-    double camera_focal = 1000;
-    cv::Point2d camera_center(320, 240);
+    const char *input0 = "image_formation0.xyz", *input1 = "image_formation1.xyz";
+    double f = 1000;
+    cv::Point2d c(320, 240);
 
-    // Load two views of 'box.xyz'
+    // Load any two views of 'box.xyz'
     // c.f. You need to run 'image_formation.cpp' to generate point observation.
-    //      You can apply Gaussian noise by change value of 'camera_noise' if necessary.
     std::vector<cv::Point2d> points0, points1;
-    FILE* fin0 = fopen("image_formation0.xyz", "rt");
-    FILE* fin1 = fopen("image_formation1.xyz", "rt");
+    FILE* fin0 = fopen(input0, "rt");
+    FILE* fin1 = fopen(input1, "rt");
     if (fin0 == NULL || fin1 == NULL) return -1;
     while (!feof(fin0) || !feof(fin1))
     {
@@ -26,7 +26,7 @@ int main()
 
     // Estimate relative pose of two views
     cv::Mat F = cv::findFundamentalMat(points0, points1, cv::FM_8POINT);
-    cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
+    cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, c.x, 0, f, c.y, 0, 0, 1);
     cv::Mat E = K.t() * F * K;
     cv::Mat R, t;
     cv::recoverPose(E, points0, points1, K, R, t);

@@ -13,6 +13,7 @@ void MouseEventHandler(int event, int x, int y, int flags, void* param)
 
 int main()
 {
+    const char* input = "data/sunglok_desk.jpg";
     cv::Size card_size(450, 250);
 
     // Prepare the rectified points
@@ -23,7 +24,7 @@ int main()
     points_dst.push_back(cv::Point(card_size.width, card_size.height));
 
     // Load an image
-    cv::Mat original = cv::imread("data/sunglok_desk.jpg");
+    cv::Mat original = cv::imread(input);
     if (original.empty()) return -1;
 
     // Get the matched points from a user's mouse

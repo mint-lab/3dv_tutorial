@@ -2,10 +2,11 @@
 
 int main()
 {
+    const char* input = "data/KITTI_07_L/%06d.png";
+    double f = 707.0912;
+    cv::Point2d c(601.8873, 183.1104);
     bool use_5pt = true;
     int min_inlier_num = 100;
-    double camera_focal = 707.0912;
-    cv::Point2d camera_center(601.8873, 183.1104);
 
     // Open a file to write camera trajectory
     FILE* camera_traj = fopen("visual_odometry_epipolar.xyz", "wt");
@@ -13,7 +14,7 @@ int main()
 
     // Open a video and get the initial image
     cv::VideoCapture video;
-    if (!video.open("data/KITTI_07_L/%06d.png")) return -1;
+    if (!video.open(input)) return -1;
 
     cv::Mat gray_prev;
     video >> gray_prev;
@@ -47,18 +48,18 @@ int main()
         cv::Mat E, inlier_mask;
         if (use_5pt)
         {
-            E = cv::findEssentialMat(point_prev, point, camera_focal, camera_center, cv::RANSAC, 0.99, 1, inlier_mask);
+            E = cv::findEssentialMat(point_prev, point, f, c, cv::RANSAC, 0.99, 1, inlier_mask);
         }
         else
         {
             cv::Mat F = cv::findFundamentalMat(point_prev, point, cv::FM_RANSAC, 1, 0.99, inlier_mask);
-            cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
+            cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, c.x, 0, f, c.y, 0, 0, 1);
             E = K.t() * F * K;
         }
         cv::Mat R, t;
-        int inlier_num = cv::recoverPose(E, point_prev, point, R, t, camera_focal, camera_center, inlier_mask);
+        int inlier_num = cv::recoverPose(E, point_prev, point, R, t, f, c, inlier_mask);
 
-        // Accumulate pose if result is reliable
+        // Accumulate relative pose if result is reliable
         if (inlier_num > min_inlier_num)
         {
             cv::Mat T = cv::Mat::eye(4, 4, R.type());

@@ -19,8 +19,10 @@ In addition to tutorial slides, we provide a set of example codes. The example c
     * Geometric Distortion Correction: [distortion_correction.cpp][] ([result](https://www.youtube.com/watch?v=HKetupWh4V8))
   * General 2D-3D Geometry
     * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
-    * Camera Pose Estimation (Chessboard Version): [pose_estimation_chessboard.cpp][] ([result](https://www.youtube.com/watch?v=4nA1OQGL-ig))
-    * Camera Pose Estimation and Calibration (Book Version): [pose_estimation_book.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
+    * Camera Pose Estimation (Chessboard): [pose_estimation_chessboard.cpp][] ([result](https://www.youtube.com/watch?v=4nA1OQGL-ig))
+    * Camera Pose Estimation (Book): [pose_estimation_book1.cpp][]
+    * Camera Pose Estimation and Calibration: [pose_estimation_book2.cpp][]
+    * Camera Pose Estimation and Calibration w/o Initially Given Camera Parameters: [pose_estimation_book3.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
 * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
     * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
@@ -85,7 +87,9 @@ The authors thank the following contributors and projects.
 [distortion_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/distortion_correction.cpp
 [camera_calibration.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/camera_calibration.cpp
 [pose_estimation_chessboard.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_chessboard.cpp
-[pose_estimation_book.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_book.cpp
+[pose_estimation_book1.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_book1.cpp
+[pose_estimation_book2.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_book2.cpp
+[pose_estimation_book3.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/pose_estimation_book3.cpp
 [perspective_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/perspective_correction.cpp
 [image_stitching.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_stitching.cpp
 [video_stabilization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/video_stabilization.cpp

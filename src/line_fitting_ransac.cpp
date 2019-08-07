@@ -40,9 +40,9 @@ int main()
             int index = rng.uniform(0, data.size());
             sample.push_back(data[index]);
         }
-        cv::Vec4d vvxy;
-        cv::fitLine(sample, vvxy, cv::DIST_L2, 0, 0.01, 0.01);
-        cv::Vec3d line = CONVERT_LINE(vvxy);
+        cv::Vec4d nnxy;
+        cv::fitLine(sample, nnxy, cv::DIST_L2, 0, 0.01, 0.01);
+        cv::Vec3d line = CONVERT_LINE(nnxy);
 
         // Step 2: Hypothesis evaluation
         int score = 0;
@@ -60,9 +60,9 @@ int main()
     }
 
     // Estimate a line using least-squares method (for reference)
-    cv::Vec4d vvxy;
-    cv::fitLine(data, vvxy, cv::DIST_L2, 0, 0.01, 0.01);
-    cv::Vec3d lsm_line = CONVERT_LINE(vvxy);
+    cv::Vec4d nnxy;
+    cv::fitLine(data, nnxy, cv::DIST_L2, 0, 0.01, 0.01);
+    cv::Vec3d lsm_line = CONVERT_LINE(nnxy);
 
     // Display estimates
     printf("* The Truth: %.3f, %.3f, %.3f\n", truth(0), truth(1), truth(2));
