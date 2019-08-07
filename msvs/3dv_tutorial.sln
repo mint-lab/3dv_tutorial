@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book2", "po
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book3", "pose_estimation_book3\pose_estimation_book3.vcxproj", "{9312ACB1-B08B-4AC5-8203-D4BA0194135B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "line_fitting_m_est", "line_fitting_m_est\line_fitting_m_est.vcxproj", "{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -117,6 +119,10 @@ Global
 		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Debug|Win32.Build.0 = Debug|Win32
 		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Release|Win32.ActiveCfg = Release|Win32
 		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Release|Win32.Build.0 = Release|Win32
+		{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}.Debug|Win32.Build.0 = Debug|Win32
+		{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}.Release|Win32.ActiveCfg = Release|Win32
+		{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

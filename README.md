@@ -11,7 +11,7 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
 * The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
 
-### Example descriptions
+### Examples
 * __Single-view Geometry__
   * Camera Projection Model
     * Object Localization and Measurement: [object_localization.cpp][]
@@ -46,9 +46,8 @@ In addition to tutorial slides, we provide a set of example codes. The example c
   * c.f. The above examples need [cvsba][] for bundle adjustment.
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
-  * Line Fitting with M-estimators
+  * Line Fitting with M-estimators: [line_fitting_m_est.cpp][]
 * **Appendix**
-  * Line Fitting
   * Planar Homograph Estimation
   * Fundamental Matrix Estimation
 
@@ -70,13 +69,12 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 ### Acknowledgement
 The authors thank the following contributors and projects.
 
+* [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
+* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes with [cvsba][] and [Toy-SfM](https://github.com/royshil/SfM-Toy-Library).
 * [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
 * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
 * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his shaking CCTV video for demonstrating video stabilization.
-* Richard Blais: We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
-* [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
-* Jaeho Lim: We thank him for his careful review and comment on the tutorial slides.
-* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes with [cvsba][] and [Toy-SfM](https://github.com/royshil/SfM-Toy-Library).
+* [Richard Blais](http://www.richardblais.net/): We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
 
 [OpenCV]: http://opencv.org/
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
@@ -100,3 +98,4 @@ The authors thank the following contributors and projects.
 [sfm_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_global.cpp
 [sfm_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/sfm_inc.cpp
 [line_fitting_ransac.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/line_fitting_ransac.cpp
+[line_fitting_m_est.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/line_fitting_m_est.cpp
