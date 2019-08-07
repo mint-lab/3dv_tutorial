@@ -2,12 +2,11 @@
 
 int main()
 {
-    const char *input0 = "image_formation0.xyz", *input1 = "image_formation1.xyz";
-    double f = 1000;
-    cv::Point2d c(320, 240);
-
-    // Load any two views of 'box.xyz'
     // c.f. You need to run 'image_formation.cpp' to generate point observation.
+    const char *input0 = "image_formation0.xyz", *input1 = "image_formation1.xyz";
+    double f = 1000, cx = 320, cy = 240;
+
+    // Load 2D points observed from two views
     std::vector<cv::Point2d> points0, points1;
     FILE* fin0 = fopen(input0, "rt");
     FILE* fin1 = fopen(input1, "rt");
@@ -26,12 +25,12 @@ int main()
 
     // Estimate relative pose of two views
     cv::Mat F = cv::findFundamentalMat(points0, points1, cv::FM_8POINT);
-    cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, c.x, 0, f, c.y, 0, 0, 1);
+    cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, cx, 0, f, cy, 0, 0, 1);
     cv::Mat E = K.t() * F * K;
     cv::Mat R, t;
     cv::recoverPose(E, points0, points1, K, R, t);
 
-    // Reconstruct 3D points of 'box.xyz' (triangulation)
+    // Reconstruct 3D points (triangulation)
     cv::Mat P0 = K * cv::Mat::eye(3, 4, CV_64F);
     cv::Mat Rt, X;
     cv::hconcat(R, t, Rt);

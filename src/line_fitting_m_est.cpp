@@ -6,17 +6,17 @@
 
 struct GeometricError
 {
-    GeometricError(const cv::Point2d& p) : pt(p) { }
+    GeometricError(const cv::Point2d& pt) : datum(pt) { }
 
     template<typename T>
     bool operator()(const T* const line, T* residual) const
     {
-        residual[0] = (line[0] * T(pt.x) + line[1] * T(pt.y) + line[2]) / sqrt(line[0] * line[0] + line[1] * line[1]);
+        residual[0] = (line[0] * T(datum.x) + line[1] * T(datum.y) + line[2]) / sqrt(line[0] * line[0] + line[1] * line[1]);
         return true;
     }
 
 private:
-    const cv::Point2d& pt;
+    const cv::Point2d datum;
 };
 
 int main()
