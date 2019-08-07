@@ -3,8 +3,7 @@
 int main()
 {
     const char *input = "data/blais.mp4", *cover = "data/blais.jpg";
-    bool assume_plane = true, calib_camera = true;
-    double calib_f_min = 500, calib_f_max = 2000, calib_f_init = 1000, calib_cx_init = 320, calib_cy_init = 240;
+    double f_init = 1000, cx_init = 320, cy_init = 240;
     size_t min_inlier_num = 100;
 
     // Load the object image and extract features
@@ -28,8 +27,8 @@ int main()
     box_lower.push_back(cv::Point3f(30, 145, 0)); box_lower.push_back(cv::Point3f(30, 200, 0)); box_lower.push_back(cv::Point3f(200, 200, 0)); box_lower.push_back(cv::Point3f(200, 145, 0));
     box_upper.push_back(cv::Point3f(30, 145, -50)); box_upper.push_back(cv::Point3f(30, 200, -50)); box_upper.push_back(cv::Point3f(200, 200, -50)); box_upper.push_back(cv::Point3f(200, 145, -50));
 
-    // Run camera calibration and pose estimation together
-    cv::Mat K = (cv::Mat_<double>(3, 3) << calib_f_init, 0, calib_cx_init, 0, calib_f_init, calib_cy_init, 0, 0, 1);
+    // Run pose estimation and camera calibration together
+    cv::Mat K = (cv::Mat_<double>(3, 3) << f_init, 0, cx_init, 0, f_init, cy_init, 0, 0, 1);
     cv::Mat dist_coeff = cv::Mat::zeros(5, 1, CV_64F), rvec, tvec;
     while (true)
     {
@@ -56,26 +55,15 @@ int main()
         }
 
         // Determine whether each matched feature is an inlier or not
-        size_t inlier_num = 0;
+        std::vector<int> inlier;
+        cv::solvePnPRansac(obj_points, img_points, K, dist_coeff, rvec, tvec, false, 500, 2, 0.99, inlier);
         cv::Mat inlier_mask = cv::Mat::zeros(match.size(), 1, CV_8U);
-        if (assume_plane)
-        {
-            cv::Mat H = cv::findHomography(img_points, obj_project, inlier_mask, cv::RANSAC, 2);
-            if (!H.empty()) inlier_num = static_cast<size_t>(cv::sum(inlier_mask)[0]);
-        }
-        else
-        {
-            std::vector<int> inlier;
-            if (cv::solvePnPRansac(obj_points, img_points, K, dist_coeff, rvec, tvec, false, 500, 2, 0.99, inlier))
-            {
-                inlier_num = static_cast<int>(inlier.size());
-                for (size_t i = 0; i < inlier.size(); i++) inlier_mask.at<uchar>(inlier[i]) = 1;
-            }
-        }
+        for (size_t i = 0; i < inlier.size(); i++) inlier_mask.at<uchar>(inlier[i]) = 1;
         cv::Mat image_result;
         cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Vec3b(0, 0, 255), cv::Vec3b(0, 127, 0), inlier_mask);
 
-        // Calibrate the camera and estimate its pose
+        // Calibrate the camera and estimate its pose with inliers
+        size_t inlier_num = inlier.size();
         if (inlier_num > min_inlier_num)
         {
             std::vector<cv::Point3f> obj_inlier;
@@ -88,30 +76,22 @@ int main()
                     img_inlier.push_back(img_points[idx]);
                 }
             }
-            if (calib_camera)
-            {
-                std::vector<cv::Mat> rvecs, tvecs;
-                cv::calibrateCamera(std::vector<std::vector<cv::Point3f> >(1, obj_inlier), std::vector<std::vector<cv::Point2f> >(1, img_inlier), image.size(), K, dist_coeff, rvecs, tvecs,
-                    cv::CALIB_FIX_ASPECT_RATIO | cv::CALIB_FIX_PRINCIPAL_POINT | cv::CALIB_ZERO_TANGENT_DIST | cv::CALIB_FIX_K1 | cv::CALIB_FIX_K2 | cv::CALIB_FIX_K3 | cv::CALIB_FIX_K4 | cv::CALIB_FIX_K5 | cv::CALIB_FIX_K6 | cv::CALIB_FIX_S1_S2_S3_S4 | cv::CALIB_FIX_TAUX_TAUY);
-                rvec = rvecs[0].clone();
-                tvec = tvecs[0].clone();
-            }
-            else cv::solvePnP(obj_points, img_points, K, dist_coeff, rvec, tvec);
+            std::vector<cv::Mat> rvecs, tvecs;
+            cv::calibrateCamera(std::vector<std::vector<cv::Point3f> >(1, obj_inlier), std::vector<std::vector<cv::Point2f> >(1, img_inlier), image.size(), K, dist_coeff, rvecs, tvecs,
+                cv::CALIB_FIX_ASPECT_RATIO | cv::CALIB_FIX_PRINCIPAL_POINT | cv::CALIB_ZERO_TANGENT_DIST | cv::CALIB_FIX_K1 | cv::CALIB_FIX_K2 | cv::CALIB_FIX_K3 | cv::CALIB_FIX_K4 | cv::CALIB_FIX_K5 | cv::CALIB_FIX_K6 | cv::CALIB_FIX_S1_S2_S3_S4 | cv::CALIB_FIX_TAUX_TAUY);
+            rvec = rvecs[0].clone();
+            tvec = tvecs[0].clone();
 
-            if (K.at<double>(0) > calib_f_min && K.at<double>(0) < calib_f_max)
-            {
-                // Draw the box on the image
-                cv::Mat line_lower, line_upper;
-                cv::projectPoints(box_lower, rvec, tvec, K, dist_coeff, line_lower);
-                cv::projectPoints(box_upper, rvec, tvec, K, dist_coeff, line_upper);
-                line_lower.reshape(1).convertTo(line_lower, CV_32S); // Change 4 x 1 matrix (CV_64FC2) to 4 x 2 matrix (CV_32SC1)
-                line_upper.reshape(1).convertTo(line_upper, CV_32S); // Because 'cv::polylines()' only accepts 'CV_32S' depth.
-                cv::polylines(image_result, line_lower, true, cv::Vec3b(255, 0, 0), 2);
-                for (int i = 0; i < line_lower.rows; i++)
-                    cv::line(image_result, cv::Point(line_lower.row(i)), cv::Point(line_upper.row(i)), cv::Vec3b(0, 255, 0), 2);
-                cv::polylines(image_result, line_upper, true, cv::Vec3b(0, 0, 255), 2);
-            }
-            else K = (cv::Mat_<double>(3, 3) << calib_f_init, 0, calib_cx_init, 0, calib_f_init, calib_cy_init, 0, 0, 1);
+            // Draw the box on the image
+            cv::Mat line_lower, line_upper;
+            cv::projectPoints(box_lower, rvec, tvec, K, dist_coeff, line_lower);
+            cv::projectPoints(box_upper, rvec, tvec, K, dist_coeff, line_upper);
+            line_lower.reshape(1).convertTo(line_lower, CV_32S); // Change 4 x 1 matrix (CV_64FC2) to 4 x 2 matrix (CV_32SC1)
+            line_upper.reshape(1).convertTo(line_upper, CV_32S); // Because 'cv::polylines()' only accepts 'CV_32S' depth.
+            cv::polylines(image_result, line_lower, true, cv::Vec3b(255, 0, 0), 2);
+            for (int i = 0; i < line_lower.rows; i++)
+                cv::line(image_result, cv::Point(line_lower.row(i)), cv::Point(line_upper.row(i)), cv::Vec3b(0, 255, 0), 2);
+            cv::polylines(image_result, line_upper, true, cv::Vec3b(0, 0, 255), 2);
         }
 
         // Show the image

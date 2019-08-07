@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\pose_estimation_book.cpp" />
+    <ClCompile Include="..\..\src\pose_estimation_book3.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{76D265CF-2EDE-4A28-B456-E499E55165E8}</ProjectGuid>
+    <ProjectGuid>{9312ACB1-B08B-4AC5-8203-D4BA0194135B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>3dv_tutorial</RootNamespace>
   </PropertyGroup>

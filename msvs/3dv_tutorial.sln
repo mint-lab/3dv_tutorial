@@ -29,11 +29,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "object_localization", "obje
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_global", "bundle_adjustment_global\bundle_adjustment_global.vcxproj", "{64E65811-6F72-479E-BEAB-1DADE0952A7B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book", "pose_estimation_book\pose_estimation_book.vcxproj", "{76D265CF-2EDE-4A28-B456-E499E55165E8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book1", "pose_estimation_book1\pose_estimation_book1.vcxproj", "{76D265CF-2EDE-4A28-B456-E499E55165E8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sfm_global", "sfm_global\sfm_global.vcxproj", "{CA9BFC0D-1372-4FE4-B1BF-3C92E682895B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sfm_inc", "sfm_inc\sfm_inc.vcxproj", "{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book2", "pose_estimation_book2\pose_estimation_book2.vcxproj", "{96F78400-F3C3-4C44-AF1E-16DA3B27F828}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pose_estimation_book3", "pose_estimation_book3\pose_estimation_book3.vcxproj", "{9312ACB1-B08B-4AC5-8203-D4BA0194135B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +109,14 @@ Global
 		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Debug|Win32.Build.0 = Debug|Win32
 		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Release|Win32.ActiveCfg = Release|Win32
 		{7F03EDA8-3C33-4953-A2B0-F614905D7DE4}.Release|Win32.Build.0 = Release|Win32
+		{96F78400-F3C3-4C44-AF1E-16DA3B27F828}.Debug|Win32.ActiveCfg = Debug|Win32
+		{96F78400-F3C3-4C44-AF1E-16DA3B27F828}.Debug|Win32.Build.0 = Debug|Win32
+		{96F78400-F3C3-4C44-AF1E-16DA3B27F828}.Release|Win32.ActiveCfg = Release|Win32
+		{96F78400-F3C3-4C44-AF1E-16DA3B27F828}.Release|Win32.Build.0 = Release|Win32
+		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Debug|Win32.Build.0 = Debug|Win32
+		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Release|Win32.ActiveCfg = Release|Win32
+		{9312ACB1-B08B-4AC5-8203-D4BA0194135B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
