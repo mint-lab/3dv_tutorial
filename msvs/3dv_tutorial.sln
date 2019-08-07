@@ -25,9 +25,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_inc", "bu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "line_fitting_ransac", "line_fitting_ransac\line_fitting_ransac.vcxproj", "{53D993B4-1B33-4C18-B279-B77B17517278}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_proposal", "simple_object_proposal\simple_object_proposal.vcxproj", "{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_object_filtering", "simple_object_filtering\simple_object_filtering.vcxproj", "{90388B18-B94A-49D4-B5CB-BE9AA192BA90}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "object_localization", "object_localization\object_localization.vcxproj", "{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_global", "bundle_adjustment_global\bundle_adjustment_global.vcxproj", "{64E65811-6F72-479E-BEAB-1DADE0952A7B}"
 EndProject
@@ -91,10 +89,6 @@ Global
 		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Debug|Win32.Build.0 = Debug|Win32
 		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Release|Win32.ActiveCfg = Release|Win32
 		{7A2154BC-4A38-46E3-9F45-242EB9A5EADA}.Release|Win32.Build.0 = Release|Win32
-		{90388B18-B94A-49D4-B5CB-BE9AA192BA90}.Debug|Win32.ActiveCfg = Debug|Win32
-		{90388B18-B94A-49D4-B5CB-BE9AA192BA90}.Debug|Win32.Build.0 = Debug|Win32
-		{90388B18-B94A-49D4-B5CB-BE9AA192BA90}.Release|Win32.ActiveCfg = Release|Win32
-		{90388B18-B94A-49D4-B5CB-BE9AA192BA90}.Release|Win32.Build.0 = Release|Win32
 		{64E65811-6F72-479E-BEAB-1DADE0952A7B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{64E65811-6F72-479E-BEAB-1DADE0952A7B}.Debug|Win32.Build.0 = Debug|Win32
 		{64E65811-6F72-479E-BEAB-1DADE0952A7B}.Release|Win32.ActiveCfg = Release|Win32

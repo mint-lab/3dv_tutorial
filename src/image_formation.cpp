@@ -4,7 +4,6 @@
 #define Rx(rx)      (cv::Mat_<double>(3, 3) << 1, 0, 0, 0, cos(rx), -sin(rx), 0, sin(rx), cos(rx))
 #define Ry(ry)      (cv::Mat_<double>(3, 3) << cos(ry), 0, sin(ry), 0, 1, 0, -sin(ry), 0, cos(ry))
 #define Rz(rz)      (cv::Mat_<double>(3, 3) << cos(rz), -sin(rz), 0, sin(rz), cos(rz), 0, 0, 0, 1)
-#define T(x, y, z)  (cv::Mat_<double>(3, 1) << x, y, z)
 
 int main(void)
 {
@@ -32,20 +31,21 @@ int main(void)
     {
         // Derive a projection matrix
         cv::Mat Rc = Rz(cam_ori[i].z) * Ry(cam_ori[i].y) * Rx(cam_ori[i].x);
-        cv::Mat tc = T(cam_pos[i].x, cam_pos[i].y, cam_pos[i].z);
+        cv::Mat tc(cam_pos[i]);
         cv::Mat Rt;
         cv::hconcat(Rc.t(), -Rc.t() * tc, Rt);
         cv::Mat P = K * Rt;
 
-        // Project the points (c.f. OpenCV provide 'cv::projectPoints()' with consideration of distortion.)
+        // Project the points (c.f. OpenCV provides 'cv::projectPoints()' with consideration of distortion.)
         cv::Mat x = P * X;
         x.row(0) = x.row(0) / x.row(2);
         x.row(1) = x.row(1) / x.row(2);
         x.row(2) = 1;
 
+        // Add Gaussian noise
         cv::Mat noise(2, x.cols, x.type());
         cv::randn(noise, cv::Scalar(0), cv::Scalar(noise_std));
-        x.rowRange(0, 2) = x.rowRange(0, 2) + noise; // Add Gaussian noise
+        x.rowRange(0, 2) = x.rowRange(0, 2) + noise;
 
         // Show and store the points
         cv::Mat image = cv::Mat::zeros(img_res, CV_8UC1);
