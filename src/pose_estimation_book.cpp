@@ -1,13 +1,14 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
+    const char *input = "data/blais.mp4", *cover = "data/blais.jpg";
     bool assume_plane = true, calib_camera = true;
+    double calib_f_min = 500, calib_f_max = 2000, calib_f_init = 1000, calib_cx_init = 320, calib_cy_init = 240;
     size_t min_inlier_num = 100;
-    double camera_f_min = 500, camera_f_max = 2000, camera_f_default = 1000, camera_cx_default = 320, camera_cy_default = 240;
 
     // Load the object image and extract features
-    cv::Mat obj_image = cv::imread("data/blais.jpg");
+    cv::Mat obj_image = cv::imread(cover);
     if (obj_image.empty()) return -1;
 
     cv::Ptr<cv::FeatureDetector> fdetector = cv::ORB::create();
@@ -20,7 +21,7 @@ int main(void)
 
     // Open a video
     cv::VideoCapture video;
-    if (!video.open("data/blais.mp4")) return -1;
+    if (!video.open(input)) return -1;
 
     // Prepare a box for simple AR
     std::vector<cv::Point3f> box_lower, box_upper;
@@ -28,7 +29,7 @@ int main(void)
     box_upper.push_back(cv::Point3f(30, 145, -50)); box_upper.push_back(cv::Point3f(30, 200, -50)); box_upper.push_back(cv::Point3f(200, 200, -50)); box_upper.push_back(cv::Point3f(200, 145, -50));
 
     // Run camera calibration and pose estimation together
-    cv::Mat K = (cv::Mat_<double>(3, 3) << camera_f_default, 0, camera_cx_default, 0, camera_f_default, camera_cy_default, 0, 0, 1);
+    cv::Mat K = (cv::Mat_<double>(3, 3) << calib_f_init, 0, calib_cx_init, 0, calib_f_init, calib_cy_init, 0, 0, 1);
     cv::Mat dist_coeff = cv::Mat::zeros(5, 1, CV_64F), rvec, tvec;
     while (true)
     {
@@ -72,7 +73,7 @@ int main(void)
             }
         }
         cv::Mat image_result;
-        cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Scalar(0, 0, 255), cv::Scalar(0, 127, 0), inlier_mask);
+        cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Vec3b(0, 0, 255), cv::Vec3b(0, 127, 0), inlier_mask);
 
         // Calibrate the camera and estimate its pose
         if (inlier_num > min_inlier_num)
@@ -97,7 +98,7 @@ int main(void)
             }
             else cv::solvePnP(obj_points, img_points, K, dist_coeff, rvec, tvec);
 
-            if (K.at<double>(0) > camera_f_min && K.at<double>(0) < camera_f_max)
+            if (K.at<double>(0) > calib_f_min && K.at<double>(0) < calib_f_max)
             {
                 // Draw the box on the image
                 cv::Mat line_lower, line_upper;
@@ -105,17 +106,17 @@ int main(void)
                 cv::projectPoints(box_upper, rvec, tvec, K, dist_coeff, line_upper);
                 line_lower.reshape(1).convertTo(line_lower, CV_32S); // Change 4 x 1 matrix (CV_64FC2) to 4 x 2 matrix (CV_32SC1)
                 line_upper.reshape(1).convertTo(line_upper, CV_32S); // Because 'cv::polylines()' only accepts 'CV_32S' depth.
-                cv::polylines(image_result, line_lower, true, cv::Scalar(255, 0, 0), 2);
+                cv::polylines(image_result, line_lower, true, cv::Vec3b(255, 0, 0), 2);
                 for (int i = 0; i < line_lower.rows; i++)
-                    cv::line(image_result, cv::Point(line_lower.row(i)), cv::Point(line_upper.row(i)), cv::Scalar(0, 255, 0), 2);
-                cv::polylines(image_result, line_upper, true, cv::Scalar(0, 0, 255), 2);
+                    cv::line(image_result, cv::Point(line_lower.row(i)), cv::Point(line_upper.row(i)), cv::Vec3b(0, 255, 0), 2);
+                cv::polylines(image_result, line_upper, true, cv::Vec3b(0, 0, 255), 2);
             }
-            else K = (cv::Mat_<double>(3, 3) << camera_f_default, 0, camera_cx_default, 0, camera_f_default, camera_cy_default, 0, 0, 1);
+            else K = (cv::Mat_<double>(3, 3) << calib_f_init, 0, calib_cx_init, 0, calib_f_init, calib_cy_init, 0, 0, 1);
         }
 
         // Show the image
         cv::String info = cv::format("Inliers: %d (%d%%), Focal Length: %.0f", inlier_num, 100 * inlier_num / match.size(), K.at<double>(0));
-        cv::putText(image_result, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 255, 0));
+        cv::putText(image_result, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
         cv::imshow("3DV Tutorial: Pose Estimation (Book)", image_result);
         int key = cv::waitKey(1);
         if (key == 27) break; // 'ESC' key: Exit

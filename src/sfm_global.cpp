@@ -1,10 +1,10 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 #include "cvsba.h"
 #include <unordered_map>
 
 #define MAKE_KEY(img_idx, pt_idx)       ((uint(img_idx) << 16) + pt_idx)
 
-int main(void)
+int main()
 {
     double default_camera_f = 500, image_resize = 0.25, default_point_depth = 2;
     size_t min_inlier_num = 500;
@@ -59,7 +59,7 @@ int main(void)
             if (show_match)
             {
                 cv::Mat match_image;
-                cv::drawMatches(img_set[i], img_keypoint[i], img_set[j], img_keypoint[j], match, match_image, cv::Scalar(0, 0, 255), cv::Scalar(0, 127, 0), inlier_mask);
+                cv::drawMatches(img_set[i], img_keypoint[i], img_set[j], img_keypoint[j], match, match_image, cv::Vec3b(0, 0, 255), cv::Vec3b(0, 127, 0), inlier_mask);
                 cv::imshow("3DV Tutorial: Global Structure-from-Motion", match_image);
                 cv::waitKey();
             }

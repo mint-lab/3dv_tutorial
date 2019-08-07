@@ -61,7 +61,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\..\EXTERNAL\OpenCV\lib;..\..\EXTERNAL\CLAPACK\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>blasd.lib;lapackd.lib;libf2cd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world320d.lib;blasd.lib;lapackd.lib;libf2cd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -82,7 +82,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>..\..\EXTERNAL\OpenCV\lib;..\..\EXTERNAL\CLAPACK\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>blas.lib;lapack.lib;libf2c.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opencv_world320.lib;blas.lib;lapack.lib;libf2c.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

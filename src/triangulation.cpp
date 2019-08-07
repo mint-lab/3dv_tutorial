@@ -1,6 +1,6 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
     double camera_focal = 1000;
     cv::Point2d camera_center(320, 240);
@@ -24,7 +24,7 @@ int main(void)
     fclose(fin1);
     if (points0.size() != points1.size()) return -1;
 
-    // Esitmate relative pose of two views
+    // Estimate relative pose of two views
     cv::Mat F = cv::findFundamentalMat(points0, points1, cv::FM_8POINT);
     cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
     cv::Mat E = K.t() * F * K;

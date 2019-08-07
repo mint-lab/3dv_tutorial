@@ -1,6 +1,6 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
     // Load two images (c.f. We assume that two images have the same size and type)
     cv::Mat image1 = cv::imread("data/hill01.jpg");

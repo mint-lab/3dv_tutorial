@@ -37,15 +37,15 @@ void MouseEventHandler(int event, int x, int y, int flags, void* param)
     }
 }
 
-int main(void)
+int main()
 {
-    const char* filename = "data/daejeon_station.png";
+    const char* input = "data/daejeon_station.png";
     double f = 810.5, cx = 480, cy = 270, L = 3.31;
     cv::Point3d cam_ori(DEG2RAD(-18.7), DEG2RAD(-8.2), DEG2RAD(2.0));
     cv::Range grid_x(-2, 3), grid_z(5, 35);
 
     // Load an images
-    cv::Mat image = cv::imread(filename);
+    cv::Mat image = cv::imread(input);
     if (image.empty()) return -1;
 
     // Configure mouse callback
@@ -85,7 +85,7 @@ int main(void)
             cv::line(image_copy, drag.start, drag.end, cv::Vec3b(0, 0, 255), 2);
             cv::circle(image_copy, drag.end, 4, cv::Vec3b(255, 0, 0), -1);
             cv::circle(image_copy, drag.start, 4, cv::Vec3b(0, 255, 0), -1);
-            cv::putText(image_copy, cv::format("X:%.2f, Z:%.2f, H:%.2f", X, Z, H), drag.start + cv::Point(-20, 20), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 255, 0));
+            cv::putText(image_copy, cv::format("X:%.2f, Z:%.2f, H:%.2f", X, Z, H), drag.start + cv::Point(-20, 20), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
         }
 
         // Show the image

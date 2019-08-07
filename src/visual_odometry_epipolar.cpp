@@ -1,6 +1,6 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
     bool use_5pt = true;
     int min_inlier_num = 100;
@@ -71,11 +71,11 @@ int main(void)
         if (image.channels() < 3) cv::cvtColor(image, image, cv::COLOR_GRAY2RGB);
         for (size_t i = 0; i < point_prev.size(); i++)
         {
-            if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_prev[i], point[i], cv::Scalar(0, 0, 255));
-            else cv::line(image, point_prev[i], point[i], cv::Scalar(0, 127, 0));
+            if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_prev[i], point[i], cv::Vec3b(0, 0, 255));
+            else cv::line(image, point_prev[i], point[i], cv::Vec3b(0, 127, 0));
         }
         cv::String info = cv::format("Inliers: %d (%d%%),  XYZ: [%.3f, %.3f, %.3f]", inlier_num, 100 * inlier_num / point.size(), camera_pose.at<double>(0, 3), camera_pose.at<double>(1, 3), camera_pose.at<double>(2, 3));
-        cv::putText(image, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 255, 0));
+        cv::putText(image, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
         cv::imshow("3DV Tutorial: Visual Odometry (Epipolar)", image);
         fprintf(camera_traj, "%.6f %.6f %.6f\n", camera_pose.at<double>(0, 3), camera_pose.at<double>(1, 3), camera_pose.at<double>(2, 3));
         if (cv::waitKey(1) == 27) break; // 'ESC' key: Exit

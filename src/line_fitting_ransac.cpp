@@ -1,9 +1,9 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
 // Convert a line format, [n_x, n_y, x, y] to [a, b, c]
 #define CONVERT_LINE(line) (cv::Vec3d(line(0), -line(1), -line(0) * line(2) + line(1) * line(3)))
 
-int main(void)
+int main()
 {
     int ransac_trial = 50;
     double ransac_thresh = 3.0;

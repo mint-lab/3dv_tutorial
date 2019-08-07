@@ -1,6 +1,6 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
     // Open a video and get the reference image and feature points
     cv::VideoCapture video;
@@ -47,8 +47,8 @@ int main(void)
         // Show the original and rectified images together
         for (size_t i = 0; i < point_ref.size(); i++)
         {
-            if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_ref[i], point[i], cv::Scalar(0, 0, 255));
-            else cv::line(image, point_ref[i], point[i], cv::Scalar(0, 127, 0));
+            if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_ref[i], point[i], cv::Vec3b(0, 0, 255));
+            else cv::line(image, point_ref[i], point[i], cv::Vec3b(0, 127, 0));
         }
         cv::hconcat(image, warp, image);
         cv::imshow("3DV Tutorial: Video Stabilization", image);

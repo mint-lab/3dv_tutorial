@@ -1,11 +1,10 @@
 #include "opencv2/opencv.hpp"
-#include <vector>
 
 #define Rx(rx)      (cv::Mat_<double>(3, 3) << 1, 0, 0, 0, cos(rx), -sin(rx), 0, sin(rx), cos(rx))
 #define Ry(ry)      (cv::Mat_<double>(3, 3) << cos(ry), 0, sin(ry), 0, 1, 0, -sin(ry), 0, cos(ry))
 #define Rz(rz)      (cv::Mat_<double>(3, 3) << cos(rz), -sin(rz), 0, sin(rz), cos(rz), 0, 0, 0, 1)
 
-int main(void)
+int main()
 {
     // The given camera configuration: focal length, principal point, image resolution, position, and orientation
     double f = 1000, cx = 320, cy = 240, noise_std = 1;

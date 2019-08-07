@@ -1,14 +1,15 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
-    bool select_images = true;
+    const char* input = "data/chessboard.avi";
     cv::Size board_pattern(10, 7);
     float board_cellsize = 0.025f;
+    bool select_images = true;
 
     // Open a video
     cv::VideoCapture video;
-    if (!video.open("data/chessboard.avi")) return -1;
+    if (!video.open(input)) return -1;
 
     // Select images
     std::vector<cv::Mat> images;

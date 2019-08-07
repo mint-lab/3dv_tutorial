@@ -1,7 +1,7 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 #include "cvsba.h"
 
-int main(void)
+int main()
 {
     double camera_focal = 1000;
     cv::Point2d camera_center(320, 240);

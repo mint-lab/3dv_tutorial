@@ -14,8 +14,7 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 ### Example descriptions
 * __Single-view Geometry__
   * Camera Projection Model
-    * Simple Object Filtering (Detection and Localization): [simple_object_filtering.cpp][]
-    * Simple Object Proposal: [simple_object_proposal.cpp][]
+    * Object Localization and Measurement: [object_localization.cpp][]
     * Image Formation: [image_formation.cpp][] (result: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
     * Geometric Distortion Correction: [distortion_correction.cpp][] ([result](https://www.youtube.com/watch?v=HKetupWh4V8))
   * General 2D-3D Geometry
@@ -81,8 +80,7 @@ The authors thank the following contributors and projects.
 [cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
 [CLAPACK]: http://www.netlib.org/clapack/
 
-[simple_object_filtering.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/simple_object_filtering.cpp
-[simple_object_proposal.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/simple_object_proposal.cpp
+[object_localization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/object_localization.cpp
 [image_formation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_formation.cpp
 [distortion_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/distortion_correction.cpp
 [camera_calibration.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/camera_calibration.cpp

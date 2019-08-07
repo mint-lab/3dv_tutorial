@@ -1,13 +1,14 @@
-#include "opencv_all.hpp"
+#include "opencv2/opencv.hpp"
 
-int main(void)
+int main()
 {
-    cv::Mat K = (cv::Mat_<double>(3, 3) << 432.7390364738057, 0, 476.0614994349778, 0, 431.2395555913084, 288.7602152621297, 0, 0, 1);
-    cv::Mat dist_coeff = (cv::Mat_<double>(5, 1) << -0.2852754904152874, 0.1016466459919075, -0.0004420196146339175, 0.0001149909868437517, -0.01803978785585194);
+    const char* input = "data/chessboard.avi";
+    cv::Matx33d K(432.7390364738057, 0, 476.0614994349778, 0, 431.2395555913084, 288.7602152621297, 0, 0, 1);
+    std::vector<double> dist_coeff = { -0.2852754904152874, 0.1016466459919075, -0.0004420196146339175, 0.0001149909868437517, -0.01803978785585194 };
 
     // Open a video
     cv::VideoCapture video;
-    if (!video.open("data/chessboard.avi")) return -1;
+    if (!video.open(input)) return -1;
 
     // Run distortion correction
     bool show_rectify = true;
@@ -28,7 +29,7 @@ int main(void)
             cv::remap(image, image, map1, map2, cv::InterpolationFlags::INTER_LINEAR);
             info = "Rectified";
         }
-        cv::putText(image, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 255, 0));
+        cv::putText(image, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
 
         // Show the image
         cv::imshow("3DV Tutorial: Distortion Correction", image);
