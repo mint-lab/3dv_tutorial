@@ -1,19 +1,17 @@
-#include "opencv2/opencv.hpp"
-#include "cvsba.h"
+#include "bundle_adjustment.hpp"
 
 int main()
 {
-    double camera_focal = 1000;
-    cv::Point2d camera_center(320, 240);
-    int n_views = 5;
-
-    // Load multiple views of 'box.xyz'
     // c.f. You need to run 'image_formation.cpp' to generate point observation.
-    //      You can apply Gaussian noise by change value of 'camera_noise' if necessay.
-    std::vector<std::vector<cv::Point2d> > data;
-    for (int i = 0; i < n_views; i++)
+    const char* input = "image_formation%d.xyz";
+    int input_num = 5;
+    double f = 1000, cx = 320, cy= 240;
+
+    // Load 2D points observed from multiple views
+    std::vector<std::vector<cv::Point2d> > xs;
+    for (int i = 0; i < input_num; i++)
     {
-        FILE* fin = fopen(cv::format("image_formation%d.xyz", i).c_str(), "rt");
+        FILE* fin = fopen(cv::format(input, i).c_str(), "rt");
         if (fin == NULL) return -1;
         std::vector<cv::Point2d> pts;
         while (!feof(fin))
@@ -23,42 +21,26 @@ int main()
                 pts.push_back(cv::Point2d(x, y));
         }
         fclose(fin);
-        data.push_back(pts);
-        if (data.front().size() != data.back().size()) return -1;
+        xs.push_back(pts);
+        if (xs.front().size() != xs.back().size()) return -1;
     }
 
-    // Assume that all cameras have the same and known camera matrix
-    // Assume that all feature points are visible on all views
-    cv::Mat K = (cv::Mat_<double>(3, 3) << camera_focal, 0, camera_center.x, 0, camera_focal, camera_center.y, 0, 0, 1);
-    cv::Mat dist_coeff = cv::Mat::zeros(5, 1, CV_64F);
-    std::vector<int> visible_all(data.front().size(), 1);
-
-    // Prepare each camera projection matrix
-    std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
-    std::vector<std::vector<int> > visibility;
-    std::vector<std::vector<cv::Point2d> > xs;
-
-    xs.push_back(data[0]);
-    visibility.push_back(visible_all);
-    Ks.push_back(K.clone());                                    // K for the first camera (index: 0)
-    dist_coeffs.push_back(dist_coeff.clone());                  // dist_coeff for the first camera (index: 0)
-    Rs.push_back(cv::Mat::eye(3, 3, CV_64F));                   // R for the first camera (index: 0)
-    ts.push_back(cv::Mat::zeros(3, 1, CV_64F));                 // t for the first camera (index: 0)
+    // Assumption
+    // - All cameras have the same and known camera matrix.
+    // - All feature points are visible on all camera views.
 
     // 1) Select the best pair (skipped because all points are visible on all images)
 
-    // 2) Estimate relative pose of the inital two views (epipolar geometry)
-    cv::Mat F = cv::findFundamentalMat(data[0], data[1], cv::FM_8POINT);
-    cv::Mat E = K.t() * F * K;
-    cv::Mat R, t;
-    cv::recoverPose(E, data[0], data[1], K, R, t);
+    // 2) Estimate relative pose of the initial two views (epipolar geometry)
+    cv::Mat F = cv::findFundamentalMat(xs[0], xs[1], cv::FM_8POINT);
+    cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, cx, 0, f, cy, 0, 0, 1);
+    cv::Mat E = K.t() * F * K, R, t;
+    cv::recoverPose(E, xs[0], xs[1], K, R, t);
 
-    xs.push_back(data[1]);
-    visibility.push_back(visible_all);
-    Ks.push_back(K.clone());                                    // K for the second camera
-    dist_coeffs.push_back(dist_coeff.clone());                  // dist_coeff for the second camera
-    Rs.push_back(R.clone());                                    // R for the second camera
-    ts.push_back(t.clone());                                    // t for the second camera
+    std::vector<cv::Vec6d> views(xs.size());
+    cv::Mat rvec;
+    cv::Rodrigues(R, rvec);
+    views[1] = (rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2), t.at<double>(0), t.at<double>(1), t.at<double>(2));
 
     // 3) Reconstruct 3D points of the initial two views (triangulation)
     cv::Mat Rt;
@@ -75,35 +57,44 @@ int main()
     for (int c = 0; c < X.cols; c++)
         Xs.push_back(cv::Point3d(X.col(c).rowRange(0, 3)));
 
+    // Push constraints of two views
+    ceres::Problem ba;
+    for (size_t j = 0; j < 2; j++)
+    {
+        for (size_t i = 0; i < xs[j].size(); i++)
+        {
+            ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cx, cy);
+            double* view = (double*)(&(views[j]));
+            double* X = (double*)(&(Xs[i]));
+            ba.AddResidualBlock(cost_func, NULL, view, X);
+        }
+    }
+
     // Incrementally add more views
-    cvsba::Sba sba;
-    cvsba::Sba::Params param;
-    param.type = cvsba::Sba::MOTIONSTRUCTURE;
-    param.fixedIntrinsics = 5;
-    param.fixedDistortion = 5;
-    param.verbose = true;
-    sba.setParams(param);
-    for (int i = 2; i < n_views; i++)
+    ceres::Solver::Options options;
+    options.linear_solver_type = ceres::ITERATIVE_SCHUR;
+    options.num_threads = 8;
+    options.minimizer_progress_to_stdout = true;
+    ceres::Solver::Summary summary;
+    for (size_t j = 2; j < xs.size(); j++)
     {
         // 4) Select the next image to add (skipped because all points are visible on all images)
 
         // 5) Estimate relative pose of the next view (PnP)
-        cv::Mat rvec;
-        cv::solvePnP(Xs, data[i], K, dist_coeff, rvec, t);
-        cv::Rodrigues(rvec, R);
+        cv::solvePnP(Xs, xs[j], K, cv::noArray(), rvec, t);
+        views[j] = (rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2), t.at<double>(0), t.at<double>(1), t.at<double>(2));
 
-        xs.push_back(data[i]);
-        visibility.push_back(visible_all);
-        Ks.push_back(K.clone());                                // K for the third and other cameras
-        dist_coeffs.push_back(dist_coeff.clone());              // dist_coeff for the third and other cameras
-        Rs.push_back(R.clone());                                // R for the third and other cameras
-        ts.push_back(t.clone());                                // t for the third and other cameras
-
-        // 6) Reconstruct newly observed 3D points (triangulation, skipped because all points are visible on all images)
+        // 6) Reconstruct newly observed 3D points (triangulation; skipped because all points are visible on all images)
 
         // 7) Optimize camera pose and 3D points (bundle adjustment)
-        try { double error = sba.run(Xs, xs, visibility, Ks, Rs, ts, dist_coeffs); }
-        catch (cv::Exception) { }
+        for (size_t i = 0; i < xs[j].size(); i++)
+        {
+            ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cx, cy);
+            double* view = (double*)(&(views[j]));
+            double* X = (double*)(&(Xs[i]));
+            ba.AddResidualBlock(cost_func, NULL, view, X);
+        }
+        ceres::Solve(options, &ba, &summary);
     }
 
     // Store the 3D points to an XYZ file
@@ -116,10 +107,13 @@ int main()
     // Store the camera poses to an XYZ file 
     FILE* fcam = fopen("bundle_adjustment_inc(camera).xyz", "wt");
     if (fcam == NULL) return -1;
-    for (size_t i = 0; i < Rs.size(); i++)
+    for (size_t j = 0; j < views.size(); j++)
     {
-        cv::Mat p = -Rs[i].t() * ts[i];
-        fprintf(fcam, "%f %f %f\n", p.at<double>(0), p.at<double>(1), p.at<double>(2));
+        cv::Vec3d rvec(views[j][0], views[j][1], views[j][2]), t(views[j][3], views[j][4], views[j][5]);
+        cv::Matx33d R;
+        cv::Rodrigues(rvec, R);
+        cv::Vec3d p = -R.t() * t;
+        fprintf(fcam, "%f %f %f\n", p[0], p[1], p[2]);
     }
     fclose(fcam);
     return 0;

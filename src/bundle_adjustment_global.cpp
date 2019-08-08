@@ -25,6 +25,10 @@ int main()
         if (xs.front().size() != xs.back().size()) return -1;
     }
 
+    // Assumption
+    // - All cameras have the same and known camera matrix.
+    // - All feature points are visible on all camera views.
+
     // Initialize camera views and 3D points
     std::vector<cv::Vec6d> views(xs.size());
     std::vector<cv::Point3d> Xs;
@@ -48,7 +52,6 @@ int main()
     options.minimizer_progress_to_stdout = true;
     ceres::Solver::Summary summary;
     ceres::Solve(options, &ba, &summary);
-    std::cout << summary.FullReport() << std::endl;
 
     // Store the 3D points to an XYZ file
     FILE* fpts = fopen("bundle_adjustment_global(point).xyz", "wt");

@@ -22,7 +22,7 @@ private:
 int main()
 {
     cv::Vec3d truth(1.0 / sqrt(2.0), 1.0 / sqrt(2.0), -240.0); // The line model: a*x + b*y + c = 0
-    double loss_width = 3.0; // 3 x 'data_inlier_noise'
+    double loss_width = 3.0; // 3 x 'data_inlier_noise'; if this value is less than equal to 0, M-estimator is disabled.
     int data_num = 1000;
     double data_inlier_ratio = 0.5, data_inlier_noise = 1.0;
 
@@ -48,14 +48,17 @@ int main()
     for (size_t i = 0; i < data.size(); i++)
     {
         ceres::CostFunction* cost_func = new ceres::AutoDiffCostFunction<GeometricError, 1, 3>(new GeometricError(data[i]));
-        ceres::LossFunction* loss_func = new ceres::CauchyLoss(loss_width); // 'NULL' if you don't want to use M-estimator
+        ceres::LossFunction* loss_func = NULL;
+        if (loss_width > 0) loss_func = new ceres::CauchyLoss(loss_width);
         problem.AddResidualBlock(cost_func, loss_func, opt_line.val);
     }
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::ITERATIVE_SCHUR;
+    options.num_threads = 8;
     options.minimizer_progress_to_stdout = true;
     ceres::Solver::Summary summary;
     ceres::Solve(options, &problem, &summary);
+    std::cout << summary.FullReport() << std::endl;
     opt_line /= sqrt(opt_line[0] * opt_line[0] + opt_line[1] * opt_line[1]); // Normalize
 
     // Estimate a line using least-squares method (for reference)
