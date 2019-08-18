@@ -5,7 +5,7 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 
 * Download [tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * Download [example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
-* Download [OpenCV binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/OpenCV_v3.2.0_32bit.zip) and [CLAPACK binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/CLAPACK_v3.2.1_32bit.zip) for Windows
+* Download [OpenCV binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/OpenCV_v3.2.0_32bit.zip) and [Ceres Solver binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/CeresSolver_v1.2.0_32bit.zip) for Windows
 
 ### What does its name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
@@ -40,10 +40,10 @@ In addition to tutorial slides, we provide a set of example codes. The example c
     * Incremental SfM: [sfm_inc.cpp][]
   * Visual Odometry
     * Epipolar Version: [visual_odometry_epipolar.cpp][]
-    * PnP Version
-    * Bundle Adjustment Version
+    * Stereo Version
+    * PnP and BA Version
   * Visual SLAM
-  * c.f. The above examples need [cvsba][] for bundle adjustment.
+  * c.f. The above examples need [Ceres Solver][] for bundle adjustment.
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
   * Line Fitting with M-estimators: [line_fitting_m_est.cpp][]
@@ -54,11 +54,8 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 ### Dependencies
 * [OpenCV][] (> 3.0.0, 3-clause BSD License)
   * _OpenCV_ is a base of all example codes for linear algebra, vision algorithms, image/video manipulation, and GUI.
-* [cvsba][] (GPL): An OpenCV wrapper for sba library
-  * _cvsba_ is used by bundle adjustment. It is optional for bundle adjustment.
-  * It is included in EXTERNAL directory in the sake of your convenience.
-* [CLAPACK][] (Public Domain): f2c'ed version of LAPACK
-  * _CLAPACK_ is used by cvsba. It is optional for bundle adjustment.
+* [Ceres Solver][] (3-clause BSD License): A numerical optimization library
+  * _Ceres Solver_ is additionally used by m-estimator, bundle adjustment, visual odometry, and visual SLAM.
 
 ### License
 * [Beerware](http://en.wikipedia.org/wiki/Beerware)
@@ -77,8 +74,7 @@ The authors thank the following contributors and projects.
 * [Richard Blais](http://www.richardblais.net/): We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
 
 [OpenCV]: http://opencv.org/
-[cvsba]: https://www.uco.es/investiga/grupos/ava/node/39
-[CLAPACK]: http://www.netlib.org/clapack/
+[Ceres Solver]: http://ceres-solver.org/
 
 [object_localization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/object_localization.cpp
 [image_formation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_formation.cpp

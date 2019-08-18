@@ -27,12 +27,11 @@ int main()
 
     // Assumption
     // - All cameras have the same and known camera matrix.
-    // - All feature points are visible on all camera views.
+    // - All points are visible on all camera views.
 
     // Initialize camera views and 3D points
     std::vector<cv::Vec6d> views(xs.size());
-    std::vector<cv::Point3d> Xs;
-    Xs.resize(xs.front().size(), cv::Point3d(0, 0, 5.5));
+    std::vector<cv::Point3d> Xs(xs.front().size(), cv::Point3d(0, 0, 5.5));
 
     // Run bundle adjustment
     ceres::Problem ba;

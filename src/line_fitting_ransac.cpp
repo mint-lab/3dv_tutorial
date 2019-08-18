@@ -1,11 +1,12 @@
 #include "opencv2/opencv.hpp"
 
-// Convert a line format, [n_x, n_y, x, y] to [a, b, c]
+// Convert a line format, [n_x, n_y, x_0, y_0] to [a, b, c]
+// c.f. A line model in OpenCV: n_x * (x - x_0) = n_y * (y - y_0)
 #define CONVERT_LINE(line) (cv::Vec3d(line[0], -line[1], -line[0] * line[2] + line[1] * line[3]))
 
 int main()
 {
-    cv::Vec3d truth(1.0 / sqrt(2.0), 1.0 / sqrt(2.0), -240.0); // The line model: a*x + b*y + c = 0
+    cv::Vec3d truth(1.0 / sqrt(2.0), 1.0 / sqrt(2.0), -240.0); // The line model: a*x + b*y + c = 0 (a^2 + b^2 = 1)
     int ransac_trial = 50, ransac_n_sample = 2;
     double ransac_thresh = 3.0; // 3 x 'data_inlier_noise'
     int data_num = 1000;
@@ -58,7 +59,7 @@ int main()
         }
     }
 
-    // Estimate a line using least-squares method (for reference)
+    // Estimate a line using least squares method (for reference)
     cv::Vec4d nnxy;
     cv::fitLine(data, nnxy, cv::DIST_L2, 0, 0.01, 0.01);
     cv::Vec3d lsm_line = CONVERT_LINE(nnxy);

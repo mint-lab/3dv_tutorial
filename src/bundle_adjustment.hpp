@@ -26,9 +26,9 @@ struct ReprojectionError
         x_p = f * x_p + cx;
         y_p = f * y_p + cy;
 
-        // residual = x_p - x_o
-        residuals[0] = x_p - T(x.x);
-        residuals[1] = y_p - T(x.y);
+        // residual = x - x'
+        residuals[0] = T(x.x) - x_p;
+        residuals[1] = T(x.y) - y_p;
         return true;
     }
 

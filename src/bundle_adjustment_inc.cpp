@@ -27,7 +27,7 @@ int main()
 
     // Assumption
     // - All cameras have the same and known camera matrix.
-    // - All feature points are visible on all camera views.
+    // - All points are visible on all camera views.
 
     // 1) Select the best pair (skipped because all points are visible on all images)
 
@@ -49,13 +49,13 @@ int main()
     cv::Mat P1 = K * Rt, X;
     cv::triangulatePoints(P0, P1, xs[0], xs[1], X);
 
-    std::vector<cv::Point3d> Xs;
+    std::vector<cv::Point3d> Xs(X.cols);
     X.row(0) = X.row(0) / X.row(3);
     X.row(1) = X.row(1) / X.row(3);
     X.row(2) = X.row(2) / X.row(3);
     X.row(3) = 1;
     for (int c = 0; c < X.cols; c++)
-        Xs.push_back(cv::Point3d(X.col(c).rowRange(0, 3)));
+        Xs[c] = cv::Point3d(X.col(c).rowRange(0, 3));
 
     // Push constraints of two views
     ceres::Problem ba;

@@ -33,7 +33,7 @@ int main()
 
     // Show the merged image
     cv::Mat original, matched;
-    cv::drawMatches(image1, keypoint1, image2, keypoint2, match, matched, cv::Scalar::all(-1), cv::Scalar::all(-1), inlier_mask);
+    cv::drawMatches(image1, keypoint1, image2, keypoint2, match, matched, cv::Scalar::all(-1), cv::Scalar::all(-1), inlier_mask); // Remove 'inlier_mask' if you want to show all putative matches
     cv::hconcat(image1, image2, original);
     cv::vconcat(original, matched, matched);
     cv::vconcat(matched, merged, merged);
