@@ -21,10 +21,10 @@ struct ReprojectionError
         X[2] += camera[5];
 
         // x' = K*X'
-        T x_p = X[0] / X[2];
-        T y_p = X[1] / X[2];
-        x_p = f * x_p + cx;
-        y_p = f * y_p + cy;
+        T x_n = X[0] / X[2];
+        T y_n = X[1] / X[2];
+        T x_p = f * x_n + cx;
+        T y_p = f * y_n + cy;
 
         // residual = x - x'
         residuals[0] = T(x.x) - x_p;

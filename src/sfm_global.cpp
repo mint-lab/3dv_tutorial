@@ -1,18 +1,20 @@
-#include "opencv2/opencv.hpp"
-#include "cvsba.h"
+#include "sfm.hpp"
 #include <unordered_map>
 
 #define MAKE_KEY(img_idx, pt_idx)       ((uint(img_idx) << 16) + pt_idx)
+#define GET_IMG_IDX(key)                ((key >> 16) & 0xFFFF)
+#define GET_PT_IDX(key)                 (key & 0xFFFF)
 
 int main()
 {
-    double default_camera_f = 500, image_resize = 0.25, default_point_depth = 2;
-    size_t min_inlier_num = 500;
-    bool show_match = true;
+    const char* input = "data/relief/%02d.jpg";
+    double img_resize = 0.25, f_init = 500, Z_init = 5, Z_limit = 10;
+    size_t min_inlier_num = 200;
+    bool show_match = false;
 
     // Load images and extract features
     cv::VideoCapture video;
-    if (!video.open("data/relief/%02d.jpg")) return -1;
+    if (!video.open(input)) return -1;
     cv::Ptr<cv::FeatureDetector> fdetector = cv::BRISK::create();
     std::vector<std::vector<cv::KeyPoint> > img_keypoint;
     std::vector<cv::Mat> img_set, img_descriptor;
@@ -21,7 +23,7 @@ int main()
         cv::Mat image;
         video >> image;
         if (image.empty()) break;
-        if (image_resize != 1) cv::resize(image, image, cv::Size(), image_resize, image_resize);
+        if (img_resize != 1) cv::resize(image, image, cv::Size(), img_resize, img_resize);
         std::vector<cv::KeyPoint> keypoint;
         cv::Mat descriptor;
         fdetector->detectAndCompute(image, cv::Mat(), keypoint, descriptor);
@@ -30,8 +32,9 @@ int main()
         img_descriptor.push_back(descriptor.clone());
     }
     if (img_set.size() < 2) return -1;
+    cv::Point2d img_center(img_set.front().cols / 2, img_set.front().rows / 2);
 
-    // 0) Build a viewing graph (match features over all image pairs and find inliers)
+    // Match features all over the image pairs and find inliers
     cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
     std::vector<std::pair<int, int> > match_pair;           // The viewing graph (image pairs)
     std::vector<std::vector<cv::DMatch> > match_inlier;     // The viewing graph (indices of inlier matches)
@@ -67,105 +70,89 @@ int main()
     }
     if (match_pair.size() < 1) return -1;
 
-    // 1) Arrange 3D points, their observation and visibility ('Xs', 'xs', and 'visibility')
+    // Initialize camera views
+    typedef cv::Vec<double, 11> Vec11d;
+    std::vector<Vec11d> views(img_set.size(), Vec11d(0, 0, 0, 0, 0, 0, f_init, img_center.x, img_center.y));
+
+    // Initialize 3D points and build a visibility graph
     std::vector<cv::Point3d> Xs;
-    std::vector<std::vector<cv::Point2d> > xs(img_set.size());
-    std::vector<std::vector<int> > visibility(img_set.size());
     std::unordered_map<uint, uint> xs_visited;
-    std::set<uint> Xs_rejected;
-    for (size_t i = 0; i < match_pair.size(); i++)
+    for (size_t m = 0; m < match_pair.size(); m++)
     {
-        for (size_t j = 0; j < match_inlier[i].size(); j++)
+        for (size_t in = 0; in < match_inlier[m].size(); in++)
         {
-            uint X_idx = 0;
-            const int &img1 = match_pair[i].first, &img2 = match_pair[i].second, &x1_idx = match_inlier[i][j].queryIdx, &x2_idx = match_inlier[i][j].trainIdx;
+            const int &img1 = match_pair[m].first, &img2 = match_pair[m].second, &x1_idx = match_inlier[m][in].queryIdx, &x2_idx = match_inlier[m][in].trainIdx;
             const uint key1 = MAKE_KEY(img1, x1_idx), key2 = MAKE_KEY(img2, x2_idx);
-            auto value1 = xs_visited.find(key1), value2 = xs_visited.find(key2);
-            if (value1 != xs_visited.end() && value2 != xs_visited.end())
+            auto visit1 = xs_visited.find(key1), visit2 = xs_visited.find(key2);
+            if (visit1 != xs_visited.end() && visit2 != xs_visited.end())
             {
-                // When the existing point correspondences are inconsistent, do not use these points.
-                if (value1->second != value2->second)
+                if (visit1->second != visit2->second)
                 {
-                    Xs_rejected.insert(value1->second);
-                    Xs_rejected.insert(value2->second);
-                    continue;
+                    xs_visited.erase(visit1);
+                    xs_visited.erase(visit2);
                 }
-                X_idx = value1->second;
+                // Skip if two observations are already visited
+                continue;
             }
-            else if (value1 != xs_visited.end()) X_idx = value1->second;
-            else if (value2 != xs_visited.end()) X_idx = value2->second;
+
+            uint X_idx = 0;
+            if (visit1 != xs_visited.end()) X_idx = visit1->second;
+            else if (visit2 != xs_visited.end()) X_idx = visit2->second;
             else
             {
-                // When the point observations are not visited, add a new point.
+                // Add a new point if two observations are not visited
                 X_idx = Xs.size();
-                Xs.push_back(cv::Point3d(0, 0, default_point_depth));
-                for (size_t k = 0; k < img_set.size(); k++)
-                {
-                    xs[k].push_back(cv::Point2d());
-                    visibility[k].push_back(0);
-                }
+                Xs.push_back(cv::Point3d(0, 0, Z_init));
             }
-            xs[img1][X_idx] = img_keypoint[img1][x1_idx].pt;
-            xs[img2][X_idx] = img_keypoint[img2][x2_idx].pt;
-            visibility[img1][X_idx] = 1;
-            visibility[img2][X_idx] = 1;
-            xs_visited[key1] = X_idx;
-            xs_visited[key2] = X_idx;
+            if (visit1 == xs_visited.end()) xs_visited[key1] = X_idx;
+            if (visit2 == xs_visited.end()) xs_visited[key2] = X_idx;
         }
     }
 
-    // Remove rejected 3D points, which were inconsistent at the previous step
-    for (auto idx = Xs_rejected.rbegin(); idx != Xs_rejected.rend(); idx++)
+    // Run bundle adjustment
+    ceres::Problem ba;
+    for (auto visit = xs_visited.begin(); visit != xs_visited.end(); visit++)
     {
-        Xs.erase(Xs.begin() + *idx);
-        for (size_t j = 0; j < img_set.size(); j++)
-        {
-            xs[j].erase(xs[j].begin() + *idx);
-            visibility[j].erase(visibility[j].begin() + *idx);
-        }
+        int img_idx = GET_IMG_IDX(visit->first), pt_idx = GET_PT_IDX(visit->first);
+        const cv::Point2d& x = img_keypoint[img_idx][pt_idx].pt;
+        ceres::CostFunction* cost_func = ReprojectionErrorSnavely::create(x);
+        double* view = (double*)(&(views[img_idx]));
+        double* X = (double*)(&(Xs[visit->second]));
+        ba.AddResidualBlock(cost_func, NULL, view, X);
     }
-    printf("3DV Tutorial: # of 3D points = %d (# of rejected = %d, # of projections = %d).\n", Xs.size(), Xs_rejected.size(), xs_visited.size());
-
-    // 2) Initialize each camera projection matrix
-    std::vector<cv::Mat> Ks, dist_coeffs, Rs, ts;
-    for (size_t i = 0; i < img_set.size(); i++)
-    {
-        cv::Mat K = (cv::Mat_<double>(3, 3) << default_camera_f, 0, img_set[i].cols / 2., 0, default_camera_f, img_set[i].rows / 2., 0, 0, 1);
-        Ks.push_back(K.clone());                                // K for all cameras
-        dist_coeffs.push_back(cv::Mat::zeros(5, 1, CV_64F));    // dist_coeff for all cameras
-        Rs.push_back(cv::Mat::eye(3, 3, CV_64F));               // R for all cameras
-        ts.push_back(cv::Mat::zeros(3, 1, CV_64F));             // t for all cameras
-    }
-
-    // 3) Optimize camera pose and 3D points
-    try
-    {
-        cvsba::Sba sba;
-        cvsba::Sba::Params param;
-        param.type = cvsba::Sba::MOTIONSTRUCTURE;
-        param.fixedIntrinsics = 4; // Free focal length
-        param.fixedDistortion = 5;
-        param.verbose = true;
-        sba.setParams(param);
-        double error = sba.run(Xs, xs, visibility, Ks, Rs, ts, dist_coeffs);
-    }
-    catch (cv::Exception) {}
+    ceres::Solver::Options options;
+    options.linear_solver_type = ceres::ITERATIVE_SCHUR;
+    options.max_num_iterations = 200;
+    options.num_threads = 8;
+    options.minimizer_progress_to_stdout = true;
+    ceres::Solver::Summary summary;
+    ceres::Solve(options, &ba, &summary);
+    std::cout << summary.FullReport() << std::endl;
 
     // Store the 3D points to an XYZ file
     FILE* fpts = fopen("sfm_global(point).xyz", "wt");
     if (fpts == NULL) return -1;
+    int Xs_reject = 0;
     for (size_t i = 0; i < Xs.size(); i++)
-        fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
+    {
+        if (Xs[i].z > 0 && Xs[i].z < Z_limit)
+            fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
+        else Xs_reject++;
+    }
     fclose(fpts);
+    printf("3DV Tutorial: # of 3D points = %d (# of rejected = %d).\n", Xs.size(), Xs_reject);
 
     // Store the camera poses to an XYZ file 
     FILE* fcam = fopen("sfm_global(camera).xyz", "wt");
     if (fcam == NULL) return -1;
-    for (size_t i = 0; i < Rs.size(); i++)
+    for (size_t j = 0; j < views.size(); j++)
     {
-        cv::Mat p = -Rs[i].t() * ts[i];
-        fprintf(fcam, "%f %f %f\n", p.at<double>(0), p.at<double>(1), p.at<double>(2));
-        printf("3DV Tutorial: Image %d's focal length = %.3f\n", i, Ks[i].at<double>(0, 0));
+        cv::Vec3d rvec(views[j][0], views[j][1], views[j][2]), t(views[j][3], views[j][4], views[j][5]);
+        cv::Matx33d R;
+        cv::Rodrigues(rvec, R);
+        cv::Vec3d p = -R.t() * t;
+        fprintf(fcam, "%f %f %f\n", p[0], p[1], p[2]);
+        printf("3DV Tutorial: Image %d's (f, cx, cy) = (%.3f, %.1f, %.1f), (k1, k2) = (%.3f, %.3f)\n", j, views[j][6], views[j][7], views[j][8], views[j][9], views[j][10]);
     }
     fclose(fcam);
     return 0;
