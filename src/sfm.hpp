@@ -4,13 +4,15 @@
 #include "opencv2/opencv.hpp"
 #include "ceres/ceres.h"
 #include "ceres/rotation.h"
+#include "bundle_adjustment.hpp"
 #include <unordered_map>
 
-// Reprojection error for bundle adjustment
+// Reprojection error for bundle adjustment with 11 DOF cameras
+// - 11 DOF = 3 DOF rotation + 3 DOF translation + 1 DOF focal length + 2 DOF principal point + 2 DOF radial distortion
 // - Ref. http://ceres-solver.org/nnls_tutorial.html#bundle-adjustment
-struct ReprojectionErrorSnavely
+struct ReprojectionError11DOF
 {
-    ReprojectionErrorSnavely(const cv::Point2d& _x) : x(_x) { }
+    ReprojectionError11DOF(const cv::Point2d& _x) : x(_x) { }
 
     template <typename T>
     bool operator()(const T* const camera, const T* const point, T* residuals) const
@@ -43,11 +45,48 @@ struct ReprojectionErrorSnavely
 
     static ceres::CostFunction* create(const cv::Point2d& _x)
     {
-        return (new ceres::AutoDiffCostFunction<ReprojectionErrorSnavely, 2, 11, 3>(new ReprojectionErrorSnavely(_x)));
+        return (new ceres::AutoDiffCostFunction<ReprojectionError11DOF, 2, 11, 3>(new ReprojectionError11DOF(_x)));
     }
 
 private:
     const cv::Point2d x;
+};
+
+// Reprojection error for bundle adjustment with 7 DOF cameras
+// - 7 DOF = 3 DOF rotation + 3 DOF translation + 1 DOF focal length
+struct ReprojectionError7DOF
+{
+    ReprojectionError7DOF(const cv::Point2d& _x, const cv::Point2d& _c) : x(_x), c(_c) { }
+
+    template <typename T>
+    bool operator()(const T* const camera, const T* const point, T* residuals) const
+    {
+        // X' = R*X + t
+        T X[3];
+        ceres::AngleAxisRotatePoint(camera, point, X);
+        X[0] += camera[3];
+        X[1] += camera[4];
+        X[2] += camera[5];
+
+        // x' = K*X'
+        const T& f = camera[6];
+        T x_p = f * X[0] / X[2] + c.x;
+        T y_p = f * X[1] / X[2] + c.y;
+
+        // residual = x - x'
+        residuals[0] = T(x.x) - x_p;
+        residuals[1] = T(x.y) - y_p;
+        return true;
+    }
+
+    static ceres::CostFunction* create(const cv::Point2d& _x, const cv::Point2d& _c)
+    {
+        return (new ceres::AutoDiffCostFunction<ReprojectionError7DOF, 2, 7, 3>(new ReprojectionError7DOF(_x, _c)));
+    }
+
+private:
+    const cv::Point2d x;
+    const cv::Point2d c;
 };
 
 class SFM
@@ -64,17 +103,49 @@ public:
 
     static inline uint getPtIdx(uint key) { return (key & 0xFFFF); }
 
-    static bool addCostFunc(ceres::Problem& problem, const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<Vec11d>& views, const std::unordered_map<uint, uint>& visibility, double loss_width = 4)
+    static bool addCostFunc11DOF(ceres::Problem& problem, const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<Vec11d>& views, const std::unordered_map<uint, uint>& visibility, double loss_width = 4)
     {
         for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
         {
             int img_idx = getImIdx(visible->first), pt_idx = getPtIdx(visible->first);
+            double* X = (double*)(&(Xs[visible->second]));
             const cv::Point2d& x = xs[img_idx][pt_idx].pt;
-            ceres::CostFunction* cost_func = ReprojectionErrorSnavely::create(x);
+            double* view = (double*)(&(views[img_idx]));
+            ceres::CostFunction* cost_func = ReprojectionError11DOF::create(x);
             ceres::LossFunction* loss_func = NULL;
             if (loss_width > 0) loss_func = new ceres::CauchyLoss(loss_width);
-            double* view = (double*)(&(views[img_idx]));
+            problem.AddResidualBlock(cost_func, loss_func, view, X);
+        }
+        return true;
+    }
+
+    static bool addCostFunc7DOF(ceres::Problem& problem, const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<Vec11d>& views, const std::unordered_map<uint, uint>& visibility, double loss_width = 4)
+    {
+        for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
+        {
+            int img_idx = getImIdx(visible->first), pt_idx = getPtIdx(visible->first);
             double* X = (double*)(&(Xs[visible->second]));
+            const cv::Point2d& x = xs[img_idx][pt_idx].pt;
+            double* view = (double*)(&(views[img_idx]));
+            ceres::CostFunction* cost_func = ReprojectionError7DOF::create(x, cv::Point2d(view[7], view[8]));
+            ceres::LossFunction* loss_func = NULL;
+            if (loss_width > 0) loss_func = new ceres::CauchyLoss(loss_width);
+            problem.AddResidualBlock(cost_func, loss_func, view, X);
+        }
+        return true;
+    }
+
+    static bool addCostFunc6DOF(ceres::Problem& problem, const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<Vec11d>& views, const std::unordered_map<uint, uint>& visibility, double loss_width = 4)
+    {
+        for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
+        {
+            int img_idx = getImIdx(visible->first), pt_idx = getPtIdx(visible->first);
+            double* X = (double*)(&(Xs[visible->second]));
+            const cv::Point2d& x = xs[img_idx][pt_idx].pt;
+            double* view = (double*)(&(views[img_idx]));
+            ceres::CostFunction* cost_func = ReprojectionError::create(x, view[6], view[7], view[8]);
+            ceres::LossFunction* loss_func = NULL;
+            if (loss_width > 0) loss_func = new ceres::CauchyLoss(loss_width);
             problem.AddResidualBlock(cost_func, loss_func, view, X);
         }
         return true;

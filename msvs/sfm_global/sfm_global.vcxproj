@@ -89,6 +89,7 @@
     <ClCompile Include="..\..\src\sfm_global.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\bundle_adjustment.hpp" />
     <ClInclude Include="..\..\src\sfm.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

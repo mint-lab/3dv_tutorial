@@ -3,9 +3,9 @@
 int main()
 {
     const char* input = "data/relief/%02d.jpg";
-    double img_resize = 0.25, f_init = 500, Z_init = 2, Z_limit = 10, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
-    size_t min_inlier_num = 500, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
-    bool use_homography = true, show_match = true;
+    double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 10, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
+    size_t min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
+    bool show_match = false;
 
     // Load images and extract features
     cv::VideoCapture video;
@@ -28,12 +28,13 @@ int main()
         img_descriptor.push_back(descriptor.clone());
     }
     if (img_set.size() < 2) return -1;
-    cv::Point2d img_center(img_set.front().cols / 2, img_set.front().rows / 2);
+    if (cx_init < 0) cx_init = img_set.front().cols / 2;
+    if (cy_init < 0) cy_init = img_set.front().rows / 2;
 
     // Match features and find good matches
     cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
-    std::vector<std::pair<int, int> > match_pair;       // The good match pairs (image pairs)
-    std::vector<std::vector<cv::DMatch> > match_inlier; // The good match pairs (inlier point pairs)
+    std::vector<std::pair<int, int> > match_pair;       // Good matches (image pairs)
+    std::vector<std::vector<cv::DMatch> > match_inlier; // Good matches (inlier feature matches)
     for (size_t i = 0; i < img_set.size(); i++)
     {
         for (size_t j = i + 1; j < img_set.size(); j++)
@@ -48,8 +49,7 @@ int main()
                 dst.push_back(img_keypoint[j][itr->trainIdx].pt);
             }
             cv::Mat inlier_mask;
-            if (use_homography) cv::findHomography(src, dst, inlier_mask, cv::RANSAC);
-            else                cv::findFundamentalMat(src, dst, inlier_mask, cv::RANSAC);
+            cv::findFundamentalMat(src, dst, inlier_mask, cv::RANSAC);
             for (int k = 0; k < inlier_mask.rows; k++)
                 if (inlier_mask.at<uchar>(k)) inlier.push_back(match[k]);
             printf("3DV Tutorial: Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
@@ -71,7 +71,7 @@ int main()
     if (match_pair.size() < 1) return -1;
 
     // Initialize camera views
-    std::vector<SFM::Vec11d> views(img_set.size(), SFM::Vec11d(0, 0, 0, 0, 0, 0, f_init, img_center.x, img_center.y));
+    std::vector<SFM::Vec11d> views(img_set.size(), SFM::Vec11d(0, 0, 0, 0, 0, 0, f_init, cx_init, cy_init));
 
     // Initialize 3D points and build a visibility graph
     std::vector<cv::Point3d> Xs;
@@ -108,10 +108,11 @@ int main()
             if (visit2 == xs_visited.end()) xs_visited[key2] = X_idx;
         }
     }
+    printf("3DV Tutorial: # of 3D points: %d\n", Xs.size());
 
     // Run bundle adjustment
     ceres::Problem ba;
-    SFM::addCostFunc(ba, Xs, img_keypoint, views, xs_visited, ba_loss_width);
+    SFM::addCostFunc7DOF(ba, Xs, img_keypoint, views, xs_visited, ba_loss_width);
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::ITERATIVE_SCHUR;
     if (ba_num_iter > 0) options.max_num_iterations = ba_num_iter;
@@ -119,8 +120,11 @@ int main()
     options.minimizer_progress_to_stdout = true;
     ceres::Solver::Summary summary;
     ceres::Solve(options, &ba, &summary);
-    int n_mark = SFM::markNoisyPoints(Xs, img_keypoint, views, xs_visited, ba_loss_width);
+    int num_reject = SFM::markNoisyPoints(Xs, img_keypoint, views, xs_visited, ba_loss_width);
     std::cout << summary.FullReport() << std::endl;
+    printf("3DV Tutorial: # of 3D points: %d (Rejected: %d)\n", Xs.size(), num_reject);
+    for (size_t j = 0; j < views.size(); j++)
+        printf("3DV Tutorial: Image %d's (f, cx, cy) = (%.3f, %.1f, %.1f), (k1, k2) = (%.3f, %.3f)\n", j, views[j][6], views[j][7], views[j][8], views[j][9], views[j][10]);
 
     // Store the 3D points to an XYZ file
     FILE* fpts = fopen("sfm_global(point).xyz", "wt");
@@ -131,7 +135,6 @@ int main()
             fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
     }
     fclose(fpts);
-    printf("3DV Tutorial: # of 3D points = %d (# of rejected = %d).\n", Xs.size(), n_mark);
 
     // Store the camera poses to an XYZ file 
     FILE* fcam = fopen("sfm_global(camera).xyz", "wt");
@@ -143,7 +146,6 @@ int main()
         cv::Rodrigues(rvec, R);
         cv::Vec3d p = -R.t() * t;
         fprintf(fcam, "%f %f %f\n", p[0], p[1], p[2]);
-        printf("3DV Tutorial: Image %d's (f, cx, cy) = (%.3f, %.1f, %.1f), (k1, k2) = (%.3f, %.3f)\n", j, views[j][6], views[j][7], views[j][8], views[j][9], views[j][10]);
     }
     fclose(fcam);
     return 0;
