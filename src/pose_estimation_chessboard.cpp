@@ -13,15 +13,8 @@ int main()
     if (!video.open(input)) return -1;
 
     // Prepare a 3D box for simple AR
-    std::vector<cv::Point3d> box_lower, box_upper;
-    box_lower.push_back(cv::Point3d(4 * board_cellsize, 2 * board_cellsize, 0));
-    box_lower.push_back(cv::Point3d(5 * board_cellsize, 2 * board_cellsize, 0));
-    box_lower.push_back(cv::Point3d(5 * board_cellsize, 4 * board_cellsize, 0));
-    box_lower.push_back(cv::Point3d(4 * board_cellsize, 4 * board_cellsize, 0));
-    box_upper.push_back(cv::Point3d(4 * board_cellsize, 2 * board_cellsize, -board_cellsize));
-    box_upper.push_back(cv::Point3d(5 * board_cellsize, 2 * board_cellsize, -board_cellsize));
-    box_upper.push_back(cv::Point3d(5 * board_cellsize, 4 * board_cellsize, -board_cellsize));
-    box_upper.push_back(cv::Point3d(4 * board_cellsize, 4 * board_cellsize, -board_cellsize));
+    std::vector<cv::Point3d> box_lower = { cv::Point3d(4 * board_cellsize, 2 * board_cellsize, 0), cv::Point3d(5 * board_cellsize, 2 * board_cellsize, 0), cv::Point3d(5 * board_cellsize, 4 * board_cellsize, 0), cv::Point3d(4 * board_cellsize, 4 * board_cellsize, 0) };
+    std::vector<cv::Point3d> box_upper = { cv::Point3d(4 * board_cellsize, 2 * board_cellsize, -board_cellsize), cv::Point3d(5 * board_cellsize, 2 * board_cellsize, -board_cellsize), cv::Point3d(5 * board_cellsize, 4 * board_cellsize, -board_cellsize), cv::Point3d(4 * board_cellsize, 4 * board_cellsize, -board_cellsize) };
 
     // Prepare 3D points on a chessboard
     std::vector<cv::Point3d> obj_points;

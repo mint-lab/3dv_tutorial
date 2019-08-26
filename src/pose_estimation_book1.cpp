@@ -23,9 +23,8 @@ int main()
     if (!video.open(input)) return -1;
 
     // Prepare a box for simple AR
-    std::vector<cv::Point3f> box_lower, box_upper;
-    box_lower.push_back(cv::Point3f(30, 145, 0)); box_lower.push_back(cv::Point3f(30, 200, 0)); box_lower.push_back(cv::Point3f(200, 200, 0)); box_lower.push_back(cv::Point3f(200, 145, 0));
-    box_upper.push_back(cv::Point3f(30, 145, -50)); box_upper.push_back(cv::Point3f(30, 200, -50)); box_upper.push_back(cv::Point3f(200, 200, -50)); box_upper.push_back(cv::Point3f(200, 145, -50));
+    std::vector<cv::Point3f> box_lower = { cv::Point3f(30, 145,   0), cv::Point3f(30, 200,   0), cv::Point3f(200, 200,   0), cv::Point3f(200, 145,   0) };
+    std::vector<cv::Point3f> box_upper = { cv::Point3f(30, 145, -50), cv::Point3f(30, 200, -50), cv::Point3f(200, 200, -50), cv::Point3f(200, 145, -50) };
 
     // Run pose estimation
     cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, cx, 0, f, cy, 0, 0, 1);
@@ -83,7 +82,7 @@ int main()
             cv::projectPoints(box_lower, rvec, tvec, K, dist_coeff, line_lower);
             cv::projectPoints(box_upper, rvec, tvec, K, dist_coeff, line_upper);
             line_lower.reshape(1).convertTo(line_lower, CV_32S); // Change 4 x 1 matrix (CV_64FC2) to 4 x 2 matrix (CV_32SC1)
-            line_upper.reshape(1).convertTo(line_upper, CV_32S); // Because 'cv::polylines()' only accepts 'CV_32S' depth.
+            line_upper.reshape(1).convertTo(line_upper, CV_32S); //  because 'cv::polylines()' only accepts 'CV_32S' depth.
             cv::polylines(image_result, line_lower, true, cv::Vec3b(255, 0, 0), 2);
             for (int i = 0; i < line_lower.rows; i++)
                 cv::line(image_result, cv::Point(line_lower.row(i)), cv::Point(line_upper.row(i)), cv::Vec3b(0, 255, 0), 2);
