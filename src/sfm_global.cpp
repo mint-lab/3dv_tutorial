@@ -1,6 +1,6 @@
 #include "sfm.hpp"
 
-int markNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& views, const SFM::VisibilityGraph& visibility, double reproj_error2 = 9)
+int markNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& views, const SFM::VisibilityGraph& visibility, double reproj_error2)
 {
     if (reproj_error2 <= 0) return -1;
 
@@ -107,6 +107,7 @@ int main()
 
     // 2) Initialize 3D points and build a visibility graph
     std::vector<cv::Point3d> Xs;
+    std::vector<cv::Vec3b> Xs_rgb;
     SFM::VisibilityGraph xs_visited;
     for (size_t m = 0; m < match_pair.size(); m++)
     {
@@ -135,6 +136,7 @@ int main()
                 // Add a new point if two observations are not visited
                 X_idx = Xs.size();
                 Xs.push_back(cv::Point3d(0, 0, Z_init));
+                Xs_rgb.push_back(img_set[cam1_idx].at<cv::Vec3b>(img_keypoint[cam1_idx][x1_idx].pt));
             }
             if (visit1 == xs_visited.end()) xs_visited[key1] = X_idx;
             if (visit2 == xs_visited.end()) xs_visited[key2] = X_idx;
@@ -142,7 +144,7 @@ int main()
     }
     printf("3DV Tutorial: # of 3D points: %d\n", Xs.size());
 
-    // 3) Run bundle adjustment
+    // 3) Optimize camera pose and 3D points together (bundle adjustment)
     ceres::Problem ba;
     for (auto visit = xs_visited.begin(); visit != xs_visited.end(); visit++)
     {
@@ -166,12 +168,12 @@ int main()
         printf("3DV Tutorial: Camera %d's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
     // Store the 3D points to an XYZ file
-    FILE* fpts = fopen("sfm_global(point).xyz", "wt");
+    FILE* fpts = fopen("sfm_global(point).txt", "wt");
     if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
     {
         if (Xs[i].z > 0 && Xs[i].z < Z_limit)
-            fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
+            fprintf(fpts, "%f %f %f %d %d %d\n", Xs[i].x, Xs[i].y, Xs[i].z, Xs_rgb[i][2], Xs_rgb[i][1], Xs_rgb[i][0]); // Format: x, y, z, R, G, B
     }
     fclose(fpts);
 
@@ -184,7 +186,7 @@ int main()
         cv::Matx33d R;
         cv::Rodrigues(rvec, R);
         cv::Vec3d p = -R.t() * t;
-        fprintf(fcam, "%f %f %f\n", p[0], p[1], p[2]);
+        fprintf(fcam, "%f %f %f %f %f %f\n", p[0], p[1], p[2], R.t()(0, 2), R.t()(1, 2), R.t()(2, 2)); // Format: x, y, z, n_x, n_y, n_z
     }
     fclose(fcam);
     return 0;

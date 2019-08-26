@@ -58,7 +58,7 @@ public:
 
     static inline uint getObsIdx(uint key) { return (key & 0xFFFF); }
 
-    static bool addCostFunc7DOF(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = 4)
+    static bool addCostFunc7DOF(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
     {
         double* _X = (double*)(&(X.x));
         double* _camera = (double*)(&(camera[0]));
@@ -69,7 +69,7 @@ public:
         return true;
     }
 
-    static bool addCostFunc6DOF(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = 4)
+    static bool addCostFunc6DOF(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
     {
         double* _X = (double*)(&(X.x));
         double* _camera = (double*)(&(camera[0]));

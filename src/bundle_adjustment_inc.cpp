@@ -37,10 +37,10 @@ int main()
     cv::Mat E = K.t() * F * K, R, t;
     cv::recoverPose(E, xs[0], xs[1], K, R, t);
 
-    std::vector<cv::Vec6d> views(xs.size());
+    std::vector<cv::Vec6d> cameras(xs.size());
     cv::Mat rvec;
     cv::Rodrigues(R, rvec);
-    views[1] = (rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2), t.at<double>(0), t.at<double>(1), t.at<double>(2));
+    cameras[1] = (rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2), t.at<double>(0), t.at<double>(1), t.at<double>(2));
 
     // 3) Reconstruct 3D points of the initial two views (triangulation)
     cv::Mat Rt;
@@ -64,9 +64,9 @@ int main()
         for (size_t i = 0; i < xs[j].size(); i++)
         {
             ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cv::Point2d(cx, cy));
-            double* view = (double*)(&(views[j]));
+            double* camera = (double*)(&(cameras[j]));
             double* X = (double*)(&(Xs[i]));
-            ba.AddResidualBlock(cost_func, NULL, view, X);
+            ba.AddResidualBlock(cost_func, NULL, camera, X);
         }
     }
 
@@ -82,17 +82,17 @@ int main()
 
         // 5) Estimate relative pose of the next view (PnP)
         cv::solvePnP(Xs, xs[j], K, cv::noArray(), rvec, t);
-        views[j] = (rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2), t.at<double>(0), t.at<double>(1), t.at<double>(2));
+        cameras[j] = (rvec.at<double>(0), rvec.at<double>(1), rvec.at<double>(2), t.at<double>(0), t.at<double>(1), t.at<double>(2));
 
         // 6) Reconstruct newly observed 3D points (triangulation; skipped because all points are visible on all images)
 
-        // 7) Optimize camera pose and 3D points (bundle adjustment)
+        // 7) Optimize camera pose and 3D points together (bundle adjustment)
         for (size_t i = 0; i < xs[j].size(); i++)
         {
             ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cv::Point2d(cx, cy));
-            double* view = (double*)(&(views[j]));
+            double* camera = (double*)(&(cameras[j]));
             double* X = (double*)(&(Xs[i]));
-            ba.AddResidualBlock(cost_func, NULL, view, X);
+            ba.AddResidualBlock(cost_func, NULL, camera, X);
         }
         ceres::Solve(options, &ba, &summary);
     }
@@ -101,19 +101,19 @@ int main()
     FILE* fpts = fopen("bundle_adjustment_inc(point).xyz", "wt");
     if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
-        fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z);
+        fprintf(fpts, "%f %f %f\n", Xs[i].x, Xs[i].y, Xs[i].z); // Format: x, y, z
     fclose(fpts);
 
     // Store the camera poses to an XYZ file 
     FILE* fcam = fopen("bundle_adjustment_inc(camera).xyz", "wt");
     if (fcam == NULL) return -1;
-    for (size_t j = 0; j < views.size(); j++)
+    for (size_t j = 0; j < cameras.size(); j++)
     {
-        cv::Vec3d rvec(views[j][0], views[j][1], views[j][2]), t(views[j][3], views[j][4], views[j][5]);
+        cv::Vec3d rvec(cameras[j][0], cameras[j][1], cameras[j][2]), t(cameras[j][3], cameras[j][4], cameras[j][5]);
         cv::Matx33d R;
         cv::Rodrigues(rvec, R);
         cv::Vec3d p = -R.t() * t;
-        fprintf(fcam, "%f %f %f\n", p[0], p[1], p[2]);
+        fprintf(fcam, "%f %f %f %f %f %f\n", p[0], p[1], p[2], R.t()(0, 2), R.t()(1, 2), R.t()(2, 2)); // Format: x, y, z, n_x, n_y, n_z
     }
     fclose(fcam);
     return 0;
