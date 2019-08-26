@@ -44,7 +44,7 @@ int main()
     if (images.empty()) return -1;
 
     // Find 2D corner points from the given images
-    std::vector<std::vector<cv::Point2f> > img_points;
+    std::vector<std::vector<cv::Point2f>> img_points;
     for (size_t i = 0; i < images.size(); i++)
     {
         std::vector<cv::Point2f> pts;
@@ -54,7 +54,7 @@ int main()
     if (img_points.empty()) return -1;
 
     // Prepare 3D points of the chess board
-    std::vector<std::vector<cv::Point3f> > obj_points(1);
+    std::vector<std::vector<cv::Point3f>> obj_points(1);
     for (int r = 0; r < board_pattern.height; r++)
         for (int c = 0; c < board_pattern.width; c++)
             obj_points[0].push_back(cv::Point3f(board_cellsize * c, board_cellsize * r, 0));

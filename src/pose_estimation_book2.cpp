@@ -77,7 +77,7 @@ int main()
                 }
             }
             std::vector<cv::Mat> rvecs, tvecs;
-            cv::calibrateCamera(std::vector<std::vector<cv::Point3f> >(1, obj_inlier), std::vector<std::vector<cv::Point2f> >(1, img_inlier), image.size(), K, dist_coeff, rvecs, tvecs,
+            cv::calibrateCamera(std::vector<std::vector<cv::Point3f>>(1, obj_inlier), std::vector<std::vector<cv::Point2f>>(1, img_inlier), image.size(), K, dist_coeff, rvecs, tvecs,
                 cv::CALIB_FIX_ASPECT_RATIO | cv::CALIB_FIX_PRINCIPAL_POINT | cv::CALIB_ZERO_TANGENT_DIST | cv::CALIB_FIX_K1 | cv::CALIB_FIX_K2 | cv::CALIB_FIX_K3 | cv::CALIB_FIX_K4 | cv::CALIB_FIX_K5 | cv::CALIB_FIX_K6 | cv::CALIB_FIX_S1_S2_S3_S4 | cv::CALIB_FIX_TAUX_TAUY);
             rvec = rvecs[0].clone();
             tvec = tvecs[0].clone();

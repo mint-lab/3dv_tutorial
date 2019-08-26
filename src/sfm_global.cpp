@@ -1,5 +1,37 @@
 #include "sfm.hpp"
 
+int markNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& views, const SFM::VisibilityGraph& visibility, double reproj_error2 = 9)
+{
+    if (reproj_error2 <= 0) return -1;
+
+    int n_marked = 0;
+    for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
+    {
+        cv::Point3d& X = Xs[visible->second];
+        if (X.z < 0) continue;
+        int img_idx = SFM::getCamIdx(visible->first), pt_idx = SFM::getObsIdx(visible->first);
+        const cv::Point2d& x = xs[img_idx][pt_idx].pt;
+        const SFM::Vec9d& view = views[img_idx];
+
+        // Project the given 'X'
+        cv::Vec3d rvec(view[0], view[1], view[2]);
+        cv::Matx33d R;
+        cv::Rodrigues(rvec, R);
+        cv::Point3d X_p = R * X + cv::Point3d(view[3], view[4], view[5]);
+        const double &f = view[6], &cx = view[7], &cy = view[8];
+        cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
+
+        // Calculate distance between 'x' and 'x_p'
+        cv::Point2d d = x - x_p;
+        if (d.x * d.x + d.y * d.y > reproj_error2)
+        {
+            X.z *= -1; // Mark the point to have negative depth
+            n_marked++;
+        }
+    }
+    return n_marked;
+}
+
 int main()
 {
     const char* input = "data/relief/%02d.jpg";
@@ -33,8 +65,8 @@ int main()
 
     // Match features and find good matches
     cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
-    std::vector<std::pair<int, int> > match_pair;       // Good matches (image pairs)
-    std::vector<std::vector<cv::DMatch> > match_inlier; // Good matches (inlier feature matches)
+    std::vector<std::pair<int, int>> match_pair;        // Good matches (image pairs)
+    std::vector<std::vector<cv::DMatch>> match_inlier;  // Good matches (inlier feature matches)
     for (size_t i = 0; i < img_set.size(); i++)
     {
         for (size_t j = i + 1; j < img_set.size(); j++)
@@ -63,26 +95,26 @@ int main()
             {
                 cv::Mat match_image;
                 cv::drawMatches(img_set[i], img_keypoint[i], img_set[j], img_keypoint[j], match, match_image, cv::Scalar::all(-1), cv::Scalar::all(-1), inlier_mask);
-                cv::imshow("3DV Tutorial: Global Structure-from-Motion", match_image);
+                cv::imshow("3DV Tutorial: Structure-from-Motion", match_image);
                 cv::waitKey();
             }
         }
     }
     if (match_pair.size() < 1) return -1;
 
-    // Initialize camera views
-    std::vector<SFM::Vec11d> views(img_set.size(), SFM::Vec11d(0, 0, 0, 0, 0, 0, f_init, cx_init, cy_init));
+    // 1) Initialize cameras (rotation, translation, intrinsic parameters)
+    std::vector<SFM::Vec9d> cameras(img_set.size(), SFM::Vec9d(0, 0, 0, 0, 0, 0, f_init, cx_init, cy_init));
 
-    // Initialize 3D points and build a visibility graph
+    // 2) Initialize 3D points and build a visibility graph
     std::vector<cv::Point3d> Xs;
     SFM::VisibilityGraph xs_visited;
     for (size_t m = 0; m < match_pair.size(); m++)
     {
         for (size_t in = 0; in < match_inlier[m].size(); in++)
         {
-            const int &img1 = match_pair[m].first, &img2 = match_pair[m].second;
+            const int &cam1_idx = match_pair[m].first, &cam2_idx = match_pair[m].second;
             const int &x1_idx = match_inlier[m][in].queryIdx, &x2_idx = match_inlier[m][in].trainIdx;
-            const uint key1 = SFM::genKey(img1, x1_idx), key2 = SFM::genKey(img2, x2_idx);
+            const uint key1 = SFM::genKey(cam1_idx, x1_idx), key2 = SFM::genKey(cam2_idx, x2_idx);
             auto visit1 = xs_visited.find(key1), visit2 = xs_visited.find(key2);
             if (visit1 != xs_visited.end() && visit2 != xs_visited.end())
             {
@@ -110,9 +142,14 @@ int main()
     }
     printf("3DV Tutorial: # of 3D points: %d\n", Xs.size());
 
-    // Run bundle adjustment
+    // 3) Run bundle adjustment
     ceres::Problem ba;
-    SFM::addCostFunc7DOF(ba, Xs, img_keypoint, views, xs_visited, ba_loss_width);
+    for (auto visit = xs_visited.begin(); visit != xs_visited.end(); visit++)
+    {
+        int cam_idx = SFM::getCamIdx(visit->first), x_idx = SFM::getObsIdx(visit->first);
+        const cv::Point2d& x = img_keypoint[cam_idx][x_idx].pt;
+        SFM::addCostFunc7DOF(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
+    }
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::ITERATIVE_SCHUR;
     if (ba_num_iter > 0) options.max_num_iterations = ba_num_iter;
@@ -120,11 +157,13 @@ int main()
     options.minimizer_progress_to_stdout = true;
     ceres::Solver::Summary summary;
     ceres::Solve(options, &ba, &summary);
-    int num_reject = SFM::markNoisyPoints(Xs, img_keypoint, views, xs_visited, ba_loss_width);
     std::cout << summary.FullReport() << std::endl;
+
+    // Mark erroneous points to reject them
+    int num_reject = markNoisyPoints(Xs, img_keypoint, cameras, xs_visited, ba_loss_width);
     printf("3DV Tutorial: # of 3D points: %d (Rejected: %d)\n", Xs.size(), num_reject);
-    for (size_t j = 0; j < views.size(); j++)
-        printf("3DV Tutorial: Image %d's (f, cx, cy) = (%.3f, %.1f, %.1f), (k1, k2) = (%.3f, %.3f)\n", j, views[j][6], views[j][7], views[j][8], views[j][9], views[j][10]);
+    for (size_t j = 0; j < cameras.size(); j++)
+        printf("3DV Tutorial: Camera %d's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
     // Store the 3D points to an XYZ file
     FILE* fpts = fopen("sfm_global(point).xyz", "wt");
@@ -139,9 +178,9 @@ int main()
     // Store the camera poses to an XYZ file 
     FILE* fcam = fopen("sfm_global(camera).xyz", "wt");
     if (fcam == NULL) return -1;
-    for (size_t j = 0; j < views.size(); j++)
+    for (size_t j = 0; j < cameras.size(); j++)
     {
-        cv::Vec3d rvec(views[j][0], views[j][1], views[j][2]), t(views[j][3], views[j][4], views[j][5]);
+        cv::Vec3d rvec(cameras[j][0], cameras[j][1], cameras[j][2]), t(cameras[j][3], cameras[j][4], cameras[j][5]);
         cv::Matx33d R;
         cv::Rodrigues(rvec, R);
         cv::Vec3d p = -R.t() * t;

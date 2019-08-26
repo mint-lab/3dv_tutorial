@@ -8,7 +8,7 @@ int main()
     double f = 1000, cx = 320, cy= 240;
 
     // Load 2D points observed from multiple views
-    std::vector<std::vector<cv::Point2d> > xs;
+    std::vector<std::vector<cv::Point2d>> xs;
     for (int i = 0; i < input_num; i++)
     {
         FILE* fin = fopen(cv::format(input, i).c_str(), "rt");
@@ -63,7 +63,7 @@ int main()
     {
         for (size_t i = 0; i < xs[j].size(); i++)
         {
-            ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cx, cy);
+            ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cv::Point2d(cx, cy));
             double* view = (double*)(&(views[j]));
             double* X = (double*)(&(Xs[i]));
             ba.AddResidualBlock(cost_func, NULL, view, X);
@@ -89,7 +89,7 @@ int main()
         // 7) Optimize camera pose and 3D points (bundle adjustment)
         for (size_t i = 0; i < xs[j].size(); i++)
         {
-            ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cx, cy);
+            ceres::CostFunction* cost_func = ReprojectionError::create(xs[j][i], f, cv::Point2d(cx, cy));
             double* view = (double*)(&(views[j]));
             double* X = (double*)(&(Xs[i]));
             ba.AddResidualBlock(cost_func, NULL, view, X);
