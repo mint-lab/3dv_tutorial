@@ -1,41 +1,38 @@
 #include "sfm.hpp"
 
-int markNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& views, const SFM::VisibilityGraph& visibility, double reproj_error2)
+std::vector<bool> maskNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& views, const SFM::VisibilityGraph& visibility, double reproj_error2)
 {
-    if (reproj_error2 <= 0) return -1;
-
-    int n_marked = 0;
-    for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
+    std::vector<bool> is_noisy(Xs.size(), false);
+    if (reproj_error2 > 0)
     {
-        cv::Point3d& X = Xs[visible->second];
-        if (X.z < 0) continue;
-        int img_idx = SFM::getCamIdx(visible->first), pt_idx = SFM::getObsIdx(visible->first);
-        const cv::Point2d& x = xs[img_idx][pt_idx].pt;
-        const SFM::Vec9d& view = views[img_idx];
-
-        // Project the given 'X'
-        cv::Vec3d rvec(view[0], view[1], view[2]);
-        cv::Matx33d R;
-        cv::Rodrigues(rvec, R);
-        cv::Point3d X_p = R * X + cv::Point3d(view[3], view[4], view[5]);
-        const double &f = view[6], &cx = view[7], &cy = view[8];
-        cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
-
-        // Calculate distance between 'x' and 'x_p'
-        cv::Point2d d = x - x_p;
-        if (d.x * d.x + d.y * d.y > reproj_error2)
+        for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
         {
-            X.z *= -1; // Mark the point to have negative depth
-            n_marked++;
+            cv::Point3d& X = Xs[visible->second];
+            if (X.z < 0) continue;
+            int img_idx = SFM::getCamIdx(visible->first), pt_idx = SFM::getObsIdx(visible->first);
+            const cv::Point2d& x = xs[img_idx][pt_idx].pt;
+            const SFM::Vec9d& view = views[img_idx];
+
+            // Project the given 'X'
+            cv::Vec3d rvec(view[0], view[1], view[2]);
+            cv::Matx33d R;
+            cv::Rodrigues(rvec, R);
+            cv::Point3d X_p = R * X + cv::Point3d(view[3], view[4], view[5]);
+            const double &f = view[6], &cx = view[7], &cy = view[8];
+            cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
+
+            // Calculate distance between 'x' and 'x_p'
+            cv::Point2d d = x - x_p;
+            if (d.x * d.x + d.y * d.y > reproj_error2) is_noisy[visible->second] = true;
         }
     }
-    return n_marked;
+    return is_noisy;
 }
 
 int main()
 {
     const char* input = "data/relief/%02d.jpg";
-    double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 10, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
+    double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 100, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
     size_t min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;
 
@@ -162,8 +159,9 @@ int main()
     std::cout << summary.FullReport() << std::endl;
 
     // Mark erroneous points to reject them
-    int num_reject = markNoisyPoints(Xs, img_keypoint, cameras, xs_visited, ba_loss_width);
-    printf("3DV Tutorial: # of 3D points: %d (Rejected: %d)\n", Xs.size(), num_reject);
+    std::vector<bool> is_noisy = maskNoisyPoints(Xs, img_keypoint, cameras, xs_visited, ba_loss_width);
+    int num_noisy = std::accumulate(is_noisy.begin(), is_noisy.end(), 0);
+    printf("3DV Tutorial: # of 3D points: %d (Rejected: %d)\n", Xs.size(), num_noisy);
     for (size_t j = 0; j < cameras.size(); j++)
         printf("3DV Tutorial: Camera %d's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
@@ -172,7 +170,7 @@ int main()
     if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
     {
-        if (Xs[i].z > 0 && Xs[i].z < Z_limit)
+        if (Xs[i].z > -Z_limit && Xs[i].z < Z_limit && !is_noisy[i])
             fprintf(fpts, "%f %f %f %d %d %d\n", Xs[i].x, Xs[i].y, Xs[i].z, Xs_rgb[i][2], Xs_rgb[i][1], Xs_rgb[i][0]); // Format: x, y, z, R, G, B
     }
     fclose(fpts);
