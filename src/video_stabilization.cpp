@@ -45,7 +45,7 @@ int main()
         cv::warpPerspective(image, warp, H, cv::Size(image.cols, image.rows));
 
         // Show the original and rectified images together
-        for (size_t i = 0; i < point_ref.size(); i++)
+        for (int i = 0; i < point_ref.size(); i++)
         {
             if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_ref[i], point[i], cv::Vec3b(0, 0, 255));
             else cv::line(image, point_ref[i], point[i], cv::Vec3b(0, 127, 0));

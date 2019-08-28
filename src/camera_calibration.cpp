@@ -1,4 +1,5 @@
 #include "opencv2/opencv.hpp"
+#include "fstream"
 
 int main()
 {
@@ -69,7 +70,7 @@ int main()
     // Report calibration results
     std::ofstream report("camera_calibration.txt");
     if (!report.is_open()) return -1;
-    report << "## Camera Calbration Results" << std::endl;
+    report << "## Camera Calibration Results" << std::endl;
     report << "* The number of applied images = " << img_points.size() << std::endl;
     report << "* RMS error = " << rms << std::endl;
     report << "* Camera matrix (K) = " << std::endl << "  " << K.row(0) << K.row(1) << K.row(2) << std::endl;

@@ -70,7 +70,7 @@ int main()
 
         // Show the image and write camera pose 
         if (image.channels() < 3) cv::cvtColor(image, image, cv::COLOR_GRAY2RGB);
-        for (size_t i = 0; i < point_prev.size(); i++)
+        for (int i = 0; i < point_prev.size(); i++)
         {
             if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_prev[i], point[i], cv::Vec3b(0, 0, 255));
             else cv::line(image, point_prev[i], point[i], cv::Vec3b(0, 127, 0));
