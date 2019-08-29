@@ -205,7 +205,7 @@ int main()
     {
         int cam_idx = SFM::getCamIdx(visit->first), x_idx = SFM::getObsIdx(visit->first);
         const cv::Point2d& x = img_keypoint[cam_idx][x_idx].pt;
-        SFM::addCostFunc7DOF(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
+        SFM::addCostFunc6DOF(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
     }
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::ITERATIVE_SCHUR;
@@ -302,7 +302,7 @@ int main()
         updateCameraPose(cameras[next_cam], rvec, t);
         for (size_t i = 0; i < pts_key.size(); i++)
         {
-            SFM::addCostFunc7DOF(ba, Xs[pts_idx[i]], pts_2d[i], cameras[next_cam], ba_loss_width);
+            SFM::addCostFunc6DOF(ba, Xs[pts_idx[i]], pts_2d[i], cameras[next_cam], ba_loss_width);
             xs_visited[pts_key[i]] = pts_idx[i];
         }
 

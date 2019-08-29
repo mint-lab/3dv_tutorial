@@ -147,7 +147,7 @@ int main()
     {
         int cam_idx = SFM::getCamIdx(visit->first), x_idx = SFM::getObsIdx(visit->first);
         const cv::Point2d& x = img_keypoint[cam_idx][x_idx].pt;
-        SFM::addCostFunc7DOF(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
+        SFM::addCostFunc6DOF(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
     }
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::ITERATIVE_SCHUR;
