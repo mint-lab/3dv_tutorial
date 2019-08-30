@@ -37,7 +37,7 @@ int main()
         std::vector<cv::Point2d> sample;
         for (int j = 1; j < ransac_n_sample; j++)
         {
-            int index = rng.uniform(0, data.size());
+            int index = rng.uniform(0, int(data.size()));
             sample.push_back(data[index]);
         }
         cv::Vec4d nnxy;

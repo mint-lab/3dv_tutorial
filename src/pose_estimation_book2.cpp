@@ -56,7 +56,7 @@ int main()
         // Determine whether each matched feature is an inlier or not
         std::vector<int> inlier;
         cv::solvePnPRansac(obj_points, img_points, K, dist_coeff, rvec, tvec, false, 500, 2, 0.99, inlier);
-        cv::Mat inlier_mask = cv::Mat::zeros(match.size(), 1, CV_8U);
+        cv::Mat inlier_mask = cv::Mat::zeros(int(match.size()), 1, CV_8U);
         for (size_t i = 0; i < inlier.size(); i++) inlier_mask.at<uchar>(inlier[i]) = 1;
         cv::Mat image_result;
         cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Vec3b(0, 0, 255), cv::Vec3b(0, 127, 0), inlier_mask);

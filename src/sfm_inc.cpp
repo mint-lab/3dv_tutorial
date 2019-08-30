@@ -51,7 +51,7 @@ int main()
 {
     const char* input = "data/relief/%02d.jpg";
     double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_limit = 100, max_cos_parallax = cos(10 * CV_PI / 180), ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
-    size_t min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
+    int min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;
 
     // Load images and extract features
@@ -80,7 +80,7 @@ int main()
 
     // Match features and find good matches
     cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
-    std::vector<std::pair<int, int>> match_pair;        // Good matches (image pairs)
+    std::vector<std::pair<uint, uint>> match_pair;        // Good matches (image pairs)
     std::vector<std::vector<cv::DMatch>> match_inlier;  // Good matches (inlier feature matches)
     for (size_t i = 0; i < img_set.size(); i++)
     {
@@ -99,12 +99,12 @@ int main()
             cv::findFundamentalMat(src, dst, inlier_mask, cv::RANSAC);
             for (int k = 0; k < inlier_mask.rows; k++)
                 if (inlier_mask.at<uchar>(k)) inlier.push_back(match[k]);
-            printf("3DV Tutorial: Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
+            printf("3DV Tutorial: Image %zd - %zd are matched (%zd / %zd).\n", i, j, inlier.size(), match.size());
 
             // Determine whether the image pair is good or not
             if (inlier.size() < min_inlier_num) continue;
-            printf("3DV Tutorial: Image %d - %d are selected.\n", i, j);
-            match_pair.push_back(std::pair<int, int>(i, j));
+            printf("3DV Tutorial: Image %zd - %zd are selected.\n", i, j);
+            match_pair.push_back(std::make_pair(uint(i), uint(j)));
             match_inlier.push_back(inlier);
             if (show_match)
             {
@@ -120,22 +120,22 @@ int main()
     // Initialize cameras (rotation, translation, intrinsic parameters)
     std::vector<SFM::Vec9d> cameras(img_set.size(), SFM::Vec9d(0, 0, 0, 0, 0, 0, f_init, cx_init, cy_init));
 
-    int best_pair = 0;
+    uint best_pair = 0;
     std::vector<uint> best_score(match_inlier.size());
     for (size_t i = 0; i < match_inlier.size(); i++)
-        best_score[i] = match_inlier[i].size();
+        best_score[i] = uint(match_inlier[i].size());
     cv::Mat best_Xs;
     while (true)
     {
         // 1) Select the best pair
         for (size_t i = 0; i < best_score.size(); i++)
-            if (best_score[i] > best_score[best_pair]) best_pair = i;
+            if (best_score[i] > best_score[best_pair]) best_pair = uint(i);
         if (best_score[best_pair] == 0)
         {
             printf("3DV Tutorial: There is no good match. Try again after reducing 'max_cos_parallax'.\n");
             return -1;
         }
-        const int best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;;
+        const uint best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;;
 
         // 2) Estimate relative pose from the best two views (epipolar geometry)
         std::vector<cv::Point2d> src, dst;
@@ -173,11 +173,11 @@ int main()
             if (isBadPoint(p, cameras[best_cam0], cameras[best_cam1], Z_limit, max_cos_parallax)) continue; // Do not add if it is bad
             best_score[best_pair]++;
         }
-        printf("3DV Tutorial: Image %d - %d were checked as the best match (# of inliers = %d, # of good points = %d).\n", best_cam0, best_cam1, match_inlier[best_pair].size(), best_score[best_pair]);
+        printf("3DV Tutorial: Image %u - %u were checked as the best match (# of inliers = %zd, # of good points = %d).\n", best_cam0, best_cam1, match_inlier[best_pair].size(), best_score[best_pair]);
         if (best_score[best_pair] > 100) break;
         best_score[best_pair] = 0;
     } // End of the 1st 'while (true)'
-    const int best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;;
+    const uint best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;;
 
     // Prepare the initial 3D points
     std::vector<cv::Point3d> Xs;
@@ -188,7 +188,7 @@ int main()
     {
         cv::Point3d p(best_Xs.col(i).rowRange(0, 3)); // A 3D point at 'idx'
         if (isBadPoint(p, cameras[best_cam0], cameras[best_cam1], Z_limit, max_cos_parallax)) continue; // Do not add if it is bad
-        uint X_idx = Xs.size(), x0_idx = match_inlier[best_pair][i].queryIdx, x1_idx = match_inlier[best_pair][i].trainIdx;
+        uint X_idx = uint(Xs.size()), x0_idx = match_inlier[best_pair][i].queryIdx, x1_idx = match_inlier[best_pair][i].trainIdx;
         Xs.push_back(p);
         Xs_rgb.push_back(img_set[best_cam0].at<cv::Vec3b>(img_keypoint[best_cam0][x0_idx].pt));
         xs_visited[SFM::genKey(best_cam0, x0_idx)] = X_idx;
@@ -197,7 +197,7 @@ int main()
     std::unordered_set<uint> img_added;
     img_added.insert(best_cam0);
     img_added.insert(best_cam1);
-    printf("3DV Tutorial: Image %d - %d are complete (# of 3D points = %d).\n", best_cam0, best_cam1, Xs.size());
+    printf("3DV Tutorial: Image %d - %d are complete (# of 3D points = %zd).\n", best_cam0, best_cam1, Xs.size());
 
     // Prepare bundle adjustment
     ceres::Problem ba;
@@ -217,11 +217,11 @@ int main()
     while (true)
     {
         // 4) Select the next image to add
-        std::vector<size_t> img_score(img_set.size(), 0);
+        std::vector<uint> img_score(img_set.size(), 0);
         std::vector<std::vector<uint>> match_table(img_set.size());
         for (size_t img = 0; img < img_score.size(); img++)
         {
-            if (img_added.find(img) == img_added.end())                                                                 // When the image is not added to the viewing graph
+            if (img_added.find(uint(img)) == img_added.end())                                                           // When the image is not added to the viewing graph
             {
                 for (size_t i = 0; i < match_pair.size(); i++)
                 {
@@ -230,20 +230,20 @@ int main()
                         for (auto itr = match_inlier[i].begin(); itr != match_inlier[i].end(); itr++)
                             if (xs_visited.find(SFM::genKey(match_pair[i].second, itr->trainIdx)) != xs_visited.end())  // When a matched inlier is in 'Xs', the current image gains more score
                                 img_score[img]++;
-                        match_table[img].push_back(i);
+                        match_table[img].push_back(uint(i));
                     }
                     else if (match_pair[i].second == img && img_added.find(match_pair[i].first) != img_added.end())     // When 'second' is the current image and 'first' is already added
                     {
                         for (auto itr = match_inlier[i].begin(); itr != match_inlier[i].end(); itr++)
                             if (xs_visited.find(SFM::genKey(match_pair[i].first, itr->queryIdx)) != xs_visited.end())   // When a matched inlier is in 'Xs', the current image gains more score
                                 img_score[img]++;
-                        match_table[img].push_back(i);
+                        match_table[img].push_back(uint(i));
                     }
                 }
             }
         }
         const auto next_score = std::max_element(img_score.begin(), img_score.end());
-        const int next_cam = std::distance(img_score.begin(), next_score);
+        const uint next_cam = static_cast<uint>(std::distance(img_score.begin(), next_score));
         const std::vector<uint> next_match = match_table[next_cam];
         if (next_match.empty()) break;
 
@@ -307,9 +307,9 @@ int main()
         }
 
         // 6) Reconstruct newly observed 3D points (triangulation)
-        int new_pts_total = 0;
+        uint new_pts_total = 0;
         for (auto new_pts = new_next_2d.begin(); new_pts != new_next_2d.end(); new_pts++)
-            new_pts_total += new_pts->size();
+            new_pts_total += uint(new_pts->size());
         if (new_pts_total < 10)
         {
             printf("3DV Tutorial: Image %d is complete (only localization; no 3D point addition).\n", next_cam);
@@ -330,21 +330,21 @@ int main()
             {
                 cv::Point3d p(new_Xs.col(j).rowRange(0, 3));
                 if (isBadPoint(p, cameras[next_cam], cameras[pair_cam], Z_limit, max_cos_parallax)) continue; // Do not add if it is bad
-                int X_idx = Xs.size();
+                uint X_idx = uint(Xs.size());
                 Xs.push_back(p);
                 Xs_rgb.push_back(img_set[next_cam].at<cv::Vec3b>(new_next_2d[i][j]));
                 xs_visited[new_next_key[i][j]] = X_idx;
                 xs_visited[new_pair_key[i][j]] = X_idx;
             }
         }
-        printf("3DV Tutorial: Image %d is complete (# of 3D points = %d).\n", next_cam, Xs.size());
+        printf("3DV Tutorial: Image %d is complete (# of 3D points = %zd).\n", next_cam, Xs.size());
 
         // 7) Optimize camera pose and 3D points together (bundle adjustment)
         ceres::Solve(options, &ba, &summary);
         img_added.insert(next_cam);
     } // End of the 2nd 'while (true)'
     for (size_t j = 0; j < cameras.size(); j++)
-        printf("3DV Tutorial: Camera %d's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
+        printf("3DV Tutorial: Camera %zd's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
     // Store the 3D points to an XYZ file
     FILE* fpts = fopen("sfm_inc(point).txt", "wt");

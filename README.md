@@ -1,20 +1,20 @@
 ## An Invitation to 3D Vision: A Tutorial for Everyone
-_An Invitation to 3D Vision_ is a introductory tutorial on 3D vision (a.k.a. visual geometry or geometric vision).
+_An Invitation to 3D Vision_ is an introductory tutorial on 3D vision (a.k.a. geometric vision or visual geometry or multi-view geometry).
 It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][].
-In addition to tutorial slides, we provide a set of example codes. The example codes are written as short as possible (mostly __less than 100 lines__) to improve readability and involve many interesting and practical applications.
+In addition to tutorial slides, example codes are provided in the purpose of education. They include simple but interesting and practical applications. The example codes are written as short as possible (mostly __less than 100 lines__) to be clear and easy to understand.
 
 * Download [tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * Download [example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
-* Download [OpenCV binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/OpenCV_v3.2.0_32bit.zip) and [Ceres Solver binary](https://github.com/sunglok/3dv_tutorial/releases/download/misc/CeresSolver_v1.2.0_32bit.zip) for Windows
+* Check [how to run example codes](https://github.com/sunglok/3dv_tutorial/blob/master/HOWTO_RUN.md)
 
 ### What does its name come from?
-* The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners in 3D vision and explorers from other fields.
+* The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners to 3D vision and its applications.
 * The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
 
 ### Examples
 * __Single-view Geometry__
   * Camera Projection Model
-    * Object Localization and Measurement: [object_localization.cpp][]
+    * Object Localization and Measurement: [object_localization.cpp][] (result)
     * Image Formation: [image_formation.cpp][] (result: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
     * Geometric Distortion Correction: [distortion_correction.cpp][] ([result](https://www.youtube.com/watch?v=HKetupWh4V8))
   * General 2D-3D Geometry
@@ -38,11 +38,12 @@ In addition to tutorial slides, we provide a set of example codes. The example c
   * Structure-from-Motion
     * Global SfM: [sfm_global.cpp][]
     * Incremental SfM: [sfm_inc.cpp][]
-  * Visual Odometry
+  * Feature-based Visual Odometry and SLAM
     * Epipolar Version: [visual_odometry_epipolar.cpp][]
     * Stereo Version
     * PnP and BA Version
-  * Visual SLAM
+    * SLAM Version
+  * Direct Visual Odometry and SLAM
   * c.f. The above examples need [Ceres Solver][] for bundle adjustment.
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
@@ -53,9 +54,9 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 
 ### Dependencies
 * [OpenCV][] (> 3.0.0, 3-clause BSD License)
-  * _OpenCV_ is a base of all example codes for linear algebra, vision algorithms, image/video manipulation, and GUI.
+  * _OpenCV_ is a base of all example codes for basic computer vision algorithms, linear algebra, image/video manipulation, and GUI.
 * [Ceres Solver][] (3-clause BSD License): A numerical optimization library
-  * _Ceres Solver_ is additionally used by m-estimator, bundle adjustment, visual odometry, and visual SLAM.
+  * _Ceres Solver_ is additionally used by m-estimator, bundle adjustment, structure-from-motion, and visual odometry/SLAM.
 
 ### License
 * [Beerware](http://en.wikipedia.org/wiki/Beerware)
@@ -66,12 +67,12 @@ In addition to tutorial slides, we provide a set of example codes. The example c
 ### Acknowledgement
 The authors thank the following contributors and projects.
 
-* [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): We sincerely thank him for motivating many examples and providing [OpenCV][] binaries for Windows.
-* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes with [cvsba][] and [Toy-SfM](https://github.com/royshil/SfM-Toy-Library).
-* [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): We include some of KITTI odometry dataset for demonstrating visual odometry.
-* [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): We include his two hill images for demonstrating image stitching.
-* [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): We include his shaking CCTV video for demonstrating video stabilization.
-* [Richard Blais](http://www.richardblais.net/): We include his book cover used in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html).
+* [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): He motivated many examples.
+* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes with [Toy-SfM](https://github.com/royshil/SfM-Toy-Library) and [cvsba][https://www.uco.es/investiga/grupos/ava/node/39].
+* [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): The KITTI odometry dataset #07 was used to demonstrate visual odometry and SLAM.
+* [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): His two hill images were used to demonstrate image stitching.
+* [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): His shaking CCTV video was used to demonstrate video stabilization.
+* [Richard Blais](http://www.richardblais.net/): His book cover and video in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html) were used to demonstrate camera pose estimation and augmented reality.
 
 [OpenCV]: http://opencv.org/
 [Ceres Solver]: http://ceres-solver.org/

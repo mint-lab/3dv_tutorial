@@ -51,7 +51,7 @@ int main()
         }
 
         // Determine whether each matched feature is an inlier or not
-        cv::Mat inlier_mask = cv::Mat::zeros(match.size(), 1, CV_8U);
+        cv::Mat inlier_mask = cv::Mat::zeros(int(match.size()), 1, CV_8U);
         cv::Mat H = cv::findHomography(img_points, obj_project, inlier_mask, cv::RANSAC, 2);
         cv::Mat image_result;
         cv::drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, image_result, cv::Vec3b(0, 0, 255), cv::Vec3b(0, 127, 0), inlier_mask);

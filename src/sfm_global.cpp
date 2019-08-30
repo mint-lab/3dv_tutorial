@@ -33,7 +33,7 @@ int main()
 {
     const char* input = "data/relief/%02d.jpg";
     double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 100, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
-    size_t min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
+    int min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;
 
     // Load images and extract features
@@ -62,7 +62,7 @@ int main()
 
     // Match features and find good matches
     cv::Ptr<cv::DescriptorMatcher> fmatcher = cv::DescriptorMatcher::create("BruteForce-Hamming");
-    std::vector<std::pair<int, int>> match_pair;        // Good matches (image pairs)
+    std::vector<std::pair<uint, uint>> match_pair;        // Good matches (image pairs)
     std::vector<std::vector<cv::DMatch>> match_inlier;  // Good matches (inlier feature matches)
     for (size_t i = 0; i < img_set.size(); i++)
     {
@@ -81,12 +81,12 @@ int main()
             cv::findFundamentalMat(src, dst, inlier_mask, cv::RANSAC);
             for (int k = 0; k < inlier_mask.rows; k++)
                 if (inlier_mask.at<uchar>(k)) inlier.push_back(match[k]);
-            printf("3DV Tutorial: Image %d - %d are matched (%d / %d).\n", i, j, inlier.size(), match.size());
+            printf("3DV Tutorial: Image %zd - %zd are matched (%zd / %zd).\n", i, j, inlier.size(), match.size());
 
             // Determine whether the image pair is good or not
             if (inlier.size() < min_inlier_num) continue;
-            printf("3DV Tutorial: Image %d - %d are selected.\n", i, j);
-            match_pair.push_back(std::pair<int, int>(i, j));
+            printf("3DV Tutorial: Image %zd - %zd are selected.\n", i, j);
+            match_pair.push_back(std::make_pair(uint(i), uint(j)));
             match_inlier.push_back(inlier);
             if (show_match)
             {
@@ -110,8 +110,8 @@ int main()
     {
         for (size_t in = 0; in < match_inlier[m].size(); in++)
         {
-            const int &cam1_idx = match_pair[m].first, &cam2_idx = match_pair[m].second;
-            const int &x1_idx = match_inlier[m][in].queryIdx, &x2_idx = match_inlier[m][in].trainIdx;
+            const uint &cam1_idx = match_pair[m].first, &cam2_idx = match_pair[m].second;
+            const uint &x1_idx = match_inlier[m][in].queryIdx, &x2_idx = match_inlier[m][in].trainIdx;
             const uint key1 = SFM::genKey(cam1_idx, x1_idx), key2 = SFM::genKey(cam2_idx, x2_idx);
             auto visit1 = xs_visited.find(key1), visit2 = xs_visited.find(key2);
             if (visit1 != xs_visited.end() && visit2 != xs_visited.end())
@@ -131,7 +131,7 @@ int main()
             else
             {
                 // Add a new point if two observations are not visited
-                X_idx = Xs.size();
+                X_idx = uint(Xs.size());
                 Xs.push_back(cv::Point3d(0, 0, Z_init));
                 Xs_rgb.push_back(img_set[cam1_idx].at<cv::Vec3b>(img_keypoint[cam1_idx][x1_idx].pt));
             }
@@ -139,7 +139,7 @@ int main()
             if (visit2 == xs_visited.end()) xs_visited[key2] = X_idx;
         }
     }
-    printf("3DV Tutorial: # of 3D points: %d\n", Xs.size());
+    printf("3DV Tutorial: # of 3D points: %zd\n", Xs.size());
 
     // 3) Optimize camera pose and 3D points together (bundle adjustment)
     ceres::Problem ba;
@@ -161,9 +161,9 @@ int main()
     // Mark erroneous points to reject them
     std::vector<bool> is_noisy = maskNoisyPoints(Xs, img_keypoint, cameras, xs_visited, ba_loss_width);
     int num_noisy = std::accumulate(is_noisy.begin(), is_noisy.end(), 0);
-    printf("3DV Tutorial: # of 3D points: %d (Rejected: %d)\n", Xs.size(), num_noisy);
+    printf("3DV Tutorial: # of 3D points: %zd (Rejected: %d)\n", Xs.size(), num_noisy);
     for (size_t j = 0; j < cameras.size(); j++)
-        printf("3DV Tutorial: Camera %d's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
+        printf("3DV Tutorial: Camera %zd's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
     // Store the 3D points to an XYZ file
     FILE* fpts = fopen("sfm_global(point).txt", "wt");
