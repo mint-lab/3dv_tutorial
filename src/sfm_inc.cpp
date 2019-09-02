@@ -347,7 +347,7 @@ int main()
         printf("3DV Tutorial: Camera %zd's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
     // Store the 3D points to an XYZ file
-    FILE* fpts = fopen("sfm_inc(point).txt", "wt");
+    FILE* fpts = fopen("sfm_inc(point).xyz", "wt");
     if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
     {

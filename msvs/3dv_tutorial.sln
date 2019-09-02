@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video_stabilization", "video_stabilization\video_stabilization.vcxproj", "{5CCD570B-06A1-48B8-A7EF-756587CA45C0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vo_epipolar", "vo_epipolar\vo_epipolar.vcxproj", "{5549C427-BA0F-48AF-B3A0-029A8B57E71F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "visual_odometry_epipolar", "visual_odometry_epipolar\visual_odometry_epipolar.vcxproj", "{5549C427-BA0F-48AF-B3A0-029A8B57E71F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "video_stabilization", "video_stabilization\video_stabilization.vcxproj", "{5CCD570B-06A1-48B8-A7EF-756587CA45C0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "triangulation", "triangulation\triangulation.vcxproj", "{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}"
 EndProject
@@ -47,14 +47,14 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Debug|x64.ActiveCfg = Debug|x64
-		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Debug|x64.Build.0 = Debug|x64
-		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Release|x64.ActiveCfg = Release|x64
-		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Release|x64.Build.0 = Release|x64
 		{5549C427-BA0F-48AF-B3A0-029A8B57E71F}.Debug|x64.ActiveCfg = Debug|x64
 		{5549C427-BA0F-48AF-B3A0-029A8B57E71F}.Debug|x64.Build.0 = Debug|x64
 		{5549C427-BA0F-48AF-B3A0-029A8B57E71F}.Release|x64.ActiveCfg = Release|x64
 		{5549C427-BA0F-48AF-B3A0-029A8B57E71F}.Release|x64.Build.0 = Release|x64
+		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Debug|x64.ActiveCfg = Debug|x64
+		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Debug|x64.Build.0 = Debug|x64
+		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Release|x64.ActiveCfg = Release|x64
+		{5CCD570B-06A1-48B8-A7EF-756587CA45C0}.Release|x64.Build.0 = Release|x64
 		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Debug|x64.ActiveCfg = Debug|x64
 		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Debug|x64.Build.0 = Debug|x64
 		{F3C46820-CF91-48EF-94E1-5ADB573D8D8B}.Release|x64.ActiveCfg = Release|x64

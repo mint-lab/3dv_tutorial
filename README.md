@@ -5,7 +5,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 
 * Download [tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * Download [example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
-* Check [how to run example codes](https://github.com/sunglok/3dv_tutorial/blob/master/HOWTO_RUN.md)
+* Read [how to run example codes](https://github.com/sunglok/3dv_tutorial/blob/master/HOWTO_RUN.md)
 
 ### What does its name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners to 3D vision and its applications.
@@ -14,22 +14,22 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 ### Examples
 * __Single-view Geometry__
   * Camera Projection Model
-    * Object Localization and Measurement: [object_localization.cpp][] (result)
-    * Image Formation: [image_formation.cpp][] (result: [0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view?usp=sharing), [1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view?usp=sharing), [2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view?usp=sharing), [3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view?usp=sharing), [4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view?usp=sharing))
-    * Geometric Distortion Correction: [distortion_correction.cpp][] ([result](https://www.youtube.com/watch?v=HKetupWh4V8))
+    * Object Localization and Measurement: [object_localization.cpp][] (result: [image](https://drive.google.com/open?id=10Lche-1HHazDeohXEQK443ruDTAmIO4E))
+    * Image Formation: [image_formation.cpp][] (result: [image0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view), [image1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view), [image2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view), [image3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view), [image4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view))
+    * Geometric Distortion Correction: [distortion_correction.cpp][] (result: [video](https://www.youtube.com/watch?v=HKetupWh4V8))
   * General 2D-3D Geometry
-    * Camera Calibration: [camera_calibration.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view?usp=sharing))
-    * Camera Pose Estimation (Chessboard): [pose_estimation_chessboard.cpp][] ([result](https://www.youtube.com/watch?v=4nA1OQGL-ig))
+    * Camera Calibration: [camera_calibration.cpp][] (result: [text](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view))
+    * Camera Pose Estimation (Chessboard): [pose_estimation_chessboard.cpp][] (result: [video](https://www.youtube.com/watch?v=4nA1OQGL-ig))
     * Camera Pose Estimation (Book): [pose_estimation_book1.cpp][]
     * Camera Pose Estimation and Calibration: [pose_estimation_book2.cpp][]
-    * Camera Pose Estimation and Calibration w/o Initially Given Camera Parameters: [pose_estimation_book3.cpp][] ([result](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
+    * Camera Pose Estimation and Calibration w/o Initially Given Camera Parameters: [pose_estimation_book3.cpp][] (result: [video](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
 * __Two-view Geometry__
   * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view?usp=sharing), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view?usp=sharing))
-    * Planar Image Stitching: [image_stitching.cpp][] ([result](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view?usp=sharing))
-    * 2D Video Stabilization: [video_stabilization.cpp][] ([result](https://www.youtube.com/watch?v=be_dzYicEzI))
+    * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view))
+    * Planar Image Stitching: [image_stitching.cpp][] (result: [image](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view))
+    * 2D Video Stabilization: [video_stabilization.cpp][] (result: [video](https://www.youtube.com/watch?v=be_dzYicEzI))
   * General 2D-2D Geometry (Epipolar Geometry)
-    * Monocular Visual Odometry (Epipolar Version): [visual_odometry_epipolar.cpp][]
+    * Visual Odometry (Monocular, Epipolar Version): [vo_epipolar.cpp][]
     * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
 * __Multi-view Geometry__
   * Bundle Adjustment
@@ -39,16 +39,18 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Global SfM: [sfm_global.cpp][]
     * Incremental SfM: [sfm_inc.cpp][]
   * Feature-based Visual Odometry and SLAM
-    * Epipolar Version: [visual_odometry_epipolar.cpp][]
-    * Stereo Version
-    * PnP and BA Version
-    * SLAM Version
+    * Visual Odometry (Monocular, Epipolar Version): [vo_epipolar.cpp][]
+    * Visual Odometry (Stereo Version)
+    * Visual Odometry (Monocular, PnP and BA Version)
+    * Visual SLAM (Monocular Version)
   * Direct Visual Odometry and SLAM
+    * Visual Odometry (Monocular, Direct Version)
   * c.f. The above examples need [Ceres Solver][] for bundle adjustment.
 * __Correspondence Problem__
   * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
   * Line Fitting with M-estimators: [line_fitting_m_est.cpp][]
 * **Appendix**
+  * Line Fitting
   * Planar Homograph Estimation
   * Fundamental Matrix Estimation
 
@@ -88,7 +90,7 @@ The authors thank the following contributors and projects.
 [perspective_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/perspective_correction.cpp
 [image_stitching.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/image_stitching.cpp
 [video_stabilization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/video_stabilization.cpp
-[visual_odometry_epipolar.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/visual_odometry_epipolar.cpp
+[vo_epipolar.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/vo_epipolar.cpp
 [triangulation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/triangulation.cpp
 [bundle_adjustment_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_global.cpp
 [bundle_adjustment_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/src/bundle_adjustment_inc.cpp

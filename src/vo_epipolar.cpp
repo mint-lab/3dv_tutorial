@@ -9,7 +9,7 @@ int main()
     int min_inlier_num = 100;
 
     // Open a file to write camera trajectory
-    FILE* camera_traj = fopen("visual_odometry_epipolar.xyz", "wt");
+    FILE* camera_traj = fopen("vo_epipolar.xyz", "wt");
     if (camera_traj == NULL) return -1;
 
     // Open a video and get the initial image
