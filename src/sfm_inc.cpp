@@ -135,7 +135,7 @@ int main()
             printf("3DV Tutorial: There is no good match. Try again after reducing 'max_cos_parallax'.\n");
             return -1;
         }
-        const uint best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;;
+        const uint best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;
 
         // 2) Estimate relative pose from the best two views (epipolar geometry)
         std::vector<cv::Point2d> src, dst;
@@ -177,7 +177,7 @@ int main()
         if (best_score[best_pair] > 100) break;
         best_score[best_pair] = 0;
     } // End of the 1st 'while (true)'
-    const uint best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;;
+    const uint best_cam0 = match_pair[best_pair].first, best_cam1 = match_pair[best_pair].second;
 
     // Prepare the initial 3D points
     std::vector<cv::Point3d> Xs;
