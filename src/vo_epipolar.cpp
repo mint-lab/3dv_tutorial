@@ -2,7 +2,7 @@
 
 int main()
 {
-    const char* input = "data/KITTI_07_L/%06d.png";
+    const char* input = "data/07/image_0/%06d.png";
     double f = 707.0912;
     cv::Point2d c(601.8873, 183.1104);
     bool use_5pt = true;
@@ -39,9 +39,9 @@ int main()
         // Extract optical flow
         std::vector<cv::Point2f> point_prev, point;
         cv::goodFeaturesToTrack(gray_prev, point_prev, 2000, 0.01, 10);
-        std::vector<uchar> m_status;
+        std::vector<uchar> status;
         cv::Mat err;
-        cv::calcOpticalFlowPyrLK(gray_prev, gray, point_prev, point, m_status, err);
+        cv::calcOpticalFlowPyrLK(gray_prev, gray, point_prev, point, status, err);
         gray_prev = gray;
 
         // Calculate relative pose

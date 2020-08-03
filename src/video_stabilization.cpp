@@ -35,9 +35,9 @@ int main()
 
         // Extract optical flow and calculate planar homography
         std::vector<cv::Point2f> point;
-        std::vector<uchar> m_status;
+        std::vector<uchar> status;
         cv::Mat err, inlier_mask;
-        cv::calcOpticalFlowPyrLK(gray_ref, gray, point_ref, point, m_status, err);
+        cv::calcOpticalFlowPyrLK(gray_ref, gray, point_ref, point, status, err);
         cv::Mat H = cv::findHomography(point, point_ref, inlier_mask, cv::RANSAC);
 
         // Synthesize a stabilized image
