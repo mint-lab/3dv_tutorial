@@ -54,17 +54,39 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * Planar Homograph Estimation
   * Fundamental Matrix Estimation
 
+
+
+
 ### Dependencies
 * [OpenCV][] (> 3.0.0, 3-clause BSD License)
   * _OpenCV_ is a base of all example codes for basic computer vision algorithms, linear algebra, image/video manipulation, and GUI.
 * [Ceres Solver][] (3-clause BSD License): A numerical optimization library
   * _Ceres Solver_ is additionally used by m-estimator, bundle adjustment, structure-from-motion, and visual odometry/SLAM.
 
+---
+### __New Version! Python Examples Added!__
+  * You can see the same examples as above in the following [script](scripts).
+  * We recommend running the examples in Anaconda.
+
+
+### Dependencies
+It was tested in the following version.
+
+* [OpenCV][] (4.2.0v)
+* [Scipy](https://scipy.org/) (1.8.0v)
+  * SciPy (pronounced “Sigh Pie”) is an open-source software for mathematics, science, and engineering.
+* [Numpy](https://numpy.org/) (1.22.3v)
+  * The fundamental package for scientific computing with Python
+* [Open3D](http://www.open3d.org/) (0.13.0v)
+  * Open3D is an open-source library that supports rapid development of software that deals with 3D data.
+
+---
 ### License
 * [Beerware](http://en.wikipedia.org/wiki/Beerware)
 
 ### Authors
-* [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok AT hanmail DOT net)
+* [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok@hanmail.net)
+* [JunHyeok Choi](https://mint-lab.github.io/members/) (dkwnsgur12@gmail.com)
 
 ### Acknowledgement
 The authors thank the following contributors and projects.
