@@ -35,7 +35,7 @@ def main():
     points_src = np.array(points_src, dtype=np.float32)
     H, inliner_mask = cv2.findHomography(points_src, points_dst, cv2.RANSAC)
     rectify = cv2.warpPerspective(original, H, card_size)
-
+    
 
     cv2.imshow(window_name, rectify)
     cv2.waitKey(0)
