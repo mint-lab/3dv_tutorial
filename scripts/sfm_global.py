@@ -178,7 +178,7 @@ def main():
                 match_image = cv2.drawMatches(img_set[i], img_keypoints[i], img_set[j], img_keypoints[j], match, (0, 255, 0), (255, 0, 0), matchesMask=inlier_mask)
                 cv2.imshow("3DV Tutorial: Structure-from-Motion", match_image)
                 cv2.waitKey()
-    if match_pair.size < 1: return 
+    # if match_pair.size < 1: return 
     
     # Find 0 - 1 - 2 Covisibility Matched points
     points_3d = []
