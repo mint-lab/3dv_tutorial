@@ -1,3 +1,4 @@
+from pickletools import read_uint1
 from scipy.spatial.transform import Rotation
 from copy import deepcopy
 import cv2
@@ -9,25 +10,43 @@ def get_camera_mat(cam_vec):
     return np.array([[f, 0, cx], [0, f, cy], [0, 0, 1]], dtype=np.float32)
 
 def update_camera_pose(cam_vec, R, t):
+    # 
     t = t.squeeze()
     rvec = Rotation.from_matrix(R).as_rotvec()
-    cam = cam_vec.copy() # 내부 파라미터가 안바뀌는 에러가 있음. 이유 찾아내야함.
-    cam[3:6] = rvec
-    cam[6:9] = t
-    return cam
+    result = np.array([cam_vec[0], cam_vec[1], cam_vec[2], rvec[0], rvec[1], rvec[2], t[0], t[1], t[2]], dtype=np.float32)
+    return result
 
 def get_projection_mat(cam_vec):
     K = get_camera_mat(cam_vec=cam_vec)
     R = Rotation.from_rotvec(cam_vec[3:6]).as_matrix()
     t = cam_vec[6:9, np.newaxis]
     Rt = np.hstack((R, t))
-    return K @ Rt
+    result = K @ Rt
+    return result
+
+def isBadPoint(point_3d, camera1, camera2, Z_limit, max_cos_parallax):
+    # 무슨 내용인지 모름
+    if point_3d[2] < -Z_limit or point_3d[2] > Z_limit:
+        return True
+    rvec1, rvec2 = np.array([camera1[3], camera1[4], camera1[5]], dtype=np.float32), np.array([camera2[3], camera2[4], camera2[5]], dtype=np.float32)
+    R1, R2 = Rotation.from_rotvec(rvec1).as_matrix(), Rotation.from_rotvec(rvec2).as_matrix()
+    # rot_vec to rot_mat
+    t1, t2 = np.array([[camera1[6], camera1[7], camera1[8]]], dtype=np.float32), np.array([[camera2[6], camera2[7], camera2[8]]], dtype=np.float32)
+    p1 = R1 @ point_3d[:, np.newaxis] + t1.T
+    p2 = R2 @ point_3d[:, np.newaxis] + t2.T
+    if p1[2,0] <= 0 or p2[2,0] <= 0 : return True
+    v2 = R1 @ R2.T @ p2
+    cos_parallax = p1.T @ v2 / (np.linalg.norm(p1) * np.linalg.norm(v2))
+    if cos_parallax > max_cos_parallax: return True
+    return False
+
 
 def main():
     img_path = "./bin/data/relief/%02d.jpg"
     img_resize = 0.25
     f_init, cx_init, cy_init, Z_init, Z_limit = 500, -1, -1, 2, 100
     ba_loss_width = 9
+    max_cos_parallax = np.cos(10*np.pi / 180)
     min_inlier_num, ba_num_iter = 200, 200
     SHOW_MATCH = False
 
@@ -73,7 +92,7 @@ def main():
             F, inlier_mask = cv2.findFundamentalMat(src, dst, cv2.RANSAC) # inlier_mask = 3x3
             for k in range(len(inlier_mask)):
                 if inlier_mask[k]: 
-                    inlier.append(match[k]) # 매칭된 index를 넣음.
+                    inlier.append(match[k]) #
             inlier = np.array(inlier)
             print(f"3DV Tutorial: Image {i} - {j} are matched ({inlier.size} / {match.size}).\n")
 
@@ -90,7 +109,7 @@ def main():
     if len(match_pair) < 1: return 
 
     # Start Initialize cameras(cam_params, rotation, translation)
-    cameras = np.full((img_set.shape[0], 9), np.array([f_init, cx_init, cy_init, 0, 0, 0, 0, 0, 0]))
+    cameras = np.full((img_set.shape[0], 9), np.array([f_init, cx_init, cy_init, 0, 0, 0, 0, 0, 0]), dtype=np.float32)
     best_pair = 0
     best_score = [i for i in range(len(match_inlier))]
     best_points_3d = None
@@ -131,10 +150,14 @@ def main():
         best_points_3d[2] /= best_points_3d[3]
         
         best_score[best_pair] = 0
+        for best_point_3d in best_points_3d:
+            if isBadPoint(best_point_3d[:3], cameras[best_cam0], cameras[best_cam1], Z_limit, max_cos_parallax): continue
+            best_score[best_pair] += 1
+        print(f"3DV Tutorial: Image {best_cam0} - {best_cam1} were checked as the best match (# of inliers = {len(match_inlier[best_pair])}, # of good points = {best_score[best_pair]})")
+        if best_score[best_pair] > 100: break
         
-        #
-        break
     # End Initialize cameras
+    best_cam0 = match_pair[best_pair]
 
     # Prepare the initial 3D points
 
