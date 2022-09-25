@@ -92,10 +92,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\bundle_adjustment_inc.cpp" />
+    <ClCompile Include="..\..\examples\bundle_adjustment_inc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\bundle_adjustment.hpp" />
+    <ClInclude Include="..\..\examples\bundle_adjustment.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

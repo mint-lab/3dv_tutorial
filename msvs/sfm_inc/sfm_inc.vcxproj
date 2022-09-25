@@ -92,11 +92,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\sfm_inc.cpp" />
+    <ClCompile Include="..\..\examples\sfm_inc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\bundle_adjustment.hpp" />
-    <ClInclude Include="..\..\src\sfm.hpp" />
+    <ClInclude Include="..\..\examples\bundle_adjustment.hpp" />
+    <ClInclude Include="..\..\examples\sfm.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
