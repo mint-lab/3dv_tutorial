@@ -31,7 +31,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "distortion_correction", "di
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "camera_calibration", "camera_calibration\camera_calibration.vcxproj", "{8FE6C6CB-6D5D-4745-A4CE-0621BC8633B9}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "line_fitting_m_est", "line_fitting_m_est\line_fitting_m_est.vcxproj", "{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "line_fitting_m_estimation", "line_fitting_m_estimation\line_fitting_m_estimation.vcxproj", "{AFC78990-4FCF-40A8-AD20-39EA569AD2F2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bundle_adjustment_global", "bundle_adjustment_global\bundle_adjustment_global.vcxproj", "{64E65811-6F72-479E-BEAB-1DADE0952A7B}"
 EndProject
