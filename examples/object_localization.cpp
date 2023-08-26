@@ -39,13 +39,13 @@ void MouseEventHandler(int event, int x, int y, int flags, void* param)
 
 int main()
 {
-    const char* input = "data/daejeon_station.png";
+    const char* image_file = "data/daejeon_station.png";
     double f = 810.5, cx = 480, cy = 270, L = 3.31;
     cv::Point3d cam_ori(DEG2RAD(-18.7), DEG2RAD(-8.2), DEG2RAD(2.0));
     cv::Range grid_x(-2, 3), grid_z(5, 35);
 
     // Load an images
-    cv::Mat image = cv::imread(input);
+    cv::Mat image = cv::imread(image_file);
     if (image.empty()) return -1;
 
     // Configure mouse callback

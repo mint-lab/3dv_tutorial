@@ -1,63 +1,60 @@
-import cv2
 import numpy as np
+import cv2 as cv
 
-def main():
-    input = "../bin/data/chessboard.avi"
-    K = np.array([[432.7390364738057, 0, 476.0614994349778],
-                  [0, 431.2395555913084, 288.7602152621297],
-                  [0, 0, 1]], dtype=np.float32)
-    dist_coeff = np.array([-0.2852754904152874, 0.1016466459919075, -0.0004420196146339175, 0.0001149909868437517, -0.01803978785585194], dtype=np.float32)
-    board_pattern = (10, 7)
-    board_cellsize = 0.025
-    criteria = cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE + cv2.CALIB_CB_FAST_CHECK
+# The given video and calibration data
+input_file = '../data/chessboard.avi'
+K = np.array([[432.7390364738057, 0, 476.0614994349778],
+              [0, 431.2395555913084, 288.7602152621297],
+              [0, 0, 1]])
+dist_coeff = np.array([-0.2852754904152874, 0.1016466459919075, -0.0004420196146339175, 0.0001149909868437517, -0.01803978785585194])
+board_pattern = (10, 7)
+board_cellsize = 0.025
+board_criteria = cv.CALIB_CB_ADAPTIVE_THRESH + cv.CALIB_CB_NORMALIZE_IMAGE + cv.CALIB_CB_FAST_CHECK
 
-    # Open a video
-    cap = cv2.VideoCapture(input)
+# Open a video
+video = cv.VideoCapture(input_file)
+assert video.isOpened(), 'Cannot read the given input, ' + input_file
 
-    # Prepare a 3D box for simple AR
-    box_lower = np.array([[4*board_cellsize, 1*board_cellsize,0], [5*board_cellsize, 2*board_cellsize, 0], [5*board_cellsize, 4*board_cellsize, 0], [4*board_cellsize, 4* board_cellsize,0]], dtype=np.float32)
-    box_upper = np.array([[4*board_cellsize, 2*board_cellsize,-board_cellsize], [5*board_cellsize, 2*board_cellsize, -board_cellsize], [5*board_cellsize, 4*board_cellsize, -board_cellsize], [4*board_cellsize, 4* board_cellsize,-board_cellsize]], dtype=np.float32)
+# Prepare a 3D box for simple AR
+box_lower = board_cellsize * np.array([[4, 2,  0], [5, 2,  0], [5, 4,  0], [4, 4,  0]])
+box_upper = board_cellsize * np.array([[4, 2, -1], [5, 2, -1], [5, 4, -1], [4, 4, -1]])
 
-    # Prepare 3D points on a chessboard
-    obj_points = np.zeros((board_pattern[0]*board_pattern[1],3))
-    obj_points_input = []
-    for r in range(7):
-        for c in range(10):
-            obj_points_input.append([board_cellsize * c, board_cellsize * r])
-    obj_points_input = np.array(obj_points_input, dtype=np.float32)
-    obj_points[:, :2] = obj_points_input
+# Prepare 3D points on a chessboard
+obj_points = board_cellsize * np.array([[c, r, 0] for r in range(board_pattern[1]) for c in range(board_pattern[0])])
 
-    # Run pose estimation
-    while True:
-        # Grab an image from the video
-        ret, image = cap.read()
-        if not ret: break
+# Run pose estimation
+while True:
+    # Read an image from the video
+    valid, img = video.read()
+    if not valid:
+        break
 
-        # Estimate camera pose
-        ret, img_points = cv2.findChessboardCorners(image, board_pattern, criteria)
-        if ret:
-            ret, rvec, tvec = cv2.solvePnP(obj_points, img_points, K, dist_coeff)
+    # Estimate the camera pose
+    complete, img_points = cv.findChessboardCorners(img, board_pattern, board_criteria)
+    if complete:
+        ret, rvec, tvec = cv.solvePnP(obj_points, img_points, K, dist_coeff)
 
-            # Draw the box on the image
-            line_lower, _ = cv2.projectPoints(box_lower, rvec, tvec, K, dist_coeff)
-            line_upper, _ = cv2.projectPoints(box_upper, rvec, tvec, K, dist_coeff)
+        # Draw the box on the image
+        line_lower, _ = cv.projectPoints(box_lower, rvec, tvec, K, dist_coeff)
+        line_upper, _ = cv.projectPoints(box_upper, rvec, tvec, K, dist_coeff)
+        cv.polylines(img, [np.int32(line_lower)], True, (255, 0, 0), 2)
+        cv.polylines(img, [np.int32(line_upper)], True, (0, 0, 255), 2)
+        for b, t in zip(line_lower, line_upper):
+            cv.line(img, np.int32(b.flatten()), np.int32(t.flatten()), (0, 255, 0), 2)
 
-            # Change 4x1 matrix (CV_64FC2) to 4x2 (CV_32SC1) / np.int32([line_lower]) or line_lower.reshape(-1, 1, 2)
-            image = cv2.polylines(image, np.int32([line_lower]), True, (255, 0, 0), 2) 
-            image = cv2.polylines(image, np.int32([line_upper]), True, (0, 0, 255), 2)
-            for i in range(len(line_lower)):
-                image = cv2.line(image, tuple(line_lower[i][0]), tuple(line_upper[i][0]), (0, 255, 0), 2, cv2.LINE_AA)
+        # Print the camera position
+        R, _ = cv.Rodrigues(rvec) # Alternative) scipy.spatial.transform.Rotation
+        p = (-R.T @ tvec).flatten()
+        info = f'XYZ: [{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}]'
+        cv.putText(img, info, (10, 25), cv.FONT_HERSHEY_DUPLEX, 0.6, (0, 255, 0))
 
-            # Print camera position
-            R,_ = cv2.Rodrigues(rvec)
-            p = -R.T @ tvec
-            string_info = f"XYZ: [{p.T[0][0]:.3f} {p.T[0][1]:.3f} {p.T[0][2]:.3f}]"
-            image = cv2.putText(image, string_info, (5,16), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))
+    # Show the image and process the key event
+    cv.imshow('Pose Estimation (Chessboard)', img)
+    key = cv.waitKey(10)
+    if key == ord(' '):
+        key = cv.waitKey()
+    if key == 27: # ESC
+        break
 
-        cv2.imshow("3DV Tutorial: Pose Estimation (Chess board)", image)
-        if cv2.waitKey(1) == ord('q'): break
-
-    cap.release()
-
-if __name__ == "__main__":
-    main()
+video.release()
+cv.destroyAllWindows()

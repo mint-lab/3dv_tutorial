@@ -1,111 +1,78 @@
-import cv2
 import numpy as np
-import copy
+import cv2 as cv
 
-def main():
-    input, cover = "../bin/data/blais.mp4", "../bin/data/blais.jpg"
-    f, cx_init, cy_init = 1000, 320, 240
-    min_inlier_num = 100
+input_file, cover_file = '../data/blais.mp4', '../data/blais.jpg'
+min_inlier_num = 100
 
-    # Load the object image and extract features
-    obj_image = cv2.imread(cover)
+fdetector = cv.ORB_create()
+fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
 
-    fdetector = cv2.ORB_create()
-    fmatcher = cv2.DescriptorMatcher_create("BruteForce-Hamming")
+# Load the object image and extract features
+obj_image = cv.imread(cover_file)
+assert obj_image is not None, 'Cannot read the given cover image, ' + cover_file
+obj_keypoints, obj_descriptors = fdetector.detectAndCompute(obj_image, None)
+assert len(obj_keypoints) >= min_inlier_num, 'The given cover image contains too small number of features.'
+fmatcher.add(obj_descriptors)
 
-    obj_keypoint, obj_descriptor = fdetector.detectAndCompute(obj_image, None)
-    if (len(obj_keypoint)==0 or len(obj_descriptor)==0): raise Exception("No orb keypoints")
-    # obj_descriptor = fmatcher.add(obj_descriptor)
+# Open a video
+video = cv.VideoCapture(input_file)
+assert video.isOpened(), 'Cannot read the given video, ' + input_file
 
-    # Open a video
-    cap = cv2.VideoCapture(input)
+# Prepare a box for simple AR
+box_lower = np.array([[30, 145, 0], [30, 200, 0], [200, 200, 0], [200, 145, 0]], dtype=np.float32)
+box_upper = np.array([[30, 145, -50], [30, 200, -50], [200, 200, -50], [200, 145, -50]], dtype=np.float32)
 
-    # Prepare a box for simple AR
-    box_lower = np.array([[30, 145, 0], [30, 200, 0], [200, 200, 0], [200, 145, 0]], dtype=np.float32)
-    box_upper = np.array([[30, 145, -50], [30, 200, -50], [200, 200, -50], [200, 145, -50]], dtype = np.float32)
+# Run pose extimation
+calib_param = cv.CALIB_FIX_ASPECT_RATIO | cv.CALIB_FIX_PRINCIPAL_POINT | cv.CALIB_ZERO_TANGENT_DIST | cv.CALIB_FIX_K1 | cv.CALIB_FIX_K2 | cv.CALIB_FIX_K3 | cv.CALIB_FIX_K4 | cv.CALIB_FIX_K5 | cv.CALIB_FIX_S1_S2_S3_S4 | cv.CALIB_FIX_TAUX_TAUY
+while True:
+    # Read an image from the video
+    valid, img = video.read()
+    if not valid:
+        break
 
-    # Calibrating camera params
-    cam_param = cv2.CALIB_FIX_ASPECT_RATIO | cv2.CALIB_FIX_PRINCIPAL_POINT | cv2.CALIB_ZERO_TANGENT_DIST | cv2.CALIB_FIX_K1 | cv2.CALIB_FIX_K2 | cv2.CALIB_FIX_K3 | cv2.CALIB_FIX_K4 | cv2.CALIB_FIX_K5 | cv2.CALIB_FIX_S1_S2_S3_S4 | cv2.CALIB_FIX_TAUX_TAUY
+    # Extract features and match them to the object features
+    img_keypoints, img_descriptors = fdetector.detectAndCompute(img, None)
+    match = fmatcher.match(img_descriptors, obj_descriptors)
+    if len(match) < min_inlier_num:
+        continue
 
-    # Run pose extimation
-    K = np.array([[f, 0, cx_init], [0, f, cy_init], [0, 0, 1]], dtype=np.float32)
-    dist_coeff = np.zeros(5)
-    while True:
-        # Grab  an image from the video
-        ret, image = cap.read()
-        if not ret: break
+    obj_pts, img_pts = [], []
+    for m in match:
+        obj_pts.append(obj_keypoints[m.trainIdx].pt)
+        img_pts.append(img_keypoints[m.queryIdx].pt)
+    obj_pts = np.array(obj_pts, dtype=np.float32)
+    img_pts = np.array(img_pts, dtype=np.float32)
 
-        # Extract features and match them to the object features
-        img_keypoint, img_descriptor = fdetector.detectAndCompute(image, None)
-        if (len(img_keypoint)==0 or len(img_descriptor)==0): continue
+    # Deterimine whether each matched feature is an inlier or not
+    H, inlier_mask = cv.findHomography(obj_pts, img_pts, cv.RANSAC, 2)
+    inlier_mask = inlier_mask.flatten()
+    img_result = cv.drawMatches(img, img_keypoints, obj_image, obj_keypoints, match, None, (0, 0, 255), (0, 127, 0), inlier_mask)
 
+    # Check whether inliers are enough or not
+    inlier_num = sum(inlier_mask)
+    if inlier_num > min_inlier_num:
+        # Calibrate the camera and estimate its pose with inliers
+        obj_pts = np.hstack((obj_pts, np.zeros((len(obj_pts), 1), dtype=np.float32))) # Make 2D to 3D
+        ret, K, dist_coeff, rvecs, tvecs = cv.calibrateCamera([obj_pts[inlier_mask]], [img_pts[inlier_mask]], (img.shape[0], img.shape[1]), None, None, None, None, calib_param)
+        rvec, tvec = rvecs[0], tvecs[0]
 
-        match = fmatcher.match(img_descriptor, obj_descriptor)
-        if len(match) < min_inlier_num: continue
+        # Draw the box on the image
+        line_lower, _ = cv.projectPoints(box_lower, rvec, tvec, K, dist_coeff)
+        line_upper, _ = cv.projectPoints(box_upper, rvec, tvec, K, dist_coeff)
+        cv.polylines(img_result, [np.int32(line_lower)], True, (255, 0, 0), 2)
+        cv.polylines(img_result, [np.int32(line_upper)], True, (0, 0, 255), 2)
+        for b, t in zip(line_lower, line_upper):
+            cv.line(img_result, np.int32(b.flatten()), np.int32(t.flatten()), (0, 255, 0), 2)
+        info = f'Inliers: {inlier_num} ({inlier_num*100/len(match):.0f}), Focal length: {K[0,0]:.0f}'
+        cv.putText(img_result, info, (10, 25), cv.FONT_HERSHEY_DUPLEX, 0.6, (0, 255, 0))
 
-        obj_points, obj_project, img_points  = np.zeros((len(match), 3)), [], []
-        for i, m in enumerate(match):
-            obj_points[i, :2] = obj_keypoint[m.trainIdx].pt
-            obj_project.append(obj_keypoint[m.trainIdx].pt)
-            img_points.append(img_keypoint[m.queryIdx].pt)
+    # Show the image and process the key event
+    cv.imshow('Pose Estimation (Book)', img_result)
+    key = cv.waitKey(1)
+    if key == ord(' '):
+        key = cv.waitKey()
+    if key == 27: # ESC
+        break
 
-        obj_points = np.array(obj_points, dtype=np.float32)
-        obj_project = np.array(obj_project, dtype=np.float32)
-        img_points = np.array(img_points, dtype=np.float32)
-
-        # Deterimine whether each matched feature is an inlier or not        
-        # inlier_mask = np.zeros(len(match))
-        H, inlier_mask = cv2.findHomography(img_points, obj_points, cv2.RANSAC, 2)
-        draw_params = dict(matchColor = (0,0, 255), # draw matches in green color
-                   singlePointColor = (0, 255, 0),
-                   matchesMask = inlier_mask, # draw only inliers
-                   flags = 2)
-        print(inlier_mask[inlier_mask==1].shape)
-        print(inlier_mask.shape)
-        print(inlier_mask[inlier_mask==1])
-        image_result = cv2.drawMatches(image, img_keypoint, obj_image, obj_keypoint, match, None, **draw_params)
-
-        # Calibrate the camera and estimate camera pose with inliers
-        f = 0
-        try:
-            inlier_num = len(inlier_mask)
-        except:
-            inlier_num = 0
-
-        if inlier_num > min_inlier_num:
-            obj_inlier, img_inlier = [], []
-            try:            
-                for idx in range(len(inlier_mask)):
-                    if inlier_mask[idx]:
-                        obj_inlier.append(obj_points[idx])
-                        img_inlier.append(img_points[idx])
-                obj_inlier = np.array(obj_inlier, dtype=np.float32)
-                img_inlier = np.array(img_inlier, dtype=np.float32)
-
-                rms, K, dist_coeff, rvecs, tvecs = cv2.calibrateCamera([obj_inlier], [img_inlier], (image.shape[0], image.shape[1]), cam_param, None)
-                rvec = copy.copy(rvecs[0])
-                tvec = copy.copy(tvecs[0])
-                f = K[0][0]
-
-                # Draw the box on the image
-                line_lower, _ = cv2.projectPoints(box_lower, rvec, tvec, K, dist_coeff)
-                line_upper, _ = cv2.projectPoints(box_upper, rvec, tvec, K, dist_coeff)
-
-                image_result = cv2.polylines(image_result, np.int32([line_lower]), True, (255, 0, 0), 2)
-                image_result = cv2.polylines(image_result, np.int32([line_upper]), True, (0, 0, 255), 2)
-                for i in range(len(line_lower)):
-                    image_result = cv2.line(image_result, tuple(line_lower[i][0]), tuple(line_upper[i][0]), (0, 255, 0), 2, cv2.LINE_AA)
-            except Exception as e:
-                # print(e)
-                continue
-
-        # Show the image
-        info = f"Inliers: {inlier_num*100/len(match):.3f} , Focal length: {f}"
-        image_result = cv2.putText(image_result, info, (5, 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0), 2)
-        if cv2.waitKey(1) == ord('q'): break
-        cv2.imshow("3DV Tutorial: Pose Estimation (Book)", image_result)
-
-    cap.release()
-
-if __name__ == "__main__":
-    main()
+video.release()
+cv.destroyAllWindows()

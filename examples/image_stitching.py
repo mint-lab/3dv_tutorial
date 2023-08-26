@@ -1,49 +1,35 @@
 import numpy as np
-import cv2
+import cv2 as cv
 
-def main():
-    # Load two images
-    input1, input2 = "../bin/data/hill01.jpg", "../bin/data/hill02.jpg"
-    image1 = cv2.imread(input1)
-    image2 = cv2.imread(input2)
+# Load two images
+img1 = cv.imread('../data/hill01.jpg')
+img2 = cv.imread('../data/hill02.jpg')
+assert (img1 is not None) and (img2 is not None), 'Cannot read the given images'
 
-    # Retrieve matching points
-    brisk = cv2.BRISK_create()
-    keypoints1, descriptors1 = brisk.detectAndCompute(image1, None)
-    keypoints2, descriptors2 = brisk.detectAndCompute(image2, None)
+# Retrieve matching points
+brisk = cv.BRISK_create()
+keypoints1, descriptors1 = brisk.detectAndCompute(img1, None)
+keypoints2, descriptors2 = brisk.detectAndCompute(img2, None)
 
-    fmatcher = cv2.DescriptorMatcher_create("BruteForce-Hamming")
-    match = fmatcher.match(descriptors1, descriptors2)
+fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
+match = fmatcher.match(descriptors1, descriptors2)
 
-    # Calculate planar homography and merge them
-    points1, points2 = [], []
-    for i in range(len(match)):
-        points1.append(keypoints1[match[i].queryIdx].pt)
-        points2.append(keypoints2[match[i].trainIdx].pt)
-    
-    points1 = np.array(points1, dtype=np.float32)
-    points2 = np.array(points2, dtype=np.float32)
+# Calculate planar homography and merge them
+pts1, pts2 = [], []
+for i in range(len(match)):
+    pts1.append(keypoints1[match[i].queryIdx].pt)
+    pts2.append(keypoints2[match[i].trainIdx].pt)
+pts1 = np.array(pts1, dtype=np.float32)
+pts2 = np.array(pts2, dtype=np.float32)
 
-    H, inlier_mask = cv2.findHomography(points2, points1, cv2.RANSAC)
-    merged = cv2.warpPerspective(image2, H, (image1.shape[1]*2, image1.shape[0]))
-    merged[:,:image1.shape[1]] = image1
-    merged[:,0:image1.shape[1]] = image1 # copy
-    cv2.imshow("3DV Tutorial: Image Stitching", merged)
+H, inlier_mask = cv.findHomography(pts2, pts1, cv.RANSAC)
+img_merged = cv.warpPerspective(img2, H, (img1.shape[1]*2, img1.shape[0]))
+img_merged[:,:img1.shape[1]] = img1 # Copy
 
-    # show the merged image
-    matched = cv2.drawMatches(img1=image1, 
-                                keypoints1=keypoints1, 
-                                img2=image2, 
-                                keypoints2=keypoints2, 
-                                matches1to2=match[:15], 
-                                outImg=None)
-    
-    original = np.hstack((image1, image2))
-    matched = np.vstack((original, matched))
-    merged = np.vstack((matched, merged))
-    
-    cv2.imshow("3DV Tutorial: Image Stitching", merged)
-    cv2.waitKey(0)
-
-if __name__ == "__main__":
-    main()
+# Show the merged image
+img_matched = cv.drawMatches(img1, keypoints1, img2, keypoints2, match, None, None, None,
+                             matchesMask=inlier_mask.ravel().tolist()) # Remove 'matchesMask' if you want to show all putative matches
+merge = np.vstack((np.hstack((img1, img2)), img_matched, img_merged))
+cv.imshow('Image Stitching', merge)
+cv.waitKey(0)
+cv.destroyAllWindows()

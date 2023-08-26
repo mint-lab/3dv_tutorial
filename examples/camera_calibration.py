@@ -1,85 +1,75 @@
-import cv2
 import numpy as np
-import copy
-import yaml
+import cv2 as cv
 
-input = "data/chessboard.avi"
+def select_img_from_video(input_file, board_pattern, select_all=False, wait_msec=10):
+    # Open a video
+    video = cv.VideoCapture(input_file)
+    assert video.isOpened(), 'Cannot read the given input, ' + input_file
 
-board_pattern = (10, 7)
-select_images = True
+    # Select images
+    img_select = []
+    while True:
+        # Grab an images from the video
+        valid, img = video.read()
+        if not valid:
+            break
 
-capture = cv2.VideoCapture(input)
+        if select_all:
+            img_select.append(img)
+        else:
+            # Show the image
+            display = img.copy()
+            cv.putText(display, f'NSelect: {len(img_select)}', (10, 25), cv.FONT_HERSHEY_DUPLEX, 0.6, (0, 255, 0))
+            cv.imshow('Camera Calibration', display)
 
-if capture.isOpened() == False: raise Exception("No video")
+            # Process the key event
+            key = cv.waitKey(wait_msec)
+            if key == 27:                  # 'ESC' key: Exit (Complete image selection)
+                break
+            elif key == ord(' '):          # 'Space' key: Pause and show corners
+                complete, pts = cv.findChessboardCorners(img, board_pattern)
+                cv.drawChessboardCorners(display, board_pattern, pts, complete)
+                cv.imshow('Camera Calibration', display)
+                key = cv.waitKey()
+                if key == 27: # ESC
+                    break
+                elif key == ord('\r'):
+                    img_select.append(img) # 'Enter' key: Select the image
 
-images = []
+    cv.destroyAllWindows()
+    return img_select
 
-while True:
-    ret1, image = capture.read()
-    if not ret1: break
-    if select_images:
-        cv2.imshow("3DV Tutorial: Camera Calibration", image)
-        key = cv2.waitKey(1)
-        if key == 27: break # 'ESC' key: Exit
-        elif key == 32:     # 'Space' key: Pause
-            ret2, pts = cv2.findChessboardCorners(image, board_pattern, None) # No flags
-            
-            # display = image.clone()
-            display = copy.deepcopy(image)
-            display = cv2.drawChessboardCorners(display, board_pattern, pts, ret2)
-            cv2.imshow("3DV Tutorial: Camera Calibration", display)
-            key = cv2.waitKey()
-            if key == 27: break
-            elif key == 13: images.append(image) # 'Enter' key: Save
-    else: 
-        images.append(image)
+def calib_camera_from_chessboard(images, board_pattern, board_cellsize, K=None, dist_coeff=None, calib_flags=None):
+    # Find 2D corner points from given images
+    img_points = []
+    for img in images:
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        complete, pts = cv.findChessboardCorners(gray, board_pattern)
+        if complete:
+            img_points.append(pts)
+    assert len(img_points) > 0, 'There is no set of complete chessboard points!'
 
-capture.release()
+    # Prepare 3D points of the chess board
+    obj_pts = [[c, r, 0] for r in range(board_pattern[1]) for c in range(board_pattern[0])]
+    obj_points = [np.array(obj_pts, dtype=np.float32) * board_cellsize] * len(img_points) # Must be 'np.float32'
 
-if(len(images)) == 0:
-    print("no images")
-    raise Exception("There is no captured images!")
+    # Calibrate the camera
+    return cv.calibrateCamera(obj_points, img_points, gray.shape[::-1], K, dist_coeff, flags=calib_flags)
 
-# Find 2D corner points from given images
-img_points = []
-h, w = 0,0
-for image in images:
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    h, w = gray.shape
-    ret3, corners = cv2.findChessboardCorners(gray, board_pattern) # No flags
-    if ret3 == True:
-        img_points.append(corners)
 
-if len(img_points) == 0:
-    raise Exception("No 2d Corner pts")
 
-# Prepare 3D points of the chess board
-objp = np.zeros((10*7, 3), np.float32)
-objp[:, :2] = np.mgrid[0:7, 0:10].T.reshape(-1, 2)
-obj_points = []
-for _ in images:
-    obj_points.append(objp)
+if __name__ == '__main__':
+    input_file = '../data/chessboard.avi'
+    board_pattern = (10, 7)
+    board_cellsize = 0.025
 
-# Calibrate Camera
-K = np.eye(3,3, dtype=np.float32)
-dist_coeff = np.zeros((4,1))
-rms, K, dist_coeff, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, (h,w), None, None)
+    img_select = select_img_from_video(input_file, board_pattern)
+    assert len(img_select) > 0, 'There is no selected images!'
+    rms, K, dist_coeff, rvecs, tvecs = calib_camera_from_chessboard(img_select, board_pattern, board_cellsize)
 
-# Report calibration results
-print("## Camera Calibration Results")
-print(f"* The number of applied images = {w}x{h}")
-print(f"* RMS error = {rms}")
-print(f"* Camera matrix (K) = \n{K}")
-print(f"* Distortion coefficient (k1, k2, p1, p2, k3, ...) = {dist_coeff}")
-
-# Save as cam_config.yaml
-file_name = "cfg/cam_config.yaml"
-cam_dict = {
-    "Intrinsic": K.flatten().tolist(),
-    "Distortion": dist_coeff.flatten().tolist(),
-    "RMS": rms,
-}
-with open(file_name, 'w') as f:
-    yaml.dump(cam_dict, f, sort_keys=False, default_flow_style=False)
-
-print("End!")
+    # Print calibration results
+    print('## Camera Calibration Results')
+    print(f'* The number of selected images = {len(img_select)}')
+    print(f'* RMS error = {rms}')
+    print(f'* Camera matrix (K) = \n{K}')
+    print(f'* Distortion coefficient (k1, k2, p1, p2, k3, ...) = {dist_coeff.flatten()}')

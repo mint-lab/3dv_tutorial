@@ -12,46 +12,65 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 
 ### Lecture Slides
 * [Section 1. Introduction](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
-* [Section 2. Single-view Geometry](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
-* Section 3. Two-view Geometry
-* Section 4. Solving Problems
+* [Section 2. Single-view Geometry](https://github.com/sunglok/3dv_tutorial/blob/master/slides/02_single-view_geometry.pdf)
+* [Section 3. Two-view Geometry](https://github.com/sunglok/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf)
+* [Section 4. Solving Problems](https://github.com/sunglok/3dv_tutorial/blob/master/slides/04_solving_problems.pdf)
 * Section 5. Finding Correspondence
 * Section 6. Multiple-view Geometry
 * Special Topic) [Bayesian Filtering](https://github.com/mint-lab/filtering_tutorial)
 * Special Topic) Visual SLAM and Odometry
 
 ### Example Codes
-* **Section 1. Introduction** [[Slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
-* **Section 2. Single-view Geometry** [[Slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
-  * Camera Projection Model
-    * Object Localization and Measurement: [object_localization.cpp][] (result: [image](https://drive.google.com/open?id=10Lche-1HHazDeohXEQK443ruDTAmIO4E))
-    * Image Formation: [image_formation.cpp][] (result: [image0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view), [image1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view), [image2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view), [image3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view), [image4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view))
-    * Geometric Distortion Correction: [distortion_correction.cpp][] (result: [video](https://www.youtube.com/watch?v=HKetupWh4V8))
-  * General 2D-3D Geometry
-    * Camera Calibration: [camera_calibration.cpp][] (result: [text](https://drive.google.com/file/d/0B_iOV9kV0whLZ0pDbWdXNWRrZ00/view))
-    * Camera Pose Estimation (Chessboard): [pose_estimation_chessboard.cpp][] (result: [video](https://www.youtube.com/watch?v=4nA1OQGL-ig))
-    * Camera Pose Estimation (Book): [pose_estimation_book1.cpp][]
-    * Camera Pose Estimation and Calibration: [pose_estimation_book2.cpp][]
-    * Camera Pose Estimation and Calibration w/o Initially Given Camera Parameters: [pose_estimation_book3.cpp][] (result: [video](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
-* **Section 3. Two-view Geometry**
-  * Planar 2D-2D Geometry (Projective Geometry)
-    * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view))
-    * Planar Image Stitching: [image_stitching.cpp][] (result: [image](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view))
-    * 2D Video Stabilization: [video_stabilization.cpp][] (result: [video](https://www.youtube.com/watch?v=be_dzYicEzI))
-  * General 2D-2D Geometry (Epipolar Geometry)
-    * Visual Odometry (Monocular, Epipolar Version): [vo_epipolar.cpp][]
-    * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
-* **Section 4. Solving Problems**
+* **Section 1. Introduction** [[slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
+* **Section 2. Single-view Geometry** [[slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/02_single-view_geometry.pdf)
+  * Getting Started with 2D
+    * 3D rotation conversion [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/3d_rotation_conversion.py)
+  * Pinhole Camera Model
+    * Object localization [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/object_localization.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/object_localization.cpp)
+    * Image formation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/image_formation.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/image_formation.cpp)
+  * Geometric Distortion Models
+    * Geometric distortion visualization [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/distortion_visualization.py)
+    * Geometric distortion correction [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/distortion_correction.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/distortion_correction.cpp) [[result video]](https://www.youtube.com/watch?v=HKetupWh4V8)
+  * Camera Calibration
+    * Camera calibration [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/camera_calibration.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/camera_calibration.cpp)
+  * Absolute Camera Pose Estimation (a.k.a. perspective-n-point; PnP)
+    * Pose estimation (chessboard) [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.cpp) [[result video]](https://www.youtube.com/watch?v=4nA1OQGL-ig)
+    * Pose estimation (book) [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
+    * Pose estimation (book) with camera calibration [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book2.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book2.cpp)
+    * Pose estimation (book) with camera calibration without initial K [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book3.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book3.cpp) [[result video]](https://www.youtube.com/watch?v=GYp4h0yyB3Y)
+* **Section 3. Two-view Geometry** [[slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf)
+  * Planar Homography
+    * Perspective distortion correction [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
+    * Planar image stitching [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
+    * 2D video stabilization [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp) [[result video]](https://www.youtube.com/watch?v=be_dzYicEzI)
+  * Epipolar Geometry
+    * Epipolar line visualization
+  * Relative Camera Pose Estimation (a.k.a. Fundamental/Essential Matrix Estimation)
+    * Monocular visual odometry (epipolar version)
+    * Triangulation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
+* **Section 4. Solving Problems** [[slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/04_solving_problems.pdf)
+  * Solving Linear Equations in 3D Vision
+    * Affine transformation estimation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/affine_estimation_implement.py)
+    * Planar homography estimation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/homography_estimation_implement.py)
+      * Appendix) Image warping using homography [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/image_warping_implement.py)
+
+    * Fundamental matrix estimation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/fundamental_mat_estimation_implement.py)
+    * Triangulation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/triangulation_implement.py)
+
+  * Solving Nonlinear Equations in 3D Vision
+    * Absolute camera pose estimation [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_implement.py)
+    * Camera calibration [[python]](https://github.com/sunglok/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
+
 * **Section 5. Finding Correspondence**
-  * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
-  * Line Fitting with M-estimators: [line_fitting_m_est.cpp][]
+  * Line Fitting with RANSAC
+  * Line Fitting with M-estimators
 * **Section 6. Multiple-view Geometry**
   * Bundle Adjustment
-    * Global Version: [bundle_adjustment_global.cpp][]
-    * Incremental Version: [bundle_adjustment_inc.cpp][]
+    * Global Version
+    * Incremental Version
   * Structure-from-Motion
-    * Global SfM: [sfm_global.cpp][]
-    * Incremental SfM: [sfm_inc.cpp][]
+    * Global SfM
+    * Incremental SfM
   * Feature-based Visual Odometry and SLAM
     * Visual Odometry (Monocular, Epipolar Version): [vo_epipolar.cpp][]
     * Visual Odometry (Stereo Version)
@@ -83,26 +102,3 @@ The authors thank the following contributors and projects.
 * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): His two hill images were used to demonstrate image stitching.
 * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): His shaking CCTV video was used to demonstrate video stabilization.
 * [Richard Blais](http://www.richardblais.net/): His book cover and video in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html) were used to demonstrate camera pose estimation and augmented reality.
-
-[OpenCV]: http://opencv.org/
-[Ceres Solver]: http://ceres-solver.org/
-
-[object_localization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/object_localization.cpp
-[image_formation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/image_formation.cpp
-[distortion_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/distortion_correction.cpp
-[camera_calibration.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/camera_calibration.cpp
-[pose_estimation_chessboard.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.cpp
-[pose_estimation_book1.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp
-[pose_estimation_book2.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book2.cpp
-[pose_estimation_book3.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/pose_estimation_book3.cpp
-[perspective_correction.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/perspective_correction.cpp
-[image_stitching.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/image_stitching.cpp
-[video_stabilization.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/video_stabilization.cpp
-[vo_epipolar.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/vo_epipolar.cpp
-[triangulation.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/triangulation.cpp
-[bundle_adjustment_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/bundle_adjustment_global.cpp
-[bundle_adjustment_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/bundle_adjustment_inc.cpp
-[sfm_global.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/sfm_global.cpp
-[sfm_inc.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/sfm_inc.cpp
-[line_fitting_ransac.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp
-[line_fitting_m_est.cpp]: https://github.com/sunglok/3dv_tutorial/blob/master/examples/line_fitting_m_est.cpp

@@ -1,47 +1,43 @@
-from tkinter import image_names
-import cv2
 import numpy as np
-import copy
+import cv2 as cv
 
-def main():
-    input = "../bin/data/traffic.avi"
-    cap = cv2.VideoCapture(input)
-    if not cap.isOpened(): raise Exception("No video!")
-    
-    ret, gray_ref = cap.read()
-    print(gray_ref.shape)
+# Open a video and get the reference image and feature points
+video = cv.VideoCapture('../data/traffic.avi')
+assert video.isOpened(), 'Cannot read the given video'
 
-    if not ret: raise Exception("Can't get image from Video")
-    if gray_ref.shape[2] >1: gray_ref = cv2.cvtColor(gray_ref, cv2.COLOR_BGR2GRAY)
-    point_ref = cv2.goodFeaturesToTrack(gray_ref, 2000, 0.01, 10)
-    if len(point_ref) < 4:
-        cap.release()
-        raise Exception("Not good video init image")
-    
-    while True:
-        ret, image = cap.read()
-        if not ret: break
-        if image.shape[2] > 1: gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        else: gray = copy.deepcopy(image)
+_, gray_ref = video.read()
+if gray_ref.ndim >= 3:
+    gray_ref = cv.cvtColor(gray_ref, cv.COLOR_BGR2GRAY)
+pts_ref = cv.goodFeaturesToTrack(gray_ref, 2000, 0.01, 10)
 
-        point, status, err = cv2.calcOpticalFlowPyrLK(gray_ref, gray, point_ref, None)
-        H, inliner_mask = cv2.findHomography(point, point_ref, cv2.RANSAC)
+# Run and show video stabilization
+while True:
+    # Read an image from 'video'
+    valid, img = video.read()
+    if not valid:
+        break
+    if img.ndim >= 3:
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    else:
+        gray = img.copy()
 
-        warp = cv2.warpPerspective(image, H, (image.shape[1], image.shape[0]))
+    # Extract optical flow and calculate planar homography
+    pts, status, err = cv.calcOpticalFlowPyrLK(gray_ref, gray, pts_ref, None)
+    H, inlier_mask = cv.findHomography(pts, pts_ref, cv.RANSAC)
 
-        for i in range(len(point_ref)):
-            px_ref, py_ref = point_ref[i][0][0], point_ref[i][0][1]
-            px, py = point[i][0][0], point[i][0][1]
-            if inliner_mask[i] > 0: image = cv2.line(image, (px_ref, py_ref), (px, py), (0,0,255))
-            else: image = cv2.line(image, (px_ref, py_ref), (px, py), (0,127,0))
-        
-        info = f"image shape: {image.shape[0]} {image.shape[1]} {image.shape[2]}"
-        image = cv2.putText(image, info, (5,15), cv2.FONT_HERSHEY_PLAIN, 1, (0,255,0))
+    # Synthesize a stabilized image
+    warp = cv.warpPerspective(img, H, (img.shape[1], img.shape[0]))
 
-        cv2.imshow("3DV Tutorial: Video Stabilization", np.hstack((image,warp)))
-        if cv2.waitKey(1) == ord('q'): break
+    # Show the original and stabilized images together
+    for pt, pt_ref, inlier in zip(pts, pts_ref, inlier_mask):
+        color = (0, 127, 0)
+        if inlier:
+            color = (0, 0, 255)
+        cv.line(img, pt.flatten().astype(np.int32), pt_ref.flatten().astype(np.int32), color)
+    cv.imshow('Video Stabilization', np.hstack((img, warp)))
+    key = cv.waitKey(1)
+    if key == 27: # ESC
+        break
 
-    cap.release()
-
-if __name__ == "__main__":
-    main()
+video.release()
+cv.destroyAllWindows()

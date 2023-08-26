@@ -1,6 +1,6 @@
 import cv2 as cv
 import numpy as np
-from homography_estimation import getPerspectiveTransform
+from homography_estimation_implement import getPerspectiveTransform
 
 def warpPerspective1(src, H, dst_size):
     # Generate an empty image
@@ -34,10 +34,10 @@ def warpPerspective2(src, H, dst_size):
     return dst
 
 if __name__ == '__main__':
-    img = cv.imread('../bin/data/sunglok_desk.jpg')
+    img = cv.imread('../data/sunglok_card.jpg')
     wnd_name = '3DV Tutorial: Image Warping'
-    card_size = (900, 500)
-    src = np.array([[115, 401], [776, 180], [330, 793], [1080, 383]], dtype=np.float32)
+    card_size = (900, 480)
+    src = np.array([[95, 243], [743, 121], [157, 652], [969, 372]], dtype=np.float32)
     dst = np.array([[0, 0], [card_size[0], 0], [0, card_size[1]], card_size], dtype=np.float32)
 
     # Find planar homography and transform the original image
