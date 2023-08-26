@@ -1,0 +1,12 @@
+build
+slides
+
+x64
+Debug
+Release
+*.exe
+*.dll
+*.obj
+*.iobj
+*.pdb
+*.ipdb

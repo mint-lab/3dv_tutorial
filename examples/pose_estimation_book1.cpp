@@ -75,7 +75,7 @@ int main()
                     img_inlier.push_back(img_points[idx]);
                 }
             }
-            cv::solvePnP(obj_points, img_points, K, dist_coeff, rvec, tvec);
+            cv::solvePnP(obj_inlier, img_inlier, K, dist_coeff, rvec, tvec);
 
             // Draw the box on the image
             cv::Mat line_lower, line_upper;

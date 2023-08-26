@@ -6,7 +6,7 @@
 
 int main()
 {
-    // The given camera configuration: focal length, principal point, image resolution, position, and orientation
+    // The given camera configuration: Focal length, principal point, image resolution, position, and orientation
     double f = 1000, cx = 320, cy = 240, noise_std = 1;
     cv::Size img_res(640, 480);
     std::vector<cv::Point3d> cam_pos = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0), cv::Point3d(-2, 2, 0), cv::Point3d(2, -2, 0) };

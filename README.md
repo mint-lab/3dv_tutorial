@@ -1,9 +1,8 @@
 ## An Invitation to 3D Vision: A Tutorial for Everyone
-_An Invitation to 3D Vision_ is an introductory tutorial on 3D vision (a.k.a. geometric vision or visual geometry or multi-view geometry).
-It aims to make beginners understand basic theory of 3D vision and implement their own applications using [OpenCV][].
+_An Invitation to 3D Vision_ is an introductory tutorial on _3D vision_ (a.k.a. _geometric vision_ or _visual geometry_ or _multiple-view geometry_).
+It aims to make beginners understand basic theories on 3D vision and implement its applications using [OpenCV][].
 In addition to tutorial slides, example codes are provided in the purpose of education. They include simple but interesting and practical applications. The example codes are written as short as possible (mostly __less than 100 lines__) to be clear and easy to understand.
 
-* Download [tutorial slides](https://github.com/sunglok/3dv_tutorial/releases/download/misc/3dv_slides.pdf)
 * Download [example codes in a ZIP file](https://github.com/sunglok/3dv_tutorial/archive/master.zip)
 * Read [how to run example codes](https://github.com/sunglok/3dv_tutorial/blob/master/HOWTO_RUN.md)
 
@@ -11,8 +10,19 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners to 3D vision and its applications.
 * The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
 
-### Examples
-* __Single-view Geometry__
+### Lecture Slides
+* [Section 1. Introduction](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
+* [Section 2. Single-view Geometry](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
+* Section 3. Two-view Geometry
+* Section 4. Solving Problems
+* Section 5. Finding Correspondence
+* Section 6. Multiple-view Geometry
+* Special Topic) [Bayesian Filtering](https://github.com/mint-lab/filtering_tutorial)
+* Special Topic) Visual SLAM and Odometry
+
+### Example Codes
+* **Section 1. Introduction** [[Slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
+* **Section 2. Single-view Geometry** [[Slides]](https://github.com/sunglok/3dv_tutorial/blob/master/slides/01_introduction.pdf)
   * Camera Projection Model
     * Object Localization and Measurement: [object_localization.cpp][] (result: [image](https://drive.google.com/open?id=10Lche-1HHazDeohXEQK443ruDTAmIO4E))
     * Image Formation: [image_formation.cpp][] (result: [image0](https://drive.google.com/file/d/0B_iOV9kV0whLY2luc05jZGlkZ2s/view), [image1](https://drive.google.com/file/d/0B_iOV9kV0whLS3M4S09ZZHpjTkU/view), [image2](https://drive.google.com/file/d/0B_iOV9kV0whLV2dLZHd0MmVkd28/view), [image3](https://drive.google.com/file/d/0B_iOV9kV0whLS1ZBR25WekpMYjA/view), [image4](https://drive.google.com/file/d/0B_iOV9kV0whLYVB0dm9Fc0dvRzQ/view))
@@ -23,7 +33,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Camera Pose Estimation (Book): [pose_estimation_book1.cpp][]
     * Camera Pose Estimation and Calibration: [pose_estimation_book2.cpp][]
     * Camera Pose Estimation and Calibration w/o Initially Given Camera Parameters: [pose_estimation_book3.cpp][] (result: [video](https://www.youtube.com/watch?v=GYp4h0yyB3Y))
-* __Two-view Geometry__
+* **Section 3. Two-view Geometry**
   * Planar 2D-2D Geometry (Projective Geometry)
     * Perspective Distortion Correction: [perspective_correction.cpp][] (result: [original](https://drive.google.com/file/d/0B_iOV9kV0whLVlFpeFBzYWVadlk/view), [rectified](https://drive.google.com/file/d/0B_iOV9kV0whLMi1UTjN5QXhnWFk/view))
     * Planar Image Stitching: [image_stitching.cpp][] (result: [image](https://drive.google.com/file/d/0B_iOV9kV0whLOEQzVmhGUGVEaW8/view))
@@ -31,7 +41,11 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * General 2D-2D Geometry (Epipolar Geometry)
     * Visual Odometry (Monocular, Epipolar Version): [vo_epipolar.cpp][]
     * Triangulation (Two-view Reconstruction): [triangulation.cpp][]
-* __Multi-view Geometry__
+* **Section 4. Solving Problems**
+* **Section 5. Finding Correspondence**
+  * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
+  * Line Fitting with M-estimators: [line_fitting_m_est.cpp][]
+* **Section 6. Multiple-view Geometry**
   * Bundle Adjustment
     * Global Version: [bundle_adjustment_global.cpp][]
     * Incremental Version: [bundle_adjustment_inc.cpp][]
@@ -46,47 +60,19 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * Direct Visual Odometry and SLAM
     * Visual Odometry (Monocular, Direct Version)
   * c.f. The above examples need [Ceres Solver][] for bundle adjustment.
-* __Correspondence Problem__
-  * Line Fitting with RANSAC: [line_fitting_ransac.cpp][]
-  * Line Fitting with M-estimators: [line_fitting_m_est.cpp][]
-* **Appendix**
-  * Line Fitting
-  * Planar Homograph Estimation
-  * Fundamental Matrix Estimation
 
 
 
-
-### Dependencies
-* [OpenCV][] (> 3.0.0, 3-clause BSD License)
-  * _OpenCV_ is a base of all example codes for basic computer vision algorithms, linear algebra, image/video manipulation, and GUI.
-* [Ceres Solver][] (3-clause BSD License): A numerical optimization library
-  * _Ceres Solver_ is additionally used by m-estimator, bundle adjustment, structure-from-motion, and visual odometry/SLAM.
-
----
-### __New Version! Python Examples Added!__
-  * You can see the same examples as above in the following [script](scripts).
-  * We recommend running the examples in Anaconda.
-
-
-### Dependencies
-It was tested in the following version.
-
-* [OpenCV][] (4.2.0v)
-* [Scipy](https://scipy.org/) (1.8.0v)
-  * SciPy (pronounced “Sigh Pie”) is an open-source software for mathematics, science, and engineering.
-* [Numpy](https://numpy.org/) (1.22.3v)
-  * The fundamental package for scientific computing with Python
-* [Open3D](http://www.open3d.org/) (0.13.0v)
-  * Open3D is an open-source library that supports rapid development of software that deals with 3D data.
-
----
 ### License
 * [Beerware](http://en.wikipedia.org/wiki/Beerware)
+
+
 
 ### Authors
 * [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok@hanmail.net)
 * [JunHyeok Choi](https://mint-lab.github.io/members/) (dkwnsgur12@gmail.com)
+
+
 
 ### Acknowledgement
 The authors thank the following contributors and projects.
