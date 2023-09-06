@@ -73,7 +73,6 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * Structure-from-Motion (SfM)
     * Global SfM
     * Incremental SfM
-  * COLMAP
 * **Section 7. Visual SLAM and Odometry**
 
 
@@ -84,8 +83,8 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 
 
 ### Authors
-* [Sunglok Choi](http://sites.google.com/site/sunglok/) (sunglok@hanmail.net)
-* [JunHyeok Choi](https://mint-lab.github.io/members/) (dkwnsgur12@gmail.com)
+* [Sunglok Choi](https://mint-lab.github.io/sunglok/)
+* [JunHyeok Choi](https://github.com/cjh1995-ros)
 
 
 
