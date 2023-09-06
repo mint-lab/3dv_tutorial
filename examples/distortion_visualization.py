@@ -34,7 +34,7 @@ while True:
     merge = np.hstack((img_vector, img_grid))
     info = f'Focal: {K[0, 0]:.0f}, k1: {dist_coeff[0]:.2f}, k2: {dist_coeff[1]:.2f}, p1: {dist_coeff[2]:.2f}, p2: {dist_coeff[3]:.2f}'
     cv.putText(merge, info, (10, 25), cv.FONT_HERSHEY_DUPLEX, 0.6, (0, 0, 0))
-    cv.imshow('Distortion Visualization: Vectors | Grids', merge)
+    cv.imshow('Geometric Distortion Visualization: Vectors | Grids', merge)
     key = cv.waitKey()
     if key == 27: # ESC
         break

@@ -4,7 +4,7 @@ int main()
 {
     // Open a video and get the reference image and feature points
     cv::VideoCapture video;
-    if (!video.open("data/traffic.avi")) return -1;
+    if (!video.open("../data/traffic.avi")) return -1;
 
     cv::Mat gray_ref;
     video >> gray_ref;
@@ -26,7 +26,7 @@ int main()
     // Run and show video stabilization
     while (true)
     {
-        // Grab an image from the video
+        // Grab an image from `video`
         cv::Mat image, gray;
         video >> image;
         if (image.empty()) break;
@@ -47,12 +47,15 @@ int main()
         // Show the original and rectified images together
         for (int i = 0; i < point_ref.size(); i++)
         {
-            if (inlier_mask.at<uchar>(i) > 0) cv::line(image, point_ref[i], point[i], cv::Vec3b(0, 0, 255));
-            else cv::line(image, point_ref[i], point[i], cv::Vec3b(0, 127, 0));
+            cv::Vec3b color = cv::Vec3b(0, 127, 0);
+            if (inlier_mask.at<uchar>(i) > 0) color = cv::Vec3b(0, 0, 255);
+            cv::line(image, point_ref[i], point[i], color);
         }
         cv::hconcat(image, warp, image);
-        cv::imshow("3DV Tutorial: Video Stabilization", image);
-        if (cv::waitKey(1) == 27) break; // 'ESC' key: Exit
+        cv::imshow("2D Video Stabilization", image);
+        int key = cv::waitKey(1);
+        if (key == 32) key = cv::waitKey(); // Space
+        if (key == 27) break;               // ESC
     }
 
     video.release();

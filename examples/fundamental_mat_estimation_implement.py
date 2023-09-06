@@ -1,5 +1,5 @@
-import cv2 as cv
 import numpy as np
+import cv2 as cv
 
 def findFundamentalMat(pts1, pts2):
     if len(pts1) == len(pts2):
@@ -16,7 +16,7 @@ def findFundamentalMat(pts1, pts2):
         _, _, Vt = np.linalg.svd(A, full_matrices=True)
         x = Vt[-1]
 
-        # Reorganize 'F' and enforce 'rank(F) = 2'
+        # Reorganize `x` as `F` and enforce 'rank(F) = 2'
         F = x.reshape(3, -1)
         U, S, Vt = np.linalg.svd(F)
         S[-1] = 0
@@ -24,8 +24,8 @@ def findFundamentalMat(pts1, pts2):
         return F / F[-1,-1] # Normalize the last element as 1
 
 if __name__ == '__main__':
-    pts0 = np.loadtxt('../bin/data/image_formation0.xyz')
-    pts1 = np.loadtxt('../bin/data/image_formation1.xyz')
+    pts0 = np.loadtxt('../data/image_formation0.xyz')
+    pts1 = np.loadtxt('../data/image_formation1.xyz')
 
     my_F = findFundamentalMat(pts0, pts1)
     cv_F, _ = cv.findFundamentalMat(pts0, pts1, cv.FM_8POINT)

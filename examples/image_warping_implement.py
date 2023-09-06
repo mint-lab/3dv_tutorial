@@ -1,5 +1,5 @@
-import cv2 as cv
 import numpy as np
+import cv2 as cv
 from homography_estimation_implement import getPerspectiveTransform
 
 def warpPerspective1(src, H, dst_size):
@@ -8,7 +8,7 @@ def warpPerspective1(src, H, dst_size):
     channel = src.shape[2] if src.ndim > 2 else 1
     dst = np.zeros((height, width, channel), dtype=src.dtype)
 
-    # Copy a pixel from 'src' to 'dst'
+    # Copy a pixel from `src` to `dst`
     for py in range(img.shape[0]):
         for px in range(img.shape[1]):
             q = H @ [px, py, 1]
@@ -23,7 +23,7 @@ def warpPerspective2(src, H, dst_size):
     channel = src.shape[2] if src.ndim > 2 else 1
     dst = np.zeros((height, width, channel), dtype=src.dtype)
 
-    # Copy a pixel from 'src' to 'dst'
+    # Copy a pixel from `src` to `dst`
     H_inv = np.linalg.inv(H)
     for qy in range(height):
         for qx in range(width):
@@ -35,13 +35,13 @@ def warpPerspective2(src, H, dst_size):
 
 if __name__ == '__main__':
     img = cv.imread('../data/sunglok_card.jpg')
-    wnd_name = '3DV Tutorial: Image Warping'
+    wnd_name = 'Image Warping'
     card_size = (900, 480)
-    src = np.array([[95, 243], [743, 121], [157, 652], [969, 372]], dtype=np.float32)
-    dst = np.array([[0, 0], [card_size[0], 0], [0, card_size[1]], card_size], dtype=np.float32)
+    pts_src = np.array([[95, 243], [743, 121], [157, 652], [969, 372]], dtype=np.float32)
+    pts_dst = np.array([[0, 0], [card_size[0], 0], [0, card_size[1]], card_size], dtype=np.float32)
 
     # Find planar homography and transform the original image
-    H = getPerspectiveTransform(src, dst)
+    H = getPerspectiveTransform(pts_src, pts_dst)
     warp1 = warpPerspective1(img, H, card_size)
     warp2 = warpPerspective2(img, H, card_size)
 

@@ -16,8 +16,6 @@ def mouse_event_handler(event, x, y, flags, param):
             param['dragged'] = False
             param['xy_e'] = (x, y)
 
-
-
 if __name__ == '__main__':
     # The given image and its calibration data
     img_file = '../data/daejeon_station.png'
@@ -27,7 +25,7 @@ if __name__ == '__main__':
 
     # Load an image
     img = cv.imread(img_file)
-    assert img is not None, 'Cannot read the given image, ' + img_file
+    assert img is not None
 
     # Register the mouse callback function
     mouse_state = {'dragged': False, 'xy_s': (0, 0), 'xy_e': (0, 0)}
@@ -59,7 +57,7 @@ if __name__ == '__main__':
             # Calculate object location and height
             c = R.T @ [mouse_state['xy_s'][0] - cx, mouse_state['xy_s'][1] - cy, f]
             h = R.T @ [mouse_state['xy_e'][0] - cx, mouse_state['xy_e'][1] - cy, f]
-            if c[1] < 1e-6:
+            if c[1] < 1e-6: # Skip the degenerate case (beyond the horizon)
                 continue
             X = c[0] / c[2] * L                 # Object location X [m]
             Z = c[2] / c[1] * L                 # Object location Y [m]

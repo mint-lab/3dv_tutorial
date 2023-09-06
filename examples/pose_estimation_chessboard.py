@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 
 # The given video and calibration data
-input_file = '../data/chessboard.avi'
+video_file = '../data/chessboard.avi'
 K = np.array([[432.7390364738057, 0, 476.0614994349778],
               [0, 431.2395555913084, 288.7602152621297],
               [0, 0, 1]])
@@ -12,8 +12,8 @@ board_cellsize = 0.025
 board_criteria = cv.CALIB_CB_ADAPTIVE_THRESH + cv.CALIB_CB_NORMALIZE_IMAGE + cv.CALIB_CB_FAST_CHECK
 
 # Open a video
-video = cv.VideoCapture(input_file)
-assert video.isOpened(), 'Cannot read the given input, ' + input_file
+video = cv.VideoCapture(video_file)
+assert video.isOpened(), 'Cannot read the given input, ' + video_file
 
 # Prepare a 3D box for simple AR
 box_lower = board_cellsize * np.array([[4, 2,  0], [5, 2,  0], [5, 4,  0], [4, 4,  0]])
@@ -30,8 +30,8 @@ while True:
         break
 
     # Estimate the camera pose
-    complete, img_points = cv.findChessboardCorners(img, board_pattern, board_criteria)
-    if complete:
+    success, img_points = cv.findChessboardCorners(img, board_pattern, board_criteria)
+    if success:
         ret, rvec, tvec = cv.solvePnP(obj_points, img_points, K, dist_coeff)
 
         # Draw the box on the image
@@ -43,7 +43,7 @@ while True:
             cv.line(img, np.int32(b.flatten()), np.int32(t.flatten()), (0, 255, 0), 2)
 
         # Print the camera position
-        R, _ = cv.Rodrigues(rvec) # Alternative) scipy.spatial.transform.Rotation
+        R, _ = cv.Rodrigues(rvec) # Alternative) `scipy.spatial.transform.Rotation`
         p = (-R.T @ tvec).flatten()
         info = f'XYZ: [{p[0]:.3f} {p[1]:.3f} {p[2]:.3f}]'
         cv.putText(img, info, (10, 25), cv.FONT_HERSHEY_DUPLEX, 0.6, (0, 255, 0))

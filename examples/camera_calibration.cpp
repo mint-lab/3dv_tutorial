@@ -1,16 +1,16 @@
 #include "opencv2/opencv.hpp"
-#include "fstream"
+#include "iostream"
 
 int main()
 {
-    const char* input = "data/chessboard.avi";
+    const char* video_file = "../data/chessboard.avi";
     cv::Size board_pattern(10, 7);
     float board_cellsize = 0.025f;
     bool select_images = true;
 
     // Open a video
     cv::VideoCapture video;
-    if (!video.open(input)) return -1;
+    if (!video.open(video_file)) return -1;
 
     // Select images
     std::vector<cv::Mat> images;
@@ -24,20 +24,19 @@ int main()
         if (select_images)
         {
             // Show the image and keep it if selected
-            cv::imshow("3DV Tutorial: Camera Calibration", image);
+            cv::imshow("Camera Calibration", image);
             int key = cv::waitKey(1);
-            if (key == 27) break;                               // 'ESC' key: Exit
-            else if (key == 32)                                 // 'Space' key: Pause
+            if (key == 32)                              // Space: Pause and show corners
             {
                 std::vector<cv::Point2f> pts;
                 bool complete = cv::findChessboardCorners(image, board_pattern, pts);
                 cv::Mat display = image.clone();
                 cv::drawChessboardCorners(display, board_pattern, pts, complete);
-                cv::imshow("3DV Tutorial: Camera Calibration", display);
+                cv::imshow("Camera Calibration", display);
                 key = cv::waitKey();
-                if (key == 27) break;                           // 'ESC' key: Exit
-                else if (key == 13) images.push_back(image);    // 'Enter' key: Select
+                if (key == 13) images.push_back(image); // Enter: Select the image
             }
+            if (key == 27) break;                       // ESC: Exit (Complete image selection)
         }
         else images.push_back(image);
     }
@@ -67,14 +66,11 @@ int main()
     std::vector<cv::Mat> rvecs, tvecs;
     double rms = cv::calibrateCamera(obj_points, img_points, images[0].size(), K, dist_coeff, rvecs, tvecs);
 
-    // Report calibration results
-    std::ofstream report("camera_calibration.txt");
-    if (!report.is_open()) return -1;
-    report << "## Camera Calibration Results" << std::endl;
-    report << "* The number of applied images = " << img_points.size() << std::endl;
-    report << "* RMS error = " << rms << std::endl;
-    report << "* Camera matrix (K) = " << std::endl << "  " << K.row(0) << K.row(1) << K.row(2) << std::endl;
-    report << "* Distortion coefficient (k1, k2, p1, p2, k3, ...) = " << std::endl << "  " << dist_coeff.t() << std::endl;
-    report.close();
+    // Print calibration results
+    std::cout << "## Camera Calibration Results" << std::endl;
+    std::cout << "* The number of applied images = " << img_points.size() << std::endl;
+    std::cout << "* RMS error = " << rms << std::endl;
+    std::cout << "* Camera matrix (K) = " << std::endl << "  " << K.row(0) << K.row(1) << K.row(2) << std::endl;
+    std::cout << "* Distortion coefficient (k1, k2, p1, p2, k3, ...) = " << std::endl << "  " << dist_coeff.t() << std::endl;
     return 0;
 }

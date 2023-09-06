@@ -19,14 +19,15 @@ if __name__ == '__main__':
 
     # Get the matched points from mouse clicks
     pts_src = []
-    cv.namedWindow('Perspective Correction: Point Selection')
-    cv.setMouseCallback('Perspective Correction: Point Selection', mouse_event_handler, pts_src)
+    wnd_name = 'Perspective Correction: Point Selection'
+    cv.namedWindow(wnd_name)
+    cv.setMouseCallback(wnd_name, mouse_event_handler, pts_src)
     while len(pts_src) < 4:
         img_display = img.copy()
         cv.rectangle(img_display, (offset, offset), (offset + card_size[0], offset + card_size[1]), (0, 0, 255), 2)
         idx = min(len(pts_src), len(pts_dst))
         cv.circle(img_display, offset + pts_dst[idx], 5, (0, 255, 0), -1)
-        cv.imshow('Perspective Correction: Point Selection', img_display)
+        cv.imshow(wnd_name, img_display)
         key = cv.waitKey(10)
         if key == 27: # ESC
             break
@@ -34,10 +35,13 @@ if __name__ == '__main__':
     if len(pts_src) == 4:
         # Calculate planar homography and rectify perspective distortion
         H, _ = cv.findHomography(np.array(pts_src), pts_dst)
+        print(f'pts_src = {pts_src}')
+        print(f'pts_dst = {pts_dst}')
+        print(f'H = {H}')
         img_rectify = cv.warpPerspective(img, H, card_size)
 
         # Show the rectified image
-        cv.imshow('Perspective Correction: Rectified Image', img_rectify)
+        cv.imshow('Perspective Distortion Correction: Rectified Image', img_rectify)
         cv.waitKey(0)
 
     cv.destroyAllWindows()

@@ -1,5 +1,5 @@
-import cv2 as cv
 import numpy as np
+import cv2 as cv
 
 def getPerspectiveTransform(src, dst):
     if len(src) == len(dst):
@@ -17,7 +17,7 @@ def getPerspectiveTransform(src, dst):
         _, _, Vt = np.linalg.svd(A, full_matrices=True)
         x = Vt[-1]
 
-        # Reorganize 'H'
+        # Reorganize `x` as a matrix
         H = x.reshape(3, -1) / x[-1] # Normalize the last element as 1
         return H
 

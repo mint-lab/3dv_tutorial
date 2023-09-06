@@ -13,7 +13,7 @@ int main()
     std::vector<cv::Point3d> cam_ori = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0), cv::Point3d(CV_PI / 12, CV_PI / 12, 0), cv::Point3d(-CV_PI / 12, -CV_PI / 12, 0) };
 
     // Load a point cloud in the homogeneous coordinate
-    FILE* fin = fopen("data/box.xyz", "rt");
+    FILE* fin = fopen("../data/box.xyz", "rt");
     if (fin == NULL) return -1;
     cv::Mat X;
     while (!feof(fin))
@@ -30,9 +30,9 @@ int main()
     {
         // Derive a projection matrix
         cv::Mat Rc = Rz(cam_ori[i].z) * Ry(cam_ori[i].y) * Rx(cam_ori[i].x);
-        cv::Mat tc(cam_pos[i]);
+        cv::Mat pos(cam_pos[i]);
         cv::Mat Rt;
-        cv::hconcat(Rc.t(), -Rc.t() * tc, Rt);
+        cv::hconcat(Rc.t(), -Rc.t() * pos, Rt);
         cv::Mat P = K * Rt;
 
         // Project the points (c.f. OpenCV provides 'cv::projectPoints()' with consideration of distortion.)
@@ -46,7 +46,7 @@ int main()
         cv::randn(noise, cv::Scalar(0), cv::Scalar(noise_std));
         x.rowRange(0, 2) = x.rowRange(0, 2) + noise;
 
-        // Show and store the points
+        // Show and save the points
         cv::Mat image = cv::Mat::zeros(img_res, CV_8UC1);
         for (int c = 0; c < x.cols; c++)
         {
@@ -54,9 +54,9 @@ int main()
             if (p.x >= 0 && p.x < img_res.width && p.y >= 0 && p.y < img_res.height)
                 cv::circle(image, p, 2, 255, -1);
         }
-        cv::imshow(cv::format("3DV_Tutorial: Image Formation %d", i), image);
+        cv::imshow(cv::format("Image Formation %d", i), image);
 
-        FILE* fout = fopen(cv::format("image_formation%d.xyz", i).c_str(), "wt");
+        FILE* fout = fopen(cv::format("../data/image_formation%d.xyz", i).c_str(), "wt");
         if (fout == NULL) return -1;
         for (int c = 0; c < x.cols; c++)
             fprintf(fout, "%f %f 1\n", x.at<double>(0, c), x.at<double>(1, c));

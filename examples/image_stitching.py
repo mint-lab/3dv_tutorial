@@ -28,8 +28,8 @@ img_merged[:,:img1.shape[1]] = img1 # Copy
 
 # Show the merged image
 img_matched = cv.drawMatches(img1, keypoints1, img2, keypoints2, match, None, None, None,
-                             matchesMask=inlier_mask.ravel().tolist()) # Remove 'matchesMask' if you want to show all putative matches
+                             matchesMask=inlier_mask.ravel().tolist()) # Remove `matchesMask` if you want to show all putative matches
 merge = np.vstack((np.hstack((img1, img2)), img_matched, img_merged))
-cv.imshow('Image Stitching', merge)
+cv.imshow('Planar Image Stitching', merge)
 cv.waitKey(0)
 cv.destroyAllWindows()

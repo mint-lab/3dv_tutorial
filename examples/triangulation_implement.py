@@ -1,5 +1,5 @@
-import cv2 as cv
 import numpy as np
+import cv2 as cv
 
 def triangulatePoints(P0, P1, pts0, pts1):
     Xs = []
@@ -13,11 +13,13 @@ def triangulatePoints(P0, P1, pts0, pts1):
         Xs.append(Vt[-1])
     return np.vstack(Xs).T
 
+
+
 if __name__ == '__main__':
     f, cx, cy = 1000., 320., 240.
-    pts0 = np.loadtxt('../bin/data/image_formation0.xyz')[:,:2]
-    pts1 = np.loadtxt('../bin/data/image_formation1.xyz')[:,:2]
-    output_file = '../bin/triangulation_implement.xyz'
+    pts0 = np.loadtxt('../data/image_formation0.xyz')[:,:2]
+    pts1 = np.loadtxt('../data/image_formation1.xyz')[:,:2]
+    output_file = '../triangulation_implement.xyz'
 
     # Estimate relative pose of two view
     F, _ = cv.findFundamentalMat(pts0, pts1, cv.FM_8POINT)

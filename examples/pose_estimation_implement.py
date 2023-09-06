@@ -1,7 +1,7 @@
-import cv2 as cv
 import numpy as np
 from scipy.optimize import least_squares
 from scipy.spatial.transform import Rotation
+import cv2 as cv
 
 def project_no_distort(X, rvec, t, K):
     R = Rotation.from_rotvec(rvec.flatten()).as_matrix()
@@ -23,8 +23,8 @@ def solvePnP(obj_pts, img_pts, K):
 
 if __name__ == '__main__':
     f, cx, cy = 1000., 320., 240.
-    obj_pts = np.loadtxt('../bin/data/box.xyz')
-    img_pts = np.loadtxt('../bin/data/image_formation1.xyz')[:,:2].copy()
+    obj_pts = np.loadtxt('../data/box.xyz')
+    img_pts = np.loadtxt('../data/image_formation1.xyz')[:,:2].copy()
     K = np.array([[f, 0, cx], [0, f, cy], [0, 0, 1]])
     dist_coeff = np.zeros(4)
 

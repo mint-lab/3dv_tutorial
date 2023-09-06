@@ -1,5 +1,6 @@
-build
+data/KITTI07/image_0
 slides
+build
 
 x64
 Debug

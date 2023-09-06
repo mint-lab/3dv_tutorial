@@ -1,5 +1,5 @@
-import cv2 as cv
 import numpy as np
+import cv2 as cv
 
 def getAffineTransform(src, dst):
     if len(src) == len(dst):
@@ -12,7 +12,7 @@ def getAffineTransform(src, dst):
             b.append(q[1])
         x = np.linalg.pinv(A) @ b
 
-        # Reorganize 'H'
+        # Reorganize `x` as a matrix
         H = np.array([[x[0], x[1], x[4]], [x[2], x[3], x[5]]])
         return H
 

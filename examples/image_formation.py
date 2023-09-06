@@ -19,7 +19,7 @@ for i, (pos, ori) in enumerate(zip(cam_pos, cam_ori)):
     R = Rc.T
     t = -Rc.T @ pos
 
-    # Project the points (Alternative: cv.projectPoints())
+    # Project the points (Alternative: `cv.projectPoints()`)
     x = K @ (R @ X.T + t.reshape(-1, 1)) # Size: 3 x N
     x /= x[-1]
 
@@ -27,7 +27,7 @@ for i, (pos, ori) in enumerate(zip(cam_pos, cam_ori)):
     noise = np.random.normal(scale=noise_std, size=(2, len(X)))
     x[0:2,:] += noise
 
-    # Show and store the points
+    # Show and save the points
     img = np.zeros(img_res[::-1], dtype=np.uint8)
     for c in range(x.shape[1]):
         cv.circle(img, x[0:2,c].astype(np.int32), 2, 255, -1)

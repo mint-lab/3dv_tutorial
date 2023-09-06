@@ -1,7 +1,7 @@
 import numpy as np
 import cv2 as cv
 
-input_file, cover_file = '../data/blais.mp4', '../data/blais.jpg'
+video_file, cover_file = '../data/blais.mp4', '../data/blais.jpg'
 f, cx, cy = 1000, 320, 240
 min_inlier_num = 100
 
@@ -10,14 +10,14 @@ fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
 
 # Load the object image and extract features
 obj_image = cv.imread(cover_file)
-assert obj_image is not None, 'Cannot read the given cover image, ' + cover_file
+assert obj_image is not None
 obj_keypoints, obj_descriptors = fdetector.detectAndCompute(obj_image, None)
-assert len(obj_keypoints) >= min_inlier_num, 'The given cover image contains too small number of features.'
+assert len(obj_keypoints) >= min_inlier_num
 fmatcher.add(obj_descriptors)
 
 # Open a video
-video = cv.VideoCapture(input_file)
-assert video.isOpened(), 'Cannot read the given video, ' + input_file
+video = cv.VideoCapture(video_file)
+assert video.isOpened(), 'Cannot read the given video, ' + video_file
 
 # Prepare a box for simple AR
 box_lower = np.array([[30, 145, 0], [30, 200, 0], [200, 200, 0], [200, 145, 0]], dtype=np.float32)

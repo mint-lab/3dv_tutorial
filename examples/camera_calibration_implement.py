@@ -26,13 +26,13 @@ def calibrateCamera(obj_pts, img_pts, img_size):
 
 if __name__ == '__main__':
     img_size = (640, 480)
-    img_files = ['../bin/data/image_formation1.xyz', '../bin/data/image_formation2.xyz']
+    img_files = ['../data/image_formation1.xyz', '../data/image_formation2.xyz']
     img_pts = []
     for file in img_files:
-        pts = np.loadtxt('../bin/data/image_formation1.xyz', dtype=np.float32)
+        pts = np.loadtxt(file, dtype=np.float32)
         img_pts.append(pts[:,:2])
 
-    pts = np.loadtxt('../bin/data/box.xyz', dtype=np.float32)
+    pts = np.loadtxt('../data/box.xyz', dtype=np.float32)
     obj_pts = [pts] * len(img_pts) # Copy the object point as much as the number of image observation
 
     # Calibrate the camera
