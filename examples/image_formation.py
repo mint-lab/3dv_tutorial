@@ -32,7 +32,7 @@ for i, (pos, ori) in enumerate(zip(cam_pos, cam_ori)):
     for c in range(x.shape[1]):
         cv.circle(img, x[0:2,c].astype(np.int32), 2, 255, -1)
     cv.imshow(f'Image Formation {i}', img)
-    np.savetxt(f'../data/image_formation{i}.xyz', x.T) # Size: N x 2
+    np.savetxt(f'image_formation{i}.xyz', x.T) # Size: N x 2
 
 cv.waitKey()
 cv.destroyAllWindows()

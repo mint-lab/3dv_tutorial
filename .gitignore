@@ -1,7 +1,8 @@
 data/KITTI07/image_0
 slides
-build
 
+__pycache__
+build
 x64
 Debug
 Release

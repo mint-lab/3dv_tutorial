@@ -31,7 +31,7 @@ std::vector<bool> maskNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vecto
 
 int main()
 {
-    const char* input = "data/relief/%02d.jpg";
+    const char* input = "../data/relief/%02d.jpg";
     double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 100, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
     int min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;

@@ -2,7 +2,7 @@
 
 int main()
 {
-    const char *video_file = "data/blais.mp4", *cover_file = "data/blais.jpg";
+    const char *video_file = "../data/blais.mp4", *cover_file = "../data/blais.jpg";
     double f_init = 1000, cx_init = 320, cy_init = 240;
     size_t min_inlier_num = 100;
 

@@ -56,7 +56,7 @@ int main()
         }
         cv::imshow(cv::format("Image Formation %d", i), image);
 
-        FILE* fout = fopen(cv::format("../data/image_formation%d.xyz", i).c_str(), "wt");
+        FILE* fout = fopen(cv::format("image_formation%d.xyz", i).c_str(), "wt");
         if (fout == NULL) return -1;
         for (int c = 0; c < x.cols; c++)
             fprintf(fout, "%f %f 1\n", x.at<double>(0, c), x.at<double>(1, c));

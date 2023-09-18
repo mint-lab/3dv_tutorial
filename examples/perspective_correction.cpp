@@ -13,7 +13,7 @@ void MouseEventHandler(int event, int x, int y, int flags, void* param)
 
 int main()
 {
-    const char* input = "data/sunglok_desk.jpg";
+    const char* input = "../data/sunglok_card.jpg";
     cv::Size card_size(450, 250);
 
     // Prepare the rectified points

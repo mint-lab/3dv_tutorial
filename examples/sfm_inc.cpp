@@ -49,7 +49,7 @@ bool isBadPoint(const cv::Point3d& X, const SFM::Vec9d& camera1, const SFM::Vec9
 
 int main()
 {
-    const char* input = "data/relief/%02d.jpg";
+    const char* input = "../data/relief/%02d.jpg";
     double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_limit = 100, max_cos_parallax = cos(10 * CV_PI / 180), ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
     int min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;

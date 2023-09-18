@@ -2,7 +2,7 @@
 
 int main()
 {
-    const char *video_file = "data/blais.mp4", *cover_file = "data/blais.jpg";
+    const char *video_file = "../data/blais.mp4", *cover_file = "../data/blais.jpg";
     size_t min_inlier_num = 100;
 
     // Load the object image and extract features

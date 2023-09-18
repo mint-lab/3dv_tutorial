@@ -3,8 +3,8 @@
 int main()
 {
     // Load two images
-    cv::Mat image1 = cv::imread("data/hill01.jpg");
-    cv::Mat image2 = cv::imread("data/hill02.jpg");
+    cv::Mat image1 = cv::imread("../data/hill01.jpg");
+    cv::Mat image2 = cv::imread("../data/hill02.jpg");
     if (image1.empty() || image2.empty()) return -1;
 
     // Retrieve matching points

@@ -41,7 +41,7 @@ void MouseEventHandler(int event, int x, int y, int flags, void* param)
 int main()
 {
     // The given image and its calibration data
-    const char* img_file = "data/daejeon_station.png";
+    const char* img_file = "../data/daejeon_station.png";
     double f = 810.5, cx = 480, cy = 270, L = 3.31;                   // Unit: [px], [px], [px], [m]
     cv::Point3d cam_ori(DEG2RAD(-18.7), DEG2RAD(-8.2), DEG2RAD(2.0)); // Unit: [deg]
     cv::Range grid_x(-2, 3), grid_z(5, 36);                           // Unit: [m]

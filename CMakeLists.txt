@@ -1,20 +1,32 @@
-cmake_minimum_required(VERSION 2.6)
-
+cmake_minimum_required(VERSION 3.8)
 project(3dv_tutorial)
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_BUILD_TYPE Release)
+
+# Find external packages and specify their locations
 find_package(OpenCV REQUIRED)
 find_package(Ceres REQUIRED)
 
-set(SRC_DIR	"${CMAKE_SOURCE_DIR}/examples")
-set(BIN_DIR	"${CMAKE_SOURCE_DIR}/bin")
+# Specify project files and locations
+set(EXAMPLE_DIR	"${CMAKE_SOURCE_DIR}/examples")
+file(GLOB EXAMPLE_FILES ${EXAMPLE_DIR}/*.cpp)
 
-file(GLOB APP_SOURCES "${SRC_DIR}/*.cpp")
-foreach(app_source ${APP_SOURCES})
-    string(REPLACE ".cpp" "" app_name ${app_source})
-    string(REPLACE "${SRC_DIR}/" "" app_name ${app_name})
-    add_executable(${app_name} ${app_source})
-    target_include_directories(${app_name} ${CERES_INCLUDE_DIRS})
-    target_link_libraries(${app_name} ${OpenCV_LIBS} ${CERES_LIBRARIES})
-    install(TARGETS ${app_name} DESTINATION ${BIN_DIR})
-endforeach(app_source ${APP_SOURCES})
+# Set common configuration
+include_directories(
+    ${OpenCV_INCLUDE_DIRS}
+    ${Ceres_INCLUDE_DIRS}
+)
+link_directories(
+    ${OpenCV_LIB_DIRS}
+    ${Ceres_LIB_DIRS} 
+)
+link_libraries(
+    ${OpenCV_LIBS}
+    ${CERES_LIBRARIES} 
+)
+add_compile_definitions(GLOG_NO_ABBREVIATED_SEVERITIES)
+
+# Add an executable
+foreach(example_file ${EXAMPLE_FILES})
+    string(REPLACE ".cpp"            "" example_name ${example_file})
+    string(REPLACE "${EXAMPLE_DIR}/" "" example_name ${example_name})
+    add_executable(${example_name} ${example_file})
+endforeach()

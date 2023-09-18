@@ -3,8 +3,8 @@
 int main()
 {
     double f = 1000, cx = 320, cy = 240;
-    const char *pts0_file = "image_formation0.xyz", *pts1_file = "image_formation1.xyz";
-    const char *output_file = "../data/triangulation.xyz";
+    const char *pts0_file = "../data/image_formation0.xyz", *pts1_file = "../data/image_formation1.xyz";
+    const char *output_file = "triangulation.xyz";
 
     // Load 2D points observed from two views
     std::vector<cv::Point2d> pts0, pts1;

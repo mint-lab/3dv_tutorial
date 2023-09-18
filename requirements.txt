@@ -1,5 +1,5 @@
 numpy
-scipy
 matplotlib
+scipy
 opencv-python
 opencv-contrib-python
