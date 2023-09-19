@@ -1,5 +1,5 @@
 ## An Invitation to 3D Vision: A Tutorial for Everyone
-_An Invitation to 3D Vision_ is an introductory tutorial on _3D computer vision_ (a.k.a. _geometric vision_ or _visual geometry_ or _multiple-view geometry_). It aims to make beginners understand basic theories on 3D vision and implement its applications using [OpenCV][https://opencv.org/].
+_An Invitation to 3D Vision_ is an introductory tutorial on _3D computer vision_ (a.k.a. _geometric vision_ or _visual geometry_ or _multiple-view geometry_). It aims to make beginners understand basic theories on 3D vision and implement its applications using [OpenCV](https://opencv.org/).
 In addition to tutorial slides, example codes are provided in the purpose of education. They include simple but interesting and practical applications. The example codes are written as short as possible (mostly __less than 100 lines__) to be clear and easy to understand.
 
 * Download [example codes and slides as a ZIP file](https://github.com/mint-lab/3dv_tutorial/archive/master.zip)
@@ -8,7 +8,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 
 ### What does its name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners to 3D vision and its applications.
-* The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV][]. We hope readers understand it easily without serious mathematical background.
+* The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV](https://opencv.org/). We hope readers understand it easily without serious mathematical background.
 
 ### Lecture Slides
 * [Section 1. Introduction](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/01_introduction.pdf)
