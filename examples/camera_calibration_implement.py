@@ -8,11 +8,11 @@ def fcxcy_to_K(f, cx, cy):
 def reproject_error_calib(unknown, Xs, xs):
     K = fcxcy_to_K(*unknown[0:3])
     err = []
-    for i in range(len(xs)):
-        offset = 3 + 6 * i
+    for j in range(len(xs)):
+        offset = 3 + 6 * j
         rvec, tvec = unknown[offset:offset+3], unknown[offset+3:offset+6]
-        xp = project_no_distort(Xs[i], rvec, tvec, K)
-        err.append(xs[i] - xp)
+        xp = project_no_distort(Xs[j], rvec, tvec, K)
+        err.append(xs[j] - xp)
     return np.vstack(err).ravel()
 
 def calibrateCamera(obj_pts, img_pts, img_size):
