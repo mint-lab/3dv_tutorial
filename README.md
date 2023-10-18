@@ -21,7 +21,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 * [Section 2. Single-view Geometry](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/02_single-view_geometry.pdf)
 * [Section 3. Two-view Geometry](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf)
 * [Section 4. Solving Problems](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/04_solving_problems.pdf)
-* Section 5. Finding Correspondence
+* [Section 5. Finding Correspondence](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
 * Section 6. Multiple-view Geometry
 * Special Topic) [Bayesian Filtering](https://github.com/mint-lab/filtering_tutorial)
 * Section 7. Visual SLAM and Odometry
@@ -68,12 +68,17 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * Solving Nonlinear Equations in 3D Vision
     * Absolute camera pose estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_implement.py)
     * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
-* **Section 5. Finding Correspondence**
-  * SIFT Feature Matching
-  * ORB Feature Matching
-  * KLT Feature Tracking
-  * Line Fitting with RANSAC
-  * Line Fitting with M-estimators
+* **Section 5. Finding Correspondence** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
+  * Feature Points and Descriptors
+    * Feature point comparison
+  * Feature Matching and Tracking
+    * Feature matching comparison
+    * Feature tracking with KLT tracker
+  * Outlier Rejection
+    * Line fitting with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.cpp)
+    * Line fitting with M-estimators [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
+    * Fundamental matrix estimation with RANSAC
+    * Fundamental matrix estimation with M-estimator
 * **Section 6. Multiple-view Geometry**
   * Bundle Adjustment
   * Structure-from-Motion (SfM)
