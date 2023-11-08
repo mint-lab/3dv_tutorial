@@ -70,6 +70,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
 * **Section 5. Finding Correspondence** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
   * Feature Points and Descriptors
+    * Harris corner
     * Feature point comparison
   * Feature Matching and Tracking
     * Feature matching comparison
