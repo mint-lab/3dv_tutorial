@@ -22,9 +22,9 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 * [Section 3. Two-view Geometry](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf)
 * [Section 4. Solving Problems](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/04_solving_problems.pdf)
 * [Section 5. Finding Correspondence](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
-* Section 6. Multiple-view Geometry
+* [Section 6. Multiple-view Geometry](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/06_multi-view_geometry.pdf)
 * Special Topic) [Bayesian Filtering](https://github.com/mint-lab/filtering_tutorial)
-* Section 7. Visual SLAM and Odometry
+* [Section 7. Visual SLAM and Odometry](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/07_visual_slam.pdf)
 
 
 
@@ -80,12 +80,12 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Line fitting with M-estimators [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
     * Fundamental matrix estimation with RANSAC
     * Fundamental matrix estimation with M-estimator
-* **Section 6. Multiple-view Geometry**
-  * Bundle Adjustment
+* **Section 6. Multiple-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/06_multi-view_geometry.pdf)
+  * Bundle Adjustment [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.cpp)
   * Structure-from-Motion (SfM)
-    * Global SfM
-    * Incremental SfM
-* **Section 7. Visual SLAM and Odometry**
+    * Global SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.cpp)
+    * Incremental SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.cpp)
+* **Section 7. Visual SLAM and Odometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/07_visual_slam.pdf)
 
 
 
