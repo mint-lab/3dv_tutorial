@@ -26,7 +26,7 @@ box_upper = np.array([[30, 145, -50], [30, 200, -50], [200, 200, -50], [200, 145
 # Run pose extimation
 K = np.array([[f_init, 0, cx_init], [0, f_init, cy_init], [0, 0, 1]], dtype=np.float32)
 dist_coeff = np.zeros(5)
-calib_param = cv.CALIB_FIX_ASPECT_RATIO | cv.CALIB_FIX_PRINCIPAL_POINT | cv.CALIB_ZERO_TANGENT_DIST | cv.CALIB_FIX_K1 | cv.CALIB_FIX_K2 | cv.CALIB_FIX_K3 | cv.CALIB_FIX_K4 | cv.CALIB_FIX_K5 | cv.CALIB_FIX_S1_S2_S3_S4 | cv.CALIB_FIX_TAUX_TAUY
+calib_param = cv.CALIB_FIX_ASPECT_RATIO | cv.CALIB_FIX_PRINCIPAL_POINT | cv.CALIB_ZERO_TANGENT_DIST | cv.CALIB_FIX_K3 | cv.CALIB_FIX_K4 | cv.CALIB_FIX_K5 | cv.CALIB_FIX_S1_S2_S3_S4 | cv.CALIB_FIX_TAUX_TAUY
 while True:
     # Read an image from the video
     valid, img = video.read()

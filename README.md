@@ -30,6 +30,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 
 ### Example Codes
 * **Section 1. Introduction** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/01_introduction.pdf)
+
 * **Section 2. Single-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/02_single-view_geometry.pdf)
   * Getting Started with 2D
     * 3D rotation conversion [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/3d_rotation_conversion.py)
@@ -46,6 +47,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Pose estimation (book) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
     * Pose estimation (book) with camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book2.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book2.cpp)
     * Pose estimation (book) with camera calibration without initial $K$ [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book3.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book3.cpp) [[result video]](https://youtu.be/GYp4h0yyB3Y)
+
 * **Section 3. Two-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf)
   * Planar Homography
     * Perspective distortion correction [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/perspective_correction.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/perspective_correction.cpp)
@@ -58,6 +60,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Monocular visual odometry (epipolar version) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/vo_epipolar.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/vo_epipolar.cpp) [[result video]](https://youtu.be/Pc_IYrSH3sI)
   * Triangulation
     * Triangulation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation.cpp)
+
 * **Section 4. Solving Problems** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/04_solving_problems.pdf)
   * Solving Linear Equations in 3D Vision
     * Affine transformation estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/affine_estimation_implement.py)
@@ -68,6 +71,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * Solving Nonlinear Equations in 3D Vision
     * Absolute camera pose estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_implement.py)
     * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
+
 * **Section 5. Finding Correspondence** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
   * Feature Points and Descriptors
     * Harris corner
@@ -76,15 +80,17 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * Feature matching comparison
     * Feature tracking with KLT tracker
   * Outlier Rejection
-    * Line fitting with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.cpp)
-    * Line fitting with M-estimators [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
-    * Fundamental matrix estimation with RANSAC
-    * Fundamental matrix estimation with M-estimator
+    * Line fitting with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
+    * Line fitting with M-estimator [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.cpp)
+    * Planar homography estimation with RANSAC
+    * Planar homography estimation with M-estimator
+
 * **Section 6. Multiple-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/06_multi-view_geometry.pdf)
   * Bundle Adjustment [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.cpp)
   * Structure-from-Motion (SfM)
     * Global SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.cpp)
     * Incremental SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.cpp)
+
 * **Section 7. Visual SLAM and Odometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/07_visual_slam.pdf)
 
 
