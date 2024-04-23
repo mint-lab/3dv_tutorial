@@ -23,7 +23,7 @@ while True:
         gray = img.copy()
 
     # Extract optical flow and calculate planar homography
-    pts, status, err = cv.calcOpticalFlowPyrLK(gray_ref, gray, pts_ref, None)
+    pts, status, error = cv.calcOpticalFlowPyrLK(gray_ref, gray, pts_ref, None)
     H, inlier_mask = cv.findHomography(pts, pts_ref, cv.RANSAC)
 
     # Synthesize a stabilized image

@@ -9,9 +9,9 @@ f, cx, cy = 707.0912, 601.8873, 183.1104 # From the KITTI dataset
 K = np.array([[f, 0, cx], [0, f, cy], [0, 0, 1]])
 
 # Retrieve matching points
-brisk = cv.BRISK_create()
-keypoints1, descriptors1 = brisk.detectAndCompute(img1, None)
-keypoints2, descriptors2 = brisk.detectAndCompute(img2, None)
+fdetector = cv.BRISK_create()
+keypoints1, descriptors1 = fdetector.detectAndCompute(img1, None)
+keypoints2, descriptors2 = fdetector.detectAndCompute(img2, None)
 
 fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
 match = fmatcher.match(descriptors1, descriptors2)

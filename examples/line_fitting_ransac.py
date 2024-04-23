@@ -1,63 +1,75 @@
 import numpy as np
 import cv2
-from math import fabs, sqrt
+import random
+import matplotlib.pyplot as plt
 
-def convert_line(line):
-    return np.array([[line[0], -line[1], -line[0]*line[2]+line[1]*line[3]]], dtype=np.float32)
+def generate_line(pts):
+    # Line model: y = ax + b
+    a = (pts[1][1] - pts[0][1]) / (pts[1][0] - pts[0][0])
+    b = pts[0][1] - a * pts[0][0]
 
-def main():
-    truth = np.array([1./sqrt(2.), 1./sqrt(2.), -240.]) # The line model: a*x + b*y + c = 0 (a^2 + b^2 = 1)
-    ransac_trial, ransac_n_sample, ransac_thresh = 50, 2, 3.
-    data_num, data_inlier_ratio, data_mean, data_inlier_noise = 1000, 0.5, 0, 1.0
+    # Line model: ax + by + c = 0 (a^2 + b^2 = 1)
+    model = np.array([a, -1, b])
+    return model / np.linalg.norm(model[:2])
 
-    # Generate Data
-    data = []
-    for i in range(data_num):
-        if np.random.randn(1) < data_inlier_ratio:
-            x = np.random.randint(0, 480)
-            y = (truth[0] * x + truth[2]) / (-truth[1])
-            x += np.random.normal(data_mean, data_inlier_noise, 1)
-            y += np.random.normal(data_mean, data_inlier_noise, 1)
-            data.append((x,y))
-        else:
-            data.append((np.random.randint(0, 640), np.random.randint(0, 480)))
+def evaluate_line(line, p):
+    return np.fabs(line[0] * p[0] + line[1] * p[1] + line[2])
 
-    data = np.array(data, dtype=np.float32)
-
-    # Estimate a line using RANSAC
+def fit_line_ransac(data, n_sample, ransac_trial, ransac_threshold):
     best_score = -1
-    best_line = []
-    for i in range(ransac_trial):
+    best_model = None
+    for _ in range(ransac_trial):
         # Step 1: Hypothesis generation
-        sample = []
-        for j in range(ransac_n_sample):
-            index = np.random.randint(0, int(data_num))
-            sample.append(data[index])
-        sample = np.array(sample, dtype=np.float32)
+        sample = random.choices(data, k=n_sample)
+        model = generate_line(sample)
 
-        nnxy = cv2.fitLine(sample, cv2.DIST_L2, 0, 0.01, 0.01)
-        line = convert_line(nnxy)
-
-        # Step 2: Hypothesis evailation
+        # Step 2: Hypothesis evaluation
         score = 0
-        for j in range(len(data)):
-            error = fabs(line[0][0] * data[j][0] * line[0][1] * data[j][1] + line[0][2])
-            if error<ransac_thresh: score += 1
-        
+        for p in data:
+            error = evaluate_line(model, p)
+            if error < ransac_threshold:
+                score += 1
         if score > best_score:
             best_score = score
-            best_line = line
-    
-    # Estimate a line using squares method (for reference)
-    nnxy = cv2.fitLine(data, cv2.DIST_L2, 0, 0.01, 0.01)
-    lsm_line = convert_line(nnxy)
+            best_model = model
 
-    # Display estimates
-    best_line = best_line.tolist()
-    lsm_line = lsm_line.tolist()
-    print(f"* The Truth: {truth[0]:.3f} {truth[1]:.3f} {truth[2]:.3f}")
-    print(f"* Estimate (RANSAC): {best_line[0][0][0]:.3f} {best_line[0][1][0]:.3f} {best_line[0][2][0]:.3f} (Score: {best_score})")
-    print(f"* Estimate (LSM): {lsm_line[0][0][0]:.3f} {lsm_line[0][1][0]:.3f} {lsm_line[0][2][0]:.3f}")
+    return best_model, best_score
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    true_line = np.array([2, 3, -14]) / np.sqrt(2*2 + 3*3) # The line model: a*x + b*y + c = 0 (a^2 + b^2 = 1)
+    data_range = np.array([-4, 12])
+    data_num = 100
+    noise_std = 0.2
+    outlier_ratio = 0.4
+
+    line2y = lambda line, x: (line[0] * x + line[2]) / -line[1] # ax + by + c = 0 -> y = (ax + c) / -b
+    y_range = sorted(line2y(true_line, data_range))
+
+    # Generate noisy points with outliers
+    data = []
+    for _ in range(data_num):
+        x = np.random.randint(*data_range)
+        if np.random.rand() < outlier_ratio:
+            y = np.random.randint(*y_range)
+        else:
+            y = line2y(true_line, x)
+            x += np.random.normal(scale=noise_std)
+            y += np.random.normal(scale=noise_std)
+        data.append((x, y))
+    data = np.array(data)
+
+    # Estimate a line using RANSAC
+    best_line, best_score = fit_line_ransac(data, 2, 30, 0.3) # log(1 - 0.999) / log(1 - 0.6^2) = 16
+
+    # Estimate a line using least squares method (for reference)
+    nnxy = cv2.fitLine(data, cv2.DIST_L2, 0, 0.01, 0.01).flatten() # OpenCV line model: n_x * (x - x_0) = n_y * (y - y_0)
+    lsqr_line = np.array([nnxy[0], -nnxy[1], -nnxy[0]*nnxy[2] + nnxy[1]*nnxy[3]])
+
+    # Plot the data and result
+    plt.plot(data_range, line2y(true_line, data_range), 'r-', label='The true line')
+    plt.plot(data[:,0], data[:,1], 'b.', label='Noisy data')
+    plt.plot(data_range, line2y(best_line, data_range), 'g-', label=f'RASAC (score={best_score})')
+    plt.plot(data_range, line2y(lsqr_line, data_range), 'm-', label='Least Square Method')
+    plt.legend()
+    plt.xlim(data_range)
+    plt.show()

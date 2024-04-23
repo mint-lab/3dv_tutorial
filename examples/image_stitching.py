@@ -7,9 +7,9 @@ img2 = cv.imread('../data/hill02.jpg')
 assert (img1 is not None) and (img2 is not None), 'Cannot read the given images'
 
 # Retrieve matching points
-brisk = cv.BRISK_create()
-keypoints1, descriptors1 = brisk.detectAndCompute(img1, None)
-keypoints2, descriptors2 = brisk.detectAndCompute(img2, None)
+fdetector = cv.BRISK_create()
+keypoints1, descriptors1 = fdetector.detectAndCompute(img1, None)
+keypoints2, descriptors2 = fdetector.detectAndCompute(img2, None)
 
 fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
 match = fmatcher.match(descriptors1, descriptors2)

@@ -44,7 +44,7 @@ while True:
 
     # Extract optical flow
     pts_prev = cv.goodFeaturesToTrack(gray_prev, 2000, 0.01, 10)
-    pts, status, err = cv.calcOpticalFlowPyrLK(gray_prev, gray, pts_prev, None)
+    pts, status, error = cv.calcOpticalFlowPyrLK(gray_prev, gray, pts_prev, None)
     gray_prev = gray
 
     # Calculate relative pose
@@ -55,7 +55,7 @@ while True:
         E = K.T @ F @ K
     inlier_num, R, t, inlier_mask = cv.recoverPose(E, pts_prev, pts, focal=f, pp=(cx, cy), mask=inlier_mask)
     inlier_ratio = inlier_num / len(pts)
-    
+
     # Accumulate relative pose if result is reliable
     info_color = (0, 255, 0)
     if inlier_num > min_inlier_num and inlier_ratio > min_inlier_ratio:
@@ -74,13 +74,13 @@ while True:
     traj_axes.set_aspect('equal')
     traj_line.set_data_3d(camera_traj[:,0], camera_traj[:,1], camera_traj[:,2])
     plt.draw()
-    
+
     # Show the image and write camera pose
     if img.ndim < 3 or img.shape[2] < 3:
         img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
     for pt, pt_prev, inlier in zip(pts, pts_prev, inlier_mask):
         color = (0, 0, 255) if inlier else (0, 127, 0)
-        cv.line(img, pt_prev.flatten().astype(np.int32), pt.flatten().astype(np.int32), color)    
+        cv.line(img, pt_prev.flatten().astype(np.int32), pt.flatten().astype(np.int32), color)
     info = f'Inliers: {inlier_num} ({inlier_ratio*100:.0f}%), XYZ: [{x:.3f} {y:.3f} {z:.3f}]'
     cv.putText(img, info, (5, 15), cv.FONT_HERSHEY_PLAIN, 1, info_color)
     cv.imshow('Monocular Visual Odometry (Epipolar)', img)
@@ -91,5 +91,5 @@ while True:
         break
 
 np.savetxt(traj_file, camera_traj)
-video.release()        
+video.release()
 cv.destroyAllWindows()
