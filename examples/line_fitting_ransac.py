@@ -51,10 +51,10 @@ if __name__ == '__main__':
     for _ in range(data_num):
         x = np.random.uniform(*data_range)
         if np.random.rand() < outlier_ratio:
-            y = np.random.uniform(*y_range)
+            y = np.random.uniform(*y_range)        # Generate an outlier
         else:
-            y = line2y(true_line, x)
-            x += np.random.normal(scale=noise_std)
+            y = line2y(true_line, x)               # Generate an inlier
+            x += np.random.normal(scale=noise_std) # Add Gaussian noise
             y += np.random.normal(scale=noise_std)
         data.append((x, y))
     data = np.array(data)

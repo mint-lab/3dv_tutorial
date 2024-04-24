@@ -2,6 +2,7 @@ import numpy as np
 import cv2 as cv
 import random
 from homography_estimation_implement import getPerspectiveTransform
+from image_warping_implement import warpPerspective2
 
 def evaluate_homography(H, p, q):
     p2q = H @ np.array([[p[0]], [p[1]], [1]])
@@ -36,7 +37,6 @@ def findHomography(src, dst, n_sample, ransac_trial, ransac_threshold):
     return best_model, best_inlier_mask
 
 if __name__ == '__main__':
-
     # Load two images
     img1 = cv.imread('../data/hill01.jpg')
     img2 = cv.imread('../data/hill02.jpg')
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     pts2 = np.array(pts2, dtype=np.float32)
 
     H, inlier_mask = findHomography(pts2, pts1, 4, 1000, 2) # log(1 - 0.999) / log(1 - 0.3^4) = 849
-    img_merged = cv.warpPerspective(img2, H, (img1.shape[1]*2, img1.shape[0]))
+    img_merged = warpPerspective2(img2, H, (img1.shape[1]*2, img1.shape[0]))
     img_merged[:,:img1.shape[1]] = img1 # Copy
 
     # Show the merged image

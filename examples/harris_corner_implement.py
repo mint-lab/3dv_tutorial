@@ -37,8 +37,8 @@ if __name__ == '__main__':
 
         # Show the corners on the image
         heatmap = np.dstack((np.zeros_like(corners), np.zeros_like(corners), corners*255))
-        heatmap = 0.3 * img + 0.7 * heatmap
-        cv.imshow('Harris Cornerness', heatmap.astype(np.uint8))
+        heatmap = (0.3 * img + 0.7 * heatmap).astype(np.uint8)
+        cv.imshow('Harris Cornerness', heatmap)
         key = cv.waitKey(1)
         if key == ord(' '):
             key = cv.waitKey()

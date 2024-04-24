@@ -8,7 +8,7 @@ def warpPerspective1(src, H, dst_size):
     channel = src.shape[2] if src.ndim > 2 else 1
     dst = np.zeros((height, width, channel), dtype=src.dtype)
 
-    # Copy a pixel from `src` to `dst`
+    # Copy a pixel from `src` to `dst` (forword mapping)
     for py in range(img.shape[0]):
         for px in range(img.shape[1]):
             q = H @ [px, py, 1]
@@ -23,13 +23,13 @@ def warpPerspective2(src, H, dst_size):
     channel = src.shape[2] if src.ndim > 2 else 1
     dst = np.zeros((height, width, channel), dtype=src.dtype)
 
-    # Copy a pixel from `src` to `dst`
+    # Copy a pixel from `src` to `dst` (backward mapping)
     H_inv = np.linalg.inv(H)
     for qy in range(height):
         for qx in range(width):
             p = H_inv @ [qx, qy, 1]
             px, py = int(p[0]/p[-1] + 0.5), int(p[1]/p[-1] + 0.5)
-            if px >= 0 and py >= 0 and px < img.shape[1] and py < img.shape[0]:
+            if px >= 0 and py >= 0 and px < src.shape[1] and py < src.shape[0]:
                 dst[qy, qx] = src[py, px]
     return dst
 
