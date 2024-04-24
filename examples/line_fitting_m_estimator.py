@@ -1,63 +1,53 @@
 import numpy as np
-from scipy.optimize import minimize
-from math import sqrt
+import cv2 as cv
+from scipy.optimize import least_squares
 import matplotlib.pyplot as plt
-import cv2
 
-def convert_line(line):
-    return np.array([[line[0], -line[1], -line[0]*line[2]+line[1]*line[3]]], dtype=np.float32)
+def geometric_error(line, pts):
+    a, b, c = line
+    err = [(a*x + b*y + c) / np.sqrt(a*a + b*b) for (x, y) in pts]
+    return err
 
-class GeometricError():
-    def __init__(self):
-        pass
+if __name__ == '__main__':
+    true_line = np.array([2, 3, -14]) / np.sqrt(2*2 + 3*3) # The line model: a*x + b*y + c = 0 (a^2 + b^2 = 1)
+    data_range = np.array([-4, 12])
+    data_num = 100
+    noise_std = 0.2
+    outlier_ratio = 0.7
 
-    @staticmethod
-    def func(datas, xn, yn):
-        geo_error = np.sum((datas[0] * xn + datas[1] * yn + datas[2])**2 / (datas[0] ** 2 + datas[1] ** 2))
-        return geo_error
-
-def main():
-    # Initial values
-    truth = np.array([1./sqrt(2.), 1./sqrt(2.), -240.]) # The line model: a*x + b*y + c = 0 (a^2 + b^2 = 1)
-    true_line = lambda x : -x + 240 * sqrt(2.)
-    data_noise_std = 1
-    data_num = 1000
-    data_inlier_ratio = 1
-    data_range = np.array([0, 640])
-
-    # Generate Data
+    # Generate noisy points with outliers
+    line2y = lambda line, x: (line[0] * x + line[2]) / -line[1] # ax + by + c = 0 -> y = (ax + c) / -b
+    y_range = sorted(line2y(true_line, data_range))
     data = []
-    for i in range(data_num):
-        if np.random.rand(1) < data_inlier_ratio:
-            x = np.random.randint(0, 640)
-            y = (truth[0] * x + truth[2]) / (-truth[1])
-            x += np.random.normal(scale=data_noise_std)
-            y += np.random.normal(scale=data_noise_std)
-            data.append((x,y))
+    for _ in range(data_num):
+        x = np.random.uniform(*data_range)
+        if np.random.rand() < outlier_ratio:
+            y = np.random.uniform(*y_range)
         else:
-            data.append((np.random.randint(0, 640), np.random.randint(0, 480))) # outlier
+            y = line2y(true_line, x)
+            x += np.random.normal(scale=noise_std)
+            y += np.random.normal(scale=noise_std)
+        data.append((x, y))
     data = np.array(data)
-    xn = data[:, 0].ravel()
-    yn = data[:, 1].ravel()
 
-    # Estimate line using scipy
-    initial = np.array([1., 1., 0]) # 초기값 영향을 굉장히 많이 받음. 그래도 실패를 많이 함.
-    geo_dist = GeometricError()
+    # Estimate a line using least squares with a robust kernel
+    init_line = [1, 1, 0]
+    result = least_squares(geometric_error, init_line, args=(data,), loss='huber', f_scale=0.3)
+    mest_line = result['x'] / np.linalg.norm(result['x'][:2])
 
-    opt_line = minimize(geo_dist.func, initial, args=(xn, yn))
+    # Estimate a line using OpenCV (for reference)
+    # Note) OpenCV line model: n_y * (x - x_0) = n_x * (y - y_0)
+    nnxy = cv.fitLine(data, cv.DIST_L2, 0, 0.01, 0.01).flatten()
+    lsqr_line = np.array([nnxy[1], -nnxy[0], -nnxy[1]*nnxy[2] + nnxy[0]*nnxy[3]])
+    nnxy = cv.fitLine(data, cv.DIST_HUBER, 0, 0.01, 0.01).flatten()
+    huber_line = np.array([nnxy[1], -nnxy[0], -nnxy[1]*nnxy[2] + nnxy[0]*nnxy[3]])
 
-    # Estimate a line using least squares method (for reference)
-    nnxy = cv2.fitLine(data, cv2.DIST_L2, 0, 0.01, 0.01)
-    lsm_line = convert_line(nnxy)
-
-    # Display estimates
-    lsm_line = lsm_line.tolist()
-    print(f"* The Truth: {truth[0]:.3f} {truth[1]:.3f} {truth[2]:.3f}")
-    print(f"* Estimate (SCIPY): {opt_line.x[0]:.3f} {opt_line.x[1]:.3f} {opt_line.x[2]:.3f}")
-    print(f"* Estimate (LSM): {lsm_line[0][0][0]:.3f} {lsm_line[0][1][0]:.3f} {lsm_line[0][2][0]:.3f}")
-
-    plt.plot(xn, yn, 'g.')
+    # Plot the data and result
+    plt.plot(data_range, line2y(true_line, data_range), 'r-', label='The true line')
+    plt.plot(data[:,0], data[:,1], 'b.', label='Noisy data')
+    plt.plot(data_range, line2y(mest_line, data_range), 'g-', label='M-estimator (Huber loss)')
+    plt.plot(data_range, line2y(lsqr_line, data_range), 'm-', label='OpenCV (L2 loss)')
+    plt.plot(data_range, line2y(huber_line, data_range), 'm:', label='OpenCV (Huber loss)')
+    plt.legend()
+    plt.xlim(data_range)
     plt.show()
-
-if __name__ == "__main__":
-    main()
