@@ -59,7 +59,7 @@ if __name__ == '__main__':
             h = R.T @ [mouse_state['xy_e'][0] - cx, mouse_state['xy_e'][1] - cy, f]
             if c[1] < 1e-6: # Skip the degenerate case (beyond the horizon)
                 continue
-            X = c[0] / c[2] * L                 # Object location X [m]
+            X = c[0] / c[1] * L                 # Object location X [m]
             Z = c[2] / c[1] * L                 # Object location Y [m]
             H = (c[1] / c[2] - h[1] / h[2]) * Z # Object height [m]
 

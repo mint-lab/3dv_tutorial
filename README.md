@@ -103,8 +103,8 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
 The authors thank the following contributors and projects.
 
 * [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): He motivated many examples.
-* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes with [Toy-SfM](https://github.com/royshil/SfM-Toy-Library) and [cvsba](https://www.uco.es/investiga/grupos/ava/node/39).
-* [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): The KITTI odometry dataset #07 was used to demonstrate visual odometry and SLAM.
+* [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes based on [Toy-SfM](https://github.com/royshil/SfM-Toy-Library) and [cvsba](https://www.uco.es/investiga/grupos/ava/node/39).
+* [Richard Blais](http://www.richardblais.net/): His book cover and video in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html) were used to demonstrate camera pose estimation and augmented reality.
 * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): His two hill images were used to demonstrate image stitching.
 * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): His shaking CCTV video was used to demonstrate video stabilization.
-* [Richard Blais](http://www.richardblais.net/): His book cover and video in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html) were used to demonstrate camera pose estimation and augmented reality.
+* [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/): The KITTI odometry dataset #07 was used to demonstrate visual odometry and SLAM.
