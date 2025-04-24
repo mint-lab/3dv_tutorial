@@ -74,6 +74,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
     * SuperPoint [[Github]](https://github.com/magicleap/SuperPointPretrainedNetwork)
   * Feature Matching and Tracking
     * Feature matching comparison [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_matching.py)
+    * SuperGlue [[Github]](https://github.com/magicleap/SuperGluePretrainedNetwork)
     * Feature tracking with KLT tracker [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_tracking_klt.py)
   * Outlier Rejection
     * Line fitting with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
