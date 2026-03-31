@@ -38,7 +38,7 @@ if __name__ == '__main__':
     cv.imshow(wnd1_name, img1)
     cv.imshow(wnd2_name, img2)
 
-    # Get a point from a image and draw its correponding epipolar line on the other image
+    # Get a point from a image and draw its corresponding epipolar line on the other image
     while True:
         if len(img1_pts) > 0:
             for x, y in img1_pts:

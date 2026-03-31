@@ -23,7 +23,7 @@ int main()
         return -1;
     }
 
-    // Run and show video stabilization
+    // Run video stabilization
     while (true)
     {
         // Grab an image from `video`

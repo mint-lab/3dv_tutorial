@@ -11,7 +11,7 @@ if gray_ref.ndim >= 3:
     gray_ref = cv.cvtColor(gray_ref, cv.COLOR_BGR2GRAY)
 pts_ref = cv.goodFeaturesToTrack(gray_ref, 2000, 0.01, 10)
 
-# Run and show video stabilization
+# Run video stabilization
 while True:
     # Read an image from `video`
     valid, img = video.read()

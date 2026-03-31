@@ -23,7 +23,7 @@ int main()
     fclose(fin1);
     if (pts0.size() != pts1.size()) return -1;
 
-    // Estimate relative pose of two views
+    // Estimate the relative pose of two views
     cv::Mat F = cv::findFundamentalMat(pts0, pts1, cv::FM_8POINT);
     cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, cx, 0, f, cy, 0, 0, 1);
     cv::Mat E = K.t() * F * K;

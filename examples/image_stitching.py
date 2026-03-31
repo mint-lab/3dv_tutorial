@@ -14,7 +14,7 @@ keypoints2, descriptors2 = fdetector.detectAndCompute(img2, None)
 fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
 match = fmatcher.match(descriptors1, descriptors2)
 
-# Calculate planar homography and merge them
+# Calculate planar homography and merge two images
 pts1, pts2 = [], []
 for i in range(len(match)):
     pts1.append(keypoints1[match[i].queryIdx].pt)

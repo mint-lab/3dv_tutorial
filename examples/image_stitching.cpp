@@ -17,7 +17,7 @@ int main()
     std::vector<cv::DMatch> match;
     fmatcher->match(descriptor1, descriptor2, match);
 
-    // Calculate planar homography and merge them
+    // Calculate planar homography and merge two images
     std::vector<cv::Point2f> points1, points2;
     for (size_t i = 0; i < match.size(); i++)
     {
