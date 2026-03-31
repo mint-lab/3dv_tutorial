@@ -1,18 +1,18 @@
 ## An Invitation to 3D Vision: A Tutorial for Everyone
-_An Invitation to 3D Vision_ is an introductory tutorial on _3D computer vision_ (a.k.a. _geometric vision_ or _visual geometry_ or _multiple-view geometry_). It aims to make beginners understand basic theories on 3D vision and implement its applications using [OpenCV](https://opencv.org/).
-In addition to tutorial slides, example codes are provided in the purpose of education. They include simple but interesting and practical applications. The example codes are written as short as possible (mostly __less than 100 lines__) to be clear and easy to understand.
+_An Invitation to 3D Vision_ is an introductory tutorial on _3D computer vision_ (a.k.a. _geometric vision_ or _visual geometry_ or _multiple-view geometry_). It aims to help beginners understand the basic theories of 3D vision and implement practical applications using [OpenCV](https://opencv.org/).
+In addition to tutorial slides, example codes are provided for educational purposes. They include simple but interesting and practical applications. The example codes are kept as short as possible (mostly __less than 100 lines__) to be clear and easy to understand.
 
 * To clone this repository (codes and slides): `git clone https://github.com/mint-lab/3dv_tutorial.git`
-* To fork this repository to your Github: [Click here](https://github.com/mint-lab/3dv_tutorial/fork)
+* To fork this repository to your GitHub account: [Click here](https://github.com/mint-lab/3dv_tutorial/fork)
 * To download codes and slides as a ZIP file: [Click here](https://github.com/mint-lab/3dv_tutorial/archive/master.zip)
 * :memo: [How to run example codes in Python](https://github.com/mint-lab/3dv_tutorial/blob/master/HOWTO_RUN_PYTHON.md)
 * :memo: [How to run example codes in C++](https://github.com/mint-lab/3dv_tutorial/blob/master/HOWTO_RUN_CPP.md)
 
 
 
-### What does its name come from?
+### Where does the name come from?
 * The main title, _An Invitation to 3D Vision_, came from [a legendary book by Yi Ma, Stefano Soatto, Jana Kosecka, and Shankar S. Sastry](http://vision.ucla.edu/MASKS/). We wish that our tutorial will be the first gentle invitation card for beginners to 3D vision and its applications.
-* The subtitle, _for everyone_, was inspired from [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industries. We tried to describe important and typical problems and their solutions in [OpenCV](https://opencv.org/). We hope readers understand it easily without serious mathematical background.
+* The subtitle, _for everyone_, was inspired by [Prof. Kim's online lecture](https://hunkim.github.io/ml/) (in Korean). Our tutorial is also intended not only for students and researchers in academia, but also for hobbyists and developers in industry. We tried to describe important and typical problems and their solutions in [OpenCV](https://opencv.org/). We hope readers can understand it easily without a strong mathematical background.
 
 
 
@@ -40,6 +40,7 @@ In addition to tutorial slides, example codes are provided in the purpose of edu
   * Geometric Distortion Models
     * Geometric distortion visualization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_visualization.py)
     * Geometric distortion correction [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_correction.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_correction.cpp) [[result video]](https://youtu.be/HKetupWh4V8)
+    * Geometric distortion correction with virtual PTZ [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fisheye_virtual_ptz.py)
   * Camera Calibration
     * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration.cpp)
   * Absolute Camera Pose Estimation (a.k.a. perspective-n-point; PnP)
@@ -107,6 +108,7 @@ The authors thank the following contributors and projects.
 
 * [Jae-Yeong Lee](https://sites.google.com/site/roricljy/): He motivated many examples.
 * [Giseop Kim](https://sites.google.com/view/giseopkim): He contributed the initial version of SfM codes based on [Toy-SfM](https://github.com/royshil/SfM-Toy-Library) and [cvsba](https://www.uco.es/investiga/grupos/ava/node/39).
+* [Nell's Security](https://nellyssecurity.com/blogs/articles/uniview-360-degree-fisheye-lens-ip-security-camera-full-review): Their fisheye example image was used to demonstrate geometric distortion correction with virtual PTZ.
 * [Richard Blais](http://www.richardblais.net/): His book cover and video in [the OpenCV tutorial](http://docs.opencv.org/3.1.0/dc/d16/tutorial_akaze_tracking.html) were used to demonstrate camera pose estimation and augmented reality.
 * [Russell Hewett](https://courses.engr.illinois.edu/cs498dh3/fa2013/projects/stitching/ComputationalPhotograph_ProjectStitching.html): His two hill images were used to demonstrate image stitching.
 * [Kang Li](http://www.cs.cmu.edu/~kangli/code/Image_Stabilizer.html): His shaking CCTV video was used to demonstrate video stabilization.
