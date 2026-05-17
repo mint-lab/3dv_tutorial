@@ -70,9 +70,10 @@ In addition to tutorial slides, example codes are provided for educational purpo
   * Solving Nonlinear Equations in 3D Vision
     * Absolute camera pose estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_implement.py)
     * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
+    * Camera calibration (with lens distortion) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement_k1.py)
 * **Section 5. Finding Correspondence** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
   * Feature Points and Descriptors
-    * Harris corner [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/harris_corner_implement.py)
+    * Harris corner (from scratch) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/harris_corner_implement.py)
     * SuperPoint [[Github]](https://github.com/magicleap/SuperPointPretrainedNetwork)
   * Feature Matching and Tracking
     * Feature matching comparison [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_matching.py)
