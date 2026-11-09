@@ -48,10 +48,10 @@ while True:
 	if key == 27: # ESC
 		break
 	if key == ord('a') or key == ord('A'):
-		undist_pan_deg -= rotation_step
+		undist_pan_deg += rotation_step
 		need_to_update = True
 	elif key == ord('d') or key == ord('D'):
-		undist_pan_deg += rotation_step
+		undist_pan_deg -= rotation_step
 		need_to_update = True
 	elif key == ord('w') or key == ord('W'):
 		undist_tilt_deg -= rotation_step
