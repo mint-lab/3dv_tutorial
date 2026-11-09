@@ -24,13 +24,15 @@ while True:
 
     # Extract optical flow and calculate planar homography
     pts, status, error = cv.calcOpticalFlowPyrLK(gray_ref, gray, pts_ref, None)
-    H, inlier_mask = cv.findHomography(pts, pts_ref, cv.RANSAC)
+    tracked_mask = status.ravel().astype(bool)
+    pts, ref = pts[tracked_mask], pts_ref[tracked_mask]
+    H, inlier_mask = cv.findHomography(pts, ref, cv.RANSAC)
 
     # Synthesize a stabilized image
     warp = cv.warpPerspective(img, H, (img.shape[1], img.shape[0]))
 
     # Show the original and stabilized images together
-    for pt, pt_ref, inlier in zip(pts, pts_ref, inlier_mask):
+    for pt, pt_ref, inlier in zip(pts, ref, inlier_mask):
         color = (0, 0, 255) if inlier else (0, 127, 0)
         cv.line(img, pt.flatten().astype(np.int32), pt_ref.flatten().astype(np.int32), color)
     cv.imshow('2D Video Stabilization', np.hstack((img, warp)))

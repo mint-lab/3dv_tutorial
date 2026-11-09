@@ -22,7 +22,7 @@ assert video.isOpened(), 'Cannot read the given video, ' + video_file
 box_lower = np.array([[30, 145, 0], [30, 200, 0], [200, 200, 0], [200, 145, 0]], dtype=np.float32)
 box_upper = np.array([[30, 145, -50], [30, 200, -50], [200, 200, -50], [200, 145, -50]], dtype=np.float32)
 
-# Run pose extimation
+# Run pose estimation
 calib_param = cv.CALIB_FIX_ASPECT_RATIO | cv.CALIB_FIX_PRINCIPAL_POINT | cv.CALIB_ZERO_TANGENT_DIST | cv.CALIB_FIX_K3 | cv.CALIB_FIX_K4 | cv.CALIB_FIX_K5 | cv.CALIB_FIX_S1_S2_S3_S4 | cv.CALIB_FIX_TAUX_TAUY
 while True:
     # Read an image from the video
@@ -44,16 +44,16 @@ while True:
     obj_pts = np.hstack((obj_pts, np.zeros((len(obj_pts), 1), dtype=np.float32))) # Make 2D to 3D
     img_pts = np.array(img_pts, dtype=np.float32)
 
-    # Deterimine whether each matched feature is an inlier or not
-    H, inlier_mask = cv.findHomography(obj_pts, img_pts, cv.RANSAC, 2)
+    # Determine whether each matched feature is an inlier or not
+    H, inlier_mask = cv.findHomography(obj_pts[:, :2], img_pts, cv.RANSAC, 2)
     inlier_mask = inlier_mask.flatten()
     img_result = cv.drawMatches(img, img_keypoints, obj_image, obj_keypoints, match, None, (0, 0, 255), (0, 127, 0), inlier_mask)
 
     # Check whether inliers are enough or not
-    inlier_num = sum(inlier_mask)
+    inlier_num = int(np.count_nonzero(inlier_mask))
     if inlier_num > min_inlier_num:
         # Calibrate the camera and estimate its pose with inliers
-        ret, K, dist_coeff, rvecs, tvecs = cv.calibrateCamera([obj_pts[inlier_mask.astype(bool)]], [img_pts[inlier_mask.astype(bool)]], (img.shape[0], img.shape[1]), None, None, None, None, calib_param)
+        ret, K, dist_coeff, rvecs, tvecs = cv.calibrateCamera([obj_pts[inlier_mask.astype(bool)]], [img_pts[inlier_mask.astype(bool)]], (img.shape[1], img.shape[0]), None, None, None, None, calib_param)
         rvec, tvec = rvecs[0], tvecs[0]
 
         # Draw the box on the image

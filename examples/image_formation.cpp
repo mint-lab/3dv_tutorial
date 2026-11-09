@@ -12,7 +12,7 @@ int main()
     std::vector<cv::Point3d> cam_pos = { cv::Point3d(0, 0, 0), cv::Point3d(-2, -2, 0), cv::Point3d(2, 2, 0), cv::Point3d(-2, 2, 0), cv::Point3d(2, -2, 0) };
     std::vector<cv::Point3d> cam_ori = { cv::Point3d(0, 0, 0), cv::Point3d(-CV_PI / 12, CV_PI / 12, 0), cv::Point3d(CV_PI / 12, -CV_PI / 12, 0), cv::Point3d(CV_PI / 12, CV_PI / 12, 0), cv::Point3d(-CV_PI / 12, -CV_PI / 12, 0) };
 
-    // Load a point cloud in the homogeneous coordinate
+    // Load a point cloud
     FILE* fin = fopen("../data/box.xyz", "rt");
     if (fin == NULL) return -1;
     cv::Mat X;
@@ -29,7 +29,7 @@ int main()
     for (size_t i = 0; i < cam_pos.size(); i++)
     {
         // Derive a projection matrix
-        cv::Mat Rc = Rz(cam_ori[i].z) * Ry(cam_ori[i].y) * Rx(cam_ori[i].x);
+        cv::Mat Rc = Rx(cam_ori[i].x) * Ry(cam_ori[i].y) * Rz(cam_ori[i].z);
         cv::Mat pos(cam_pos[i]);
         cv::Mat Rt;
         cv::hconcat(Rc.t(), -Rc.t() * pos, Rt);
@@ -47,14 +47,14 @@ int main()
         x.rowRange(0, 2) = x.rowRange(0, 2) + noise;
 
         // Show and save the points
-        cv::Mat image = cv::Mat::zeros(img_res, CV_8UC1);
+        cv::Mat img = cv::Mat::zeros(img_res, CV_8UC1);
         for (int c = 0; c < x.cols; c++)
         {
             cv::Point p(x.col(c).rowRange(0, 2));
             if (p.x >= 0 && p.x < img_res.width && p.y >= 0 && p.y < img_res.height)
-                cv::circle(image, p, 2, 255, -1);
+                cv::circle(img, p, 2, 255, -1);
         }
-        cv::imshow(cv::format("Image Formation %d", i), image);
+        cv::imshow(cv::format("Image Formation %d", i), img);
 
         FILE* fout = fopen(cv::format("image_formation%d.xyz", i).c_str(), "wt");
         if (fout == NULL) return -1;

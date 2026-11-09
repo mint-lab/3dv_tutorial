@@ -45,6 +45,8 @@ while True:
     # Extract optical flow
     pts_prev = cv.goodFeaturesToTrack(gray_prev, 2000, 0.01, 10)
     pts, status, error = cv.calcOpticalFlowPyrLK(gray_prev, gray, pts_prev, None)
+    tracked_mask = status.ravel().astype(bool)
+    pts_prev, pts = pts_prev[tracked_mask], pts[tracked_mask]
     gray_prev = gray
 
     # Calculate relative pose

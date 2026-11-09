@@ -6,7 +6,7 @@ int main()
     const char* video_file = "../data/chessboard.avi";
     cv::Matx33d K(432.7390364738057, 0, 476.0614994349778,
                   0, 431.2395555913084, 288.7602152621297,
-                  0, 0, 1); // Derived from `calibrate_camera.py`
+                  0, 0, 1); // Derived from `camera_calibration.py`
     std::vector<double> dist_coeff = { -0.2852754904152874, 0.1016466459919075, -0.0004420196146339175, 0.0001149909868437517, -0.01803978785585194 };
 
     // Open a video
@@ -19,23 +19,23 @@ int main()
     while (true)
     {
         // Read an image from the video
-        cv::Mat image;
-        video >> image;
-        if (image.empty()) break;
+        cv::Mat img;
+        video >> img;
+        if (img.empty()) break;
 
         // Rectify geometric distortion (Alternative: `cv.undistort()`)
         cv::String info = "Original";
         if (show_rectify)
         {
             if (map1.empty() || map2.empty())
-                cv::initUndistortRectifyMap(K, dist_coeff, cv::Mat(), cv::Mat(), image.size(), CV_32FC1, map1, map2);
-            cv::remap(image, image, map1, map2, cv::InterpolationFlags::INTER_LINEAR);
+                cv::initUndistortRectifyMap(K, dist_coeff, cv::Mat(), cv::Mat(), img.size(), CV_32FC1, map1, map2);
+            cv::remap(img, img, map1, map2, cv::InterpolationFlags::INTER_LINEAR);
             info = "Rectified";
         }
-        cv::putText(image, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
+        cv::putText(img, info, cv::Point(10, 25), cv::FONT_HERSHEY_DUPLEX, 0.6, cv::Vec3b(0, 255, 0));
 
-        // Show the image
-        cv::imshow("Geometric Distortion Correction", image);
+        // Show the image and process the key event
+        cv::imshow("Geometric Distortion Correction", img);
         int key = cv::waitKey(10);
         if (key == 32) key = cv::waitKey();                 // Space: Pause
         if (key == 27) break;                               // ESC: Exit

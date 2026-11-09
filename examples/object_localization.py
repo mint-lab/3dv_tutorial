@@ -58,9 +58,11 @@ if __name__ == '__main__':
             c = R.T @ [mouse_state['xy_s'][0] - cx, mouse_state['xy_s'][1] - cy, f]
             h = R.T @ [mouse_state['xy_e'][0] - cx, mouse_state['xy_e'][1] - cy, f]
             if c[1] < 1e-6: # Skip the degenerate case (beyond the horizon)
+                if cv.waitKey(10) == 27:
+                    break
                 continue
             X = c[0] / c[1] * L                 # Object location X [m]
-            Z = c[2] / c[1] * L                 # Object location Y [m]
+            Z = c[2] / c[1] * L                 # Object location Z [m]
             H = (c[1] / c[2] - h[1] / h[2]) * Z # Object height [m]
 
             # Draw the head/contact points and location/height

@@ -41,7 +41,7 @@ int main()
     X.row(2) = X.row(2) / X.row(3);
     X.row(3) = 1;
 
-    // Store the 3D points
+    // Write the reconstructed 3D points
     FILE* fout = fopen(output_file, "wt");
     if (fout == NULL) return -1;
     for (int c = 0; c < X.cols; c++)

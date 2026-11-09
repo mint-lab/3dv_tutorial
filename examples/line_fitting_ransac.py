@@ -22,7 +22,7 @@ def fit_line_ransac(data, n_sample, ransac_trial, ransac_threshold):
     best_model = None
     for _ in range(ransac_trial):
         # Step 1: Hypothesis generation
-        sample = random.choices(data, k=n_sample)
+        sample = random.sample(data, k=n_sample)
         model = generate_line(sample)
 
         # Step 2: Hypothesis evaluation
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # Plot the data and result
     plt.plot(data_range, line2y(true_line, data_range), 'r-', label='The true line')
     plt.plot(data[:,0], data[:,1], 'b.', label='Noisy data')
-    plt.plot(data_range, line2y(best_line, data_range), 'g-', label=f'RASAC (score={best_score})')
+    plt.plot(data_range, line2y(best_line, data_range), 'g-', label=f'RANSAC (score={best_score})')
     plt.plot(data_range, line2y(lsqr_line, data_range), 'm-', label='Least square method')
     plt.legend()
     plt.xlim(data_range)

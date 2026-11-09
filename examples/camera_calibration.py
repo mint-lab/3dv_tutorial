@@ -9,7 +9,7 @@ def select_img_from_video(video_file, board_pattern, select_all=False, wait_msec
     # Select images
     img_select = []
     while True:
-        # Grab an images from the video
+        # Read an image from the video
         valid, img = video.read()
         if not valid:
             break
@@ -34,6 +34,7 @@ def select_img_from_video(video_file, board_pattern, select_all=False, wait_msec
             if key == 27:                  # ESC: Exit (Complete image selection)
                 break
 
+    video.release()
     cv.destroyAllWindows()
     return img_select
 

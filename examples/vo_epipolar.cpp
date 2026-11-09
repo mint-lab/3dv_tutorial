@@ -21,28 +21,34 @@ int main()
         video.release();
         return -1;
     }
-    if (gray_prev.channels() > 1) cv::cvtColor(gray_prev, gray_prev, cv::COLOR_RGB2GRAY);
+    if (gray_prev.channels() > 1) cv::cvtColor(gray_prev, gray_prev, cv::COLOR_BGR2GRAY);
 
     // Run the monocular visual odometry
     cv::Mat K = (cv::Mat_<double>(3, 3) << f, 0, c.x, 0, f, c.y, 0, 0, 1);
     cv::Mat camera_pose = cv::Mat::eye(4, 4, CV_64F);
     FILE* camera_traj = fopen(traj_file, "wt");
     if (camera_traj == NULL) return -1;
+    fprintf(camera_traj, "0.000000 0.000000 0.000000\n");
     while (true)
     {
         // Grab an image from the video
         cv::Mat img, gray;
         video >> img;
         if (img.empty()) break;
-        if (img.channels() > 1) cv::cvtColor(img, gray, cv::COLOR_RGB2GRAY);
+        if (img.channels() > 1) cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);
         else                      gray = img.clone();
 
         // Extract optical flow
         std::vector<cv::Point2f> pts_prev, pts;
         cv::goodFeaturesToTrack(gray_prev, pts_prev, 2000, 0.01, 10);
         std::vector<uchar> status;
-        cv::Mat err;
-        cv::calcOpticalFlowPyrLK(gray_prev, gray, pts_prev, pts, status, err);
+        cv::Mat error;
+        cv::calcOpticalFlowPyrLK(gray_prev, gray, pts_prev, pts, status, error);
+        size_t n = 0;
+        for (size_t i = 0; i < status.size(); i++)
+            if (status[i]) { pts_prev[n] = pts_prev[i]; pts[n++] = pts[i]; }
+        pts_prev.resize(n);
+        pts.resize(n);
         gray_prev = gray;
 
         // Calculate relative pose
@@ -58,7 +64,7 @@ int main()
         }
         cv::Mat R, t;
         int inlier_num = cv::recoverPose(E, pts_prev, pts, R, t, f, c, inlier_mask);
-        double inlier_ratio = inlier_num / pts.size();
+        double inlier_ratio = static_cast<double>(inlier_num) / pts.size();
 
         // Accumulate relative pose if result is reliable
         cv::Vec3b info_color(0, 255, 0);
@@ -79,7 +85,7 @@ int main()
             else cv::line(img, pts_prev[i], pts[i], cv::Vec3b(0, 127, 0));
         }
         double x = camera_pose.at<double>(0, 3), y = camera_pose.at<double>(1, 3), z = camera_pose.at<double>(2, 3);
-        cv::String info = cv::format("Inliers: %d (%d%%),  XYZ: [%.3f, %.3f, %.3f]", inlier_num, inlier_ratio*100, x, y, z);
+        cv::String info = cv::format("Inliers: %d (%.0f%%), XYZ: [%.3f %.3f %.3f]", inlier_num, inlier_ratio*100, x, y, z);
         cv::putText(img, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, info_color);
         cv::imshow("Monocular Visual Odometry (Epipolar)", img);
         fprintf(camera_traj, "%.6f %.6f %.6f\n", x, y, z);

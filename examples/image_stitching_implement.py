@@ -14,7 +14,7 @@ def findHomography(src, dst, n_sample, ransac_trial, ransac_threshold):
     best_model = None
     for _ in range(ransac_trial):
         # Step 1: Hypothesis generation
-        sample_idx = random.choices(range(len(src)), k=n_sample)
+        sample_idx = random.sample(range(len(src)), k=n_sample)
         model = getPerspectiveTransform(src[sample_idx], dst[sample_idx])
 
         # Step 2: Hypothesis evaluation

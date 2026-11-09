@@ -7,11 +7,11 @@ pts0 = np.loadtxt('../data/image_formation0.xyz')[:,:2]
 pts1 = np.loadtxt('../data/image_formation1.xyz')[:,:2]
 output_file = 'triangulation.xyz'
 
-# Estimate the relative pose of two view
+# Estimate the relative pose of two views
 F, _ = cv.findFundamentalMat(pts0, pts1, cv.FM_8POINT)
 K = np.array([[f, 0, cx], [0, f, cy], [0, 0, 1]])
 E = K.T @ F @ K
-_, R, t, _ = cv.recoverPose(E, pts0, pts1)
+_, R, t, _ = cv.recoverPose(E, pts0, pts1, K)
 
 # Reconstruct 3D points (triangulation)
 P0 = K @ np.eye(3, 4, dtype=np.float32)
@@ -22,7 +22,7 @@ X /= X[3]
 X = X.T
 
 # Write the reconstructed 3D points
-np.savetxt(output_file, X)
+np.savetxt(output_file, X[:, :3])
 
 # Visualize the reconstructed 3D points
 ax = plt.figure(layout='tight').add_subplot(projection='3d')

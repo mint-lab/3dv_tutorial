@@ -28,13 +28,13 @@ int main()
     // Run pose estimation
     while (true)
     {
-        // Grab an image from the video
+        // Read an image from the video
         cv::Mat img;
         video >> img;
         if (img.empty()) break;
 
         // Estimate the camera pose
-        std::vector<cv::Point2d> img_points;
+        std::vector<cv::Point2f> img_points;
         bool success = cv::findChessboardCorners(img, board_pattern, img_points, cv::CALIB_CB_ADAPTIVE_THRESH + cv::CALIB_CB_NORMALIZE_IMAGE + cv::CALIB_CB_FAST_CHECK);
         if (success)
         {
@@ -56,8 +56,8 @@ int main()
             cv::Mat R;
             cv::Rodrigues(rvec, R);
             cv::Mat p = -R.t() * tvec;
-            cv::String info = cv::format("XYZ: [%.3f, %.3f, %.3f]", cv::Point3d(p));
-            cv::putText(img, info, cv::Point(5, 15), cv::FONT_HERSHEY_PLAIN, 1, cv::Vec3b(0, 255, 0));
+            cv::String info = cv::format("XYZ: [%.3f %.3f %.3f]", p.at<double>(0), p.at<double>(1), p.at<double>(2));
+            cv::putText(img, info, cv::Point(10, 25), cv::FONT_HERSHEY_DUPLEX, 0.6, cv::Vec3b(0, 255, 0));
         }
 
         // Show the image and process the key event

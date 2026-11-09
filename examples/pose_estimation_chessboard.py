@@ -30,7 +30,7 @@ while True:
         break
 
     # Estimate the camera pose
-    success, img_points = cv.findChessboardCorners(img, board_pattern, board_criteria)
+    success, img_points = cv.findChessboardCorners(img, board_pattern, flags=board_criteria)
     if success:
         ret, rvec, tvec = cv.solvePnP(obj_points, img_points, K, dist_coeff)
 
@@ -50,7 +50,7 @@ while True:
 
     # Show the image and process the key event
     cv.imshow('Pose Estimation (Chessboard)', img)
-    key = cv.waitKey(10)
+    key = cv.waitKey(1)
     if key == ord(' '):
         key = cv.waitKey()
     if key == 27: # ESC

@@ -8,7 +8,7 @@ img_res = (640, 480)
 cam_pos = [[0, 0, 0], [-2, -2, 0], [2, 2, 0], [-2, 2, 0], [2, -2, 0]]          # Unit: [m]
 cam_ori = [[0, 0, 0], [-15 , 15, 0], [15, -15, 0], [15, 15, 0], [-15, -15, 0]] # Unit: [deg]
 
-# Load a point cloud in the homogeneous coordinate
+# Load a point cloud
 X = np.loadtxt('../data/box.xyz') # Size: N x 3
 
 # Generate images for each camera pose
@@ -32,7 +32,7 @@ for i, (pos, ori) in enumerate(zip(cam_pos, cam_ori)):
     for c in range(x.shape[1]):
         cv.circle(img, x[0:2,c].astype(np.int32), 2, 255, -1)
     cv.imshow(f'Image Formation {i}', img)
-    np.savetxt(f'image_formation{i}.xyz', x.T) # Size: N x 2
+    np.savetxt(f'image_formation{i}.xyz', x.T) # Size: N x 3
 
 cv.waitKey()
 cv.destroyAllWindows()
