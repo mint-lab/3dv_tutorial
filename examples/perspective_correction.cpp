@@ -41,7 +41,7 @@ int main()
         if (cv::waitKey(10) == 27) break; // ESC
     }
 
-    if (pts_src.size() >= 4
+    if (pts_src.size() >= pts_dst.size())
     {
         // Calculate planar homography and rectify perspective distortion
         cv::Mat H = cv::findHomography(pts_src, pts_dst);

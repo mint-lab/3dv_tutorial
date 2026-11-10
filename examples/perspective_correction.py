@@ -32,7 +32,7 @@ if __name__ == '__main__':
         if key == 27: # ESC
             break
 
-    if len(pts_src) >= 4:
+    if len(pts_src) >= len(pts_dst):
         # Calculate planar homography and rectify perspective distortion
         H, _ = cv.findHomography(np.array(pts_src), pts_dst)
         print(f'pts_src = {pts_src}')

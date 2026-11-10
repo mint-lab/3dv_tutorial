@@ -22,7 +22,7 @@ def fit_line_ransac(data, n_sample, ransac_trial, ransac_threshold):
     best_model = None
     for _ in range(ransac_trial):
         # Step 1: Hypothesis generation
-        sample = random.sample(data, k=n_sample)
+        sample = random.sample(list(data), k=n_sample)
         model = generate_line(sample)
 
         # Step 2: Hypothesis evaluation
