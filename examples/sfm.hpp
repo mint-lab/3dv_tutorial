@@ -52,13 +52,13 @@ public:
 
     typedef std::unordered_map<uint, uint> VisibilityGraph;
 
-    static inline uint genKey(uint cam_idx, uint obs_idx) { return ((cam_idx << 16) + obs_idx); }
+    static inline uint gen_key(uint cam_idx, uint obs_idx) { return ((cam_idx << 16) + obs_idx); }
 
-    static inline uint getCamIdx(uint key) { return ((key >> 16) & 0xFFFF); }
+    static inline uint get_cam_idx(uint key) { return ((key >> 16) & 0xFFFF); }
 
-    static inline uint getObsIdx(uint key) { return (key & 0xFFFF); }
+    static inline uint get_obs_idx(uint key) { return (key & 0xFFFF); }
 
-    static bool addCostFunc7DOF(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
+    static bool add_cost_func_7dof(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
     {
         double* _X = (double*)(&(X.x));
         double* _camera = (double*)(&(camera[0]));
@@ -69,7 +69,7 @@ public:
         return true;
     }
 
-    static bool addCostFunc6DOF(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
+    static bool add_cost_func_6dof(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
     {
         double* _X = (double*)(&(X.x));
         double* _camera = (double*)(&(camera[0]));

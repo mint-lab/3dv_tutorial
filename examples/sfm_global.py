@@ -1,270 +1,223 @@
-import cv2
 import numpy as np
-import open3d as o3d
+import cv2 as cv
 from scipy.optimize import least_squares
-from scipy.spatial.transform import Rotation
 from scipy.sparse import lil_matrix
-from copy import deepcopy
-import time
-class ProjectError():
-    def __init__(self,n_cameras, n_points):
-        self.n_cameras = n_cameras
-        self.n_points = n_points
-
-    def sparsity_jacobian_inc(self, camera_indices, point_indices):
-        
-        m = camera_indices.size * 2 # m = 800 x 2
-        n = 6 + self.n_points * 3 # n = 6 * cameras = 5 + 3 * points = 160 --> 510
-        A = lil_matrix((m, n), dtype=int)
-
-        i = np.arange(camera_indices.size)
-        for s in range(6):
-            A[2 * i, camera_indices * 6 + s] = 1
-            A[2 * i + 1, camera_indices * 6 + s] = 1
-
-        for s in range(3):
-            A[2 * i, 6 + point_indices * 3 + s] = 1
-            A[2 * i + 1, 6 + point_indices * 3 + s] = 1
-
-        return A
-
-    def sparsity_jacobian_global(self, camera_indices, point_indices):
-        # camera, point indices = params to 2d points
-        m = camera_indices.size * 2 # m = 800 x 2
-        n = 9 * self.n_cameras + self.n_points * 3 # n = 6 * cameras = 5 + 3 * points = 160 --> 510
-        A = lil_matrix((m, n), dtype=int)
-
-        i = np.arange(camera_indices.size)
-        for s in range(9):
-            A[2 * i, camera_indices * 9 + s] = 1
-            A[2 * i + 1, camera_indices * 9 + s] = 1
-
-        for s in range(3):
-            A[2 * i, 9  + point_indices * 3 + s] = 1
-            A[2 * i + 1, 9 + point_indices * 3 + s] = 1
-
-        return A
-
-    def project2(self, cam_params, points):
-        points_proj = []
-        for i in range(len(cam_params)):
-            # Init params
-            f, cx, cy = cam_params[i, 0], cam_params[i, 1], cam_params[i, 2]
-            rvec, tvec = cam_params[i, 3:6], cam_params[i, 6:9]
-            point_3d = points[i]
-            K = np.array([[f, 0, cx], [0, f, cy], [0, 0, 1]], dtype=np.float32)
-
-            # Do Projection
-            rot = Rotation.from_rotvec(rvec)
-            point_proj = rot.apply(point_3d)
-            point_proj += tvec
-            point_proj = point_proj @ K.T
-            point_proj[0] /= point_proj[2]
-            point_proj[1] /= point_proj[2]
-            points_proj.append(point_proj[:2])
-        return points_proj
+from scipy.spatial.transform import Rotation
+from bundle_adjustment import plot_reconstruction
 
 
-    @staticmethod
-    def cost_func(params, points_2d, sfm, cam_indices, point_indices,cls):
-        """
-        params = (camera_params + points_3d).ravel(). 
-        n_cameras = cameras number, which is also index of scene
-        cls is ba itself
-        camera params = f, cx, cy, rx, ry, rz, tx, ty, tz
-        """
-        cam_params = params[: cls.n_cameras * 9].reshape((cls.n_cameras, 9))
-        points_3d = params[cls.n_cameras * 9:].reshape((cls.n_points, 3))
+# Reprojection error for bundle adjustment with fixed intrinsic parameters.
+def reprojection_error(params, xs, cameras, camera_indices, point_indices, ba_loss_width=-1):
+    cameras = cameras.copy()
+    cameras[:, :6] = params[:len(cameras) * 6].reshape(-1, 6)
+    Xs = params[len(cameras) * 6:].reshape(-1, 3)
+    camera = cameras[camera_indices]
 
-        proj_points_3d = cls.project2(cam_params[cam_indices], points_3d[point_indices])
-        result = points_2d - proj_points_3d
-        return result.ravel()
+    # X' = R*X + t
+    R = Rotation.from_rotvec(camera[:, :3])
+    X = R.apply(Xs[point_indices]) + camera[:, 3:6]
 
-class SFM():
-    """3D point idx Gen data structure"""
-    def __init__(self):
-        self._sfm_dict = {}
+    # x' = K*X'
+    x_p = camera[:, 6:7] * X[:, :2] / X[:, 2:] + camera[:, 7:9]
 
-    def gen_dict(self, cam_idx, point_2d_idx):
-        """
-        Gen data set. 
-        (Cam idx, 2D Pts idx) = 3D Pts idx
-        3D Pts Idx = (Cam idx, 2D Pts idx) --> find 하기 어려울 수 있음.
-        """
-        if self._sfm_dict.get((cam_idx, point_2d_idx)) is None:
-            self._sfm_dict[(cam_idx, point_2d_idx)] = None
+    # residual = x - x'
+    residuals = xs - x_p
+    if ba_loss_width > 0:
+        # Match Ceres CauchyLoss on each 2D residual block, rather than each coordinate.
+        s = np.sum(residuals**2, axis=1) / ba_loss_width**2
+        weight = np.divide(np.log1p(s), s, out=np.ones_like(s), where=s > 0)
+        residuals *= np.sqrt(weight[:, None])
+    return residuals.ravel()
 
-        return self._sfm_dict[(cam_idx, point_2d_idx)]
 
-    def pop(self, key):
-        self._sfm_dict.pop(key)
+def bundle_adjustment_sparsity(n_cameras, n_points, camera_indices, point_indices):
+    # Each observation depends on one camera (6 parameters) and one point (3 parameters).
+    i = np.arange(len(camera_indices))
+    J = lil_matrix((2 * len(i), 6 * n_cameras + 3 * n_points), dtype=int)
+    for s in range(6):
+        J[2 * i, 6 * camera_indices + s] = 1
+        J[2 * i + 1, 6 * camera_indices + s] = 1
+    for s in range(3):
+        J[2 * i, 6 * n_cameras + 3 * point_indices + s] = 1
+        J[2 * i + 1, 6 * n_cameras + 3 * point_indices + s] = 1
+    return J.tocsr()
 
-    def gen_indices(self, img_keypoints):
-        cam_indices = []
-        point_indices = []
-        points_2d = []
-        for (cam_idx, m_idx), p3_idx in self._sfm_dict.items():
-            points_2d.append(img_keypoints[cam_idx][m_idx].pt)
-            cam_indices.append(cam_idx)
-            point_indices.append(p3_idx)
-        return np.array(cam_indices), np.array(point_indices), np.array(points_2d)
+
+# Return a boolean mask identifying points behind a camera or with a large reprojection error.
+def find_outlier_points(Xs, xs, cameras, visibility, reproj_error):
+    is_noisy = np.zeros(len(Xs), dtype=bool)
+    for (cam_idx, x_idx), X_idx in visibility.items():
+        X = Xs[X_idx]
+        x = np.array(xs[cam_idx][x_idx].pt)
+        camera = cameras[cam_idx]
+
+        # X' = R*X + t
+        rvec, t = camera[:3], camera[3:6]
+        R = Rotation.from_rotvec(rvec).as_matrix()
+        X_p = R @ X + t
+        if not np.isfinite(X_p).all() or X_p[2] <= 0:
+            is_noisy[X_idx] = True
+            continue
+
+        # x' = K*X'
+        f, cx, cy = camera[6:9]
+        x_p = f * X_p[:2] / X_p[2] + [cx, cy]
+
+        # Reject the point if any observation exceeds the threshold (pixels).
+        d = x - x_p
+        if reproj_error > 0 and d @ d > reproj_error**2:
+            is_noisy[X_idx] = True
+    return is_noisy
+
 
 def main():
-    img_path = "../bin/data/relief/%02d.jpg"
-    img_resize = 0.25
-    f_init, cx_init, cy_init, Z_init, Z_limit = 500, -1, -1, 2, 100
-    ba_loss_width = 9
-    min_inlier_num, ba_num_iter = 200, 200
-    SHOW_MATCH = False
+    input = '../data/relief/%02d.jpg'
+    img_resize, f_init, cx_init, cy_init, Z_init, Z_limit = 0.25, 500, -1, -1, 2, 100
+    ba_loss_width = 9 # Negative 'ba_loss_width' makes BA not to use a loss function.
+    reproj_error = 3 # Maximum reprojection error [pixels]
+    min_inlier_num, ba_num_iter = 200, 200 # Negative 'ba_num_iter' uses the default value for BA minimization.
+    show_match = False
 
     # Load images and extract features
-    # USE BRISK feature detection
-    img_keypoints = []
-    img_descriptors = []
-    img_set = []
-
-    detector = cv2.BRISK_create()
-
-    cam = cv2.VideoCapture(img_path)
-    h, w = 0, 0
+    video = cv.VideoCapture(input)
+    if not video.isOpened():
+        return -1
+    fdetector = cv.BRISK_create()
+    img_keypoint, img_set, img_descriptor = [], [], []
     while True:
-        _, img = cam.read()
-        if img is None: break
-        img = cv2.resize(img, dsize=(0, 0), fx=img_resize, fy=img_resize)
-        img_keypoint, img_descriptor = detector.detectAndCompute(img, None)
-        img_keypoints.append(img_keypoint)
-        img_descriptors.append(img_descriptor)
-        img_set.append(img)
-        h, w, _ = img.shape
-    cam.release()
-    if cx_init < 0 or cy_init < 0:
-        cx_init = w / 2
-        cy_init = h / 2
+        _, image = video.read()
+        if image is None:
+            break
+        if img_resize != 1:
+            image = cv.resize(image, None, fx=img_resize, fy=img_resize)
+        keypoint, descriptor = fdetector.detectAndCompute(image, None)
+        img_set.append(image)
+        img_keypoint.append(keypoint)
+        img_descriptor.append(descriptor)
+    video.release()
+    if len(img_set) < 2:
+        return -1
+    if cx_init < 0:
+        cx_init = img_set[0].shape[1] // 2
+    if cy_init < 0:
+        cy_init = img_set[0].shape[0] // 2
 
-    img_keypoints = np.array(img_keypoints, dtype=object)
-    img_descriptors = np.array(img_descriptors, dtype=object)
-    img_set = np.array(img_set)
-    
     # Match features and find good matches
-    fmatcher = cv2.DescriptorMatcher_create("BruteForce-Hamming")
-    match_pair, match_inlier = [], []
+    fmatcher = cv.DescriptorMatcher_create('BruteForce-Hamming')
+    match_pair = []   # Good matches (image pairs)
+    match_inlier = [] # Good matches (inlier feature matches)
     for i in range(len(img_set)):
-        for j in range(i+1, len(img_set)):
-            src, dst, inlier = [], [], []
-            match = fmatcher.match(img_descriptors[i], img_descriptors[j])
-            match = np.array(match)
-            for m in match:
-                src.append(img_keypoints[i][m.queryIdx].pt)
-                dst.append(img_keypoints[j][m.trainIdx].pt)
-            
-            src = np.array(src, dtype=np.float32)
-            dst = np.array(dst, dtype=np.float32)
-            
-            F, inlier_mask = cv2.findFundamentalMat(src, dst, cv2.RANSAC)
-            for k in range(len(inlier_mask)):
-                if inlier_mask[k]: 
-                    inlier.append(match[k]) # 매칭된 index를 넣음.
-            inlier = np.array(inlier)
+        for j in range(i + 1, len(img_set)):
+            if img_descriptor[i] is None or img_descriptor[j] is None:
+                continue
+            # Match features of two image pair (i, j) and find their inliers
+            match = fmatcher.match(img_descriptor[i], img_descriptor[j])
+            src = np.array([img_keypoint[i][m.queryIdx].pt for m in match])
+            dst = np.array([img_keypoint[j][m.trainIdx].pt for m in match])
+            if len(match) < 8:
+                continue
+            F, inlier_mask = cv.findFundamentalMat(src, dst, cv.FM_RANSAC)
+            if F is None or inlier_mask is None:
+                continue
+            inlier = [m for m, keep in zip(match, inlier_mask.ravel()) if keep]
+            print(f'3DV Tutorial: Image {i} - {j} are matched ({len(inlier)} / {len(match)}).')
 
-            print(f"3DV Tutorial: Image {i} - {j} are matched ({inlier.size} / {match.size}).\n")
-
-            # Determin whether the image pair is good or not
-            if inlier.size < min_inlier_num: continue
-            print(f"3DV Tutorial: Image {i} - {j} are selected.\n")
+            # Determine whether the image pair is good or not
+            if len(inlier) < min_inlier_num:
+                continue
+            print(f'3DV Tutorial: Image {i} - {j} are selected.')
             match_pair.append((i, j))
             match_inlier.append(inlier)
+            if show_match:
+                match_image = cv.drawMatches(img_set[i], img_keypoint[i], img_set[j], img_keypoint[j], match, None, matchesMask=inlier_mask.ravel().tolist())
+                cv.imshow('3DV Tutorial: Structure-from-Motion', match_image)
+                cv.waitKey()
+    if len(match_pair) < 1:
+        return -1
 
-            if SHOW_MATCH:
-                match_image = cv2.drawMatches(img_set[i], img_keypoints[i], img_set[j], img_keypoints[j], match, (0, 255, 0), (255, 0, 0), matchesMask=inlier_mask)
-                cv2.imshow("3DV Tutorial: Structure-from-Motion", match_image)
-                cv2.waitKey()
-    # if match_pair.size < 1: return 
-    
-    # Find 0 - 1 - 2 Covisibility Matched points
-    points_3d = []
-    points_rgb = []
-    xs_visited = SFM()
-    for i in range(len(match_pair)):
-        for j in range(len(match_inlier[i])):
-            cam1_idx, cam2_idx = match_pair[i][0], match_pair[i][1] 
-            pts1_2d_idx, pts2_2d_idx = match_inlier[i][j].queryIdx, match_inlier[i][j].trainIdx
+    # 1) Initialize cameras (rotation, translation, intrinsic parameters)
+    cameras = np.tile([0., 0, 0, 0, 0, 0, f_init, cx_init, cy_init], (len(img_set), 1))
 
-            value1 = xs_visited.gen_dict(cam_idx=cam1_idx, point_2d_idx=pts1_2d_idx)
-            value2 = xs_visited.gen_dict(cam_idx=cam2_idx, point_2d_idx=pts2_2d_idx)
+    # 2) Initialize 3D points and build a visibility graph
+    Xs, Xs_rgb = [], []
+    xs_visited = {}
+    Xs_cameras = []
+    for m in range(len(match_pair)):
+        for inlier in match_inlier[m]:
+            cam1_idx, cam2_idx = match_pair[m]
+            x1_idx, x2_idx = inlier.queryIdx, inlier.trainIdx
+            key1, key2 = (cam1_idx, x1_idx), (cam2_idx, x2_idx)
+            visit1, visit2 = xs_visited.get(key1), xs_visited.get(key2)
+            if visit1 is not None and visit2 is not None:
+                # Keep existing tracks and skip conflicting matches.
+                continue # Skip if two observations are already visited
 
-            # 둘 다 값이 있으면
-            if value1 != None and value2 != None:
-                # 근데 서로 이상한걸 가리키면
-                if value1 != value2:
-                    xs_visited.pop((cam1_idx, pts1_2d_idx))
-                    xs_visited.pop((cam2_idx, pts2_2d_idx))
-                
-                continue
-
-            X_idx = 0
-            if value1 != None:
-                X_idx = value1
-            elif value2 != None:
-                X_idx = value2
+            if visit1 is not None:
+                X_idx = visit1
+            elif visit2 is not None:
+                X_idx = visit2
             else:
-                X_idx = len(points_3d)
-                points_3d.append(np.array([0, 0, Z_init]))
-                rgb_p = img_keypoints[cam1_idx][pts1_2d_idx].pt
-                points_rgb.append(img_set[cam1_idx][int(rgb_p[1]), int(rgb_p[0])])
-            if value1 == None:
-                xs_visited._sfm_dict[(cam1_idx, pts1_2d_idx)] = X_idx
-            if value2 == None:
-                xs_visited._sfm_dict[(cam2_idx, pts2_2d_idx)] = X_idx
+                # Add a new point if two observations are not visited
+                X_idx = len(Xs)
+                Xs.append([0, 0, Z_init])
+                Xs_cameras.append(set())
+                x, y = np.rint(img_keypoint[cam1_idx][x1_idx].pt).astype(int)
+                Xs_rgb.append(img_set[cam1_idx][y, x])
+            # A track can contain only one observation from each camera.
+            if visit1 is None and cam1_idx in Xs_cameras[X_idx]:
+                continue
+            if visit2 is None and cam2_idx in Xs_cameras[X_idx]:
+                continue
+            Xs_cameras[X_idx].update((cam1_idx, cam2_idx))
+            xs_visited[key1] = X_idx
+            xs_visited[key2] = X_idx
+    print(f'3DV Tutorial: # of 3D points: {len(Xs)}')
+    Xs = np.array(Xs, dtype=float)
+    Xs_rgb = np.array(Xs_rgb)
 
-    print(f"3DV Tutorial: # of 3D points: {len(points_3d)}")
-    
-    ### Init Parameters ###
-    points_3d = np.array(points_3d, dtype=np.float32)
+    # 3) Optimize camera pose and 3D points together (bundle adjustment)
+    # Intrinsic parameters remain fixed (6 DOF cameras).
+    camera_indices, point_indices, xs = [], [], []
+    for (cam_idx, x_idx), X_idx in xs_visited.items():
+        camera_indices.append(cam_idx)
+        point_indices.append(X_idx)
+        xs.append(img_keypoint[cam_idx][x_idx].pt)
+    camera_indices = np.array(camera_indices)
+    point_indices = np.array(point_indices)
+    xs = np.array(xs)
+    params = np.concatenate((cameras[:, :6].ravel(), Xs.ravel()))
+    J = bundle_adjustment_sparsity(len(cameras), len(Xs), camera_indices, point_indices)
+    # SciPy limits function evaluations; Ceres limits iterations.
+    result = least_squares(reprojection_error, params, jac_sparsity=J, x_scale=1.0,
+                           max_nfev=ba_num_iter if ba_num_iter > 0 else None, verbose=2,
+                           args=(xs, cameras, camera_indices, point_indices, ba_loss_width))
+    print(result.message)
+    cameras[:, :6] = result.x[:len(cameras) * 6].reshape(-1, 6)
+    Xs = result.x[len(cameras) * 6:].reshape(-1, 3)
 
-    n_point_3d = len(points_3d)
-    n_cameras = len(img_set)
-    init_param = np.array([f_init, cx_init, cy_init, 0, 0, 0, 0, 0, 0], dtype=np.float32)
-    cam_params = np.full( (len(img_set), len(init_param)), init_param, dtype=np.float32)
-    params = np.hstack((cam_params.ravel(), points_3d.ravel()))
+    # Find outlier points to exclude from the output
+    is_noisy = find_outlier_points(Xs, img_keypoint, cameras, xs_visited, reproj_error)
+    print(f'3DV Tutorial: # of 3D points: {len(Xs)} (Rejected: {np.count_nonzero(is_noisy)})')
+    for j, camera in enumerate(cameras):
+        print(f"3DV Tutorial: Camera {j}'s (f, cx, cy) = ({camera[6]:.3f}, {camera[7]:.1f}, {camera[8]:.1f})")
 
-    BA = ProjectError(n_cameras=n_cameras, n_points=n_point_3d)
-
-    # Ravel 2d points
-    cam_indices, point_indices, points_2d = xs_visited.gen_indices(img_keypoints=img_keypoints)
-    J = BA.sparsity_jacobian_global(camera_indices=cam_indices, point_indices=point_indices)
-
-    start = time.time()
-    opt = least_squares(BA.cost_func, params, jac_sparsity=J, method='trf', ftol=1e-4, verbose = 2, args=(points_2d, xs_visited, cam_indices, point_indices, BA))
-    total = time.time() - start
-    print(f"Total time is {total:.3f}")
-
-    # Mark errorneous points to reject them
-    opt_cam_params = opt.x[:n_cameras * 9].reshape(n_cameras, 9)
-    opt_points_3d = opt.x[n_cameras * 9:].reshape(n_point_3d, 3)
-
-    for i in range(len(opt_cam_params)):
-        msg = f"3DV Tutorial: Camera {i+1}'s (f, cx, cy) = {opt_cam_params[i][0]:.1f} {opt_cam_params[i][1]:.1f} {opt_cam_params[i][2]:.1f}"
-        print(msg)
-    
     # Store the 3D points to an XYZ file
-    points_3d_name = "sfm_global(point).xyz"
-    with open(points_3d_name, "wt") as f:
-        for i in range(n_point_3d):
-            data = f"{opt_points_3d[i,0]:.3f} {opt_points_3d[i,1]:.3f} {opt_points_3d[i,2]:.3f}\n"
-            f.write(data)
+    keep = (Xs[:, 2] > -Z_limit) & (Xs[:, 2] < Z_limit) & ~is_noisy
+    np.savetxt('sfm_global(point).xyz', np.column_stack((Xs[keep], Xs_rgb[keep, ::-1])), fmt='%f %f %f %d %d %d') # Format: x, y, z, R, G, B
 
-    points_rgb_name = "sfm_global(rgb).xyz"
-    with open(points_rgb_name, "wt") as f:
-        for i in range(n_point_3d):
-            data = f"{points_rgb[i][0]:.3f} {points_rgb[i][1]:.3f} {points_rgb[i][2]:.3f}\n"
-            f.write(data)
+    # Store the camera poses to an XYZ file
+    poses = []
+    for camera in cameras:
+        rvec, t = camera[:3], camera[3:6]
+        R = Rotation.from_rotvec(rvec).as_matrix()
+        p = -R.T @ t
+        poses.append(np.concatenate((p, R.T[:, 2])))
+    np.savetxt('sfm_global(camera).xyz', poses, fmt='%f') # Format: x, y, z, n_x, n_y, n_z
+    # Visualize the reconstructed 3D points and camera frustums
+    K = np.array([[f_init, 0, cx_init], [0, f_init, cy_init], [0, 0, 1]])
+    plot_reconstruction(Xs[keep], cameras, K, img_set[0].shape[1::-1], Xs_rgb[keep, ::-1], point_size=1)
+    return 0
 
-    camera_file = "sfm_global(camera).xyz"
-    with open(camera_file, 'wt') as f:
-        for i in range(n_cameras):
-            data = f"{opt_cam_params[i, 0]:.3f} {opt_cam_params[i, 1]:.3f} {opt_cam_params[i, 2]:.3f} {opt_cam_params[i, 3]:.3f} {opt_cam_params[i, 4]:.3f} {opt_cam_params[i, 5]:.3f}\n"
-            f.write(data)
-    
-    print("END!!!")
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()

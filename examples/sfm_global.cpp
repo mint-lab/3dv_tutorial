@@ -1,30 +1,37 @@
 #include "sfm.hpp"
+#include <cmath>
+#include <numeric>
+#include <set>
 
-std::vector<bool> maskNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& views, const SFM::VisibilityGraph& visibility, double reproj_error2)
+// Return a boolean mask identifying points behind a camera or with a large reprojection error.
+std::vector<bool> find_outlier_points(const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& cameras, const SFM::VisibilityGraph& visibility, double reproj_error)
 {
     std::vector<bool> is_noisy(Xs.size(), false);
-    if (reproj_error2 > 0)
+    for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
     {
-        for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
+        const cv::Point3d& X = Xs[visible->second];
+        int cam_idx = SFM::get_cam_idx(visible->first), x_idx = SFM::get_obs_idx(visible->first);
+        const cv::Point2d& x = xs[cam_idx][x_idx].pt;
+        const SFM::Vec9d& camera = cameras[cam_idx];
+
+        // X' = R*X + t
+        cv::Vec3d rvec(camera[0], camera[1], camera[2]);
+        cv::Matx33d R;
+        cv::Rodrigues(rvec, R);
+        cv::Point3d X_p = R * X + cv::Point3d(camera[3], camera[4], camera[5]);
+        if (!std::isfinite(X_p.x) || !std::isfinite(X_p.y) || !std::isfinite(X_p.z) || X_p.z <= 0)
         {
-            cv::Point3d& X = Xs[visible->second];
-            if (X.z < 0) continue;
-            int img_idx = SFM::getCamIdx(visible->first), pt_idx = SFM::getObsIdx(visible->first);
-            const cv::Point2d& x = xs[img_idx][pt_idx].pt;
-            const SFM::Vec9d& view = views[img_idx];
-
-            // Project the given 'X'
-            cv::Vec3d rvec(view[0], view[1], view[2]);
-            cv::Matx33d R;
-            cv::Rodrigues(rvec, R);
-            cv::Point3d X_p = R * X + cv::Point3d(view[3], view[4], view[5]);
-            const double &f = view[6], &cx = view[7], &cy = view[8];
-            cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
-
-            // Calculate distance between 'x' and 'x_p'
-            cv::Point2d d = x - x_p;
-            if (d.x * d.x + d.y * d.y > reproj_error2) is_noisy[visible->second] = true;
+            is_noisy[visible->second] = true;
+            continue;
         }
+
+        // x' = K*X'
+        const double &f = camera[6], &cx = camera[7], &cy = camera[8];
+        cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
+
+        // Reject the point if any observation exceeds the threshold (pixels).
+        cv::Point2d d = x - x_p;
+        if (reproj_error > 0 && d.dot(d) > reproj_error * reproj_error) is_noisy[visible->second] = true;
     }
     return is_noisy;
 }
@@ -32,7 +39,9 @@ std::vector<bool> maskNoisyPoints(std::vector<cv::Point3d>& Xs, const std::vecto
 int main()
 {
     const char* input = "../data/relief/%02d.jpg";
-    double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 100, ba_loss_width = 9; // Negative 'loss_width' makes BA not to use a loss function.
+    double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_init = 2, Z_limit = 100;
+    double ba_loss_width = 9; // Negative 'ba_loss_width' makes BA not to use a loss function.
+    double reproj_error = 3;  // Maximum reprojection error [pixels]
     int min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;
 
@@ -56,6 +65,7 @@ int main()
         img_keypoint.push_back(keypoint);
         img_descriptor.push_back(descriptor.clone());
     }
+    video.release();
     if (img_set.size() < 2) return -1;
     if (cx_init < 0) cx_init = img_set.front().cols / 2;
     if (cy_init < 0) cy_init = img_set.front().rows / 2;
@@ -69,6 +79,7 @@ int main()
         for (size_t j = i + 1; j < img_set.size(); j++)
         {
             // Match features of two image pair (i, j) and find their inliers
+            if (img_descriptor[i].empty() || img_descriptor[j].empty()) continue;
             std::vector<cv::DMatch> match, inlier;
             fmatcher->match(img_descriptor[i], img_descriptor[j], match);
             std::vector<cv::Point2d> src, dst;
@@ -77,8 +88,10 @@ int main()
                 src.push_back(img_keypoint[i][itr->queryIdx].pt);
                 dst.push_back(img_keypoint[j][itr->trainIdx].pt);
             }
+            if (match.size() < 8) continue;
             cv::Mat inlier_mask;
-            cv::findFundamentalMat(src, dst, inlier_mask, cv::RANSAC);
+            cv::Mat F = cv::findFundamentalMat(src, dst, inlier_mask, cv::FM_RANSAC);
+            if (F.empty() || inlier_mask.empty()) continue;
             for (int k = 0; k < inlier_mask.rows; k++)
                 if (inlier_mask.at<uchar>(k)) inlier.push_back(match[k]);
             printf("3DV Tutorial: Image %zd - %zd are matched (%zd / %zd).\n", i, j, inlier.size(), match.size());
@@ -106,22 +119,18 @@ int main()
     std::vector<cv::Point3d> Xs;
     std::vector<cv::Vec3b> Xs_rgb;
     SFM::VisibilityGraph xs_visited;
+    std::vector<std::set<uint>> Xs_cameras;
     for (size_t m = 0; m < match_pair.size(); m++)
     {
         for (size_t in = 0; in < match_inlier[m].size(); in++)
         {
             const uint &cam1_idx = match_pair[m].first, &cam2_idx = match_pair[m].second;
             const uint &x1_idx = match_inlier[m][in].queryIdx, &x2_idx = match_inlier[m][in].trainIdx;
-            const uint key1 = SFM::genKey(cam1_idx, x1_idx), key2 = SFM::genKey(cam2_idx, x2_idx);
+            const uint key1 = SFM::gen_key(cam1_idx, x1_idx), key2 = SFM::gen_key(cam2_idx, x2_idx);
             auto visit1 = xs_visited.find(key1), visit2 = xs_visited.find(key2);
             if (visit1 != xs_visited.end() && visit2 != xs_visited.end())
             {
-                // Remove previous observations if they are not consistent
-                if (visit1->second != visit2->second)
-                {
-                    xs_visited.erase(visit1);
-                    xs_visited.erase(visit2);
-                }
+                // Keep existing tracks and skip conflicting matches.
                 continue; // Skip if two observations are already visited
             }
 
@@ -133,21 +142,28 @@ int main()
                 // Add a new point if two observations are not visited
                 X_idx = uint(Xs.size());
                 Xs.push_back(cv::Point3d(0, 0, Z_init));
+                Xs_cameras.push_back(std::set<uint>());
                 Xs_rgb.push_back(img_set[cam1_idx].at<cv::Vec3b>(img_keypoint[cam1_idx][x1_idx].pt));
             }
-            if (visit1 == xs_visited.end()) xs_visited[key1] = X_idx;
-            if (visit2 == xs_visited.end()) xs_visited[key2] = X_idx;
+            // A track can contain only one observation from each camera.
+            if (visit1 == xs_visited.end() && Xs_cameras[X_idx].count(cam1_idx)) continue;
+            if (visit2 == xs_visited.end() && Xs_cameras[X_idx].count(cam2_idx)) continue;
+            Xs_cameras[X_idx].insert(cam1_idx);
+            Xs_cameras[X_idx].insert(cam2_idx);
+            xs_visited[key1] = X_idx;
+            xs_visited[key2] = X_idx;
         }
     }
     printf("3DV Tutorial: # of 3D points: %zd\n", Xs.size());
 
     // 3) Optimize camera pose and 3D points together (bundle adjustment)
+    // Intrinsic parameters remain fixed (6 DOF cameras).
     ceres::Problem ba;
     for (auto visit = xs_visited.begin(); visit != xs_visited.end(); visit++)
     {
-        int cam_idx = SFM::getCamIdx(visit->first), x_idx = SFM::getObsIdx(visit->first);
+        int cam_idx = SFM::get_cam_idx(visit->first), x_idx = SFM::get_obs_idx(visit->first);
         const cv::Point2d& x = img_keypoint[cam_idx][x_idx].pt;
-        SFM::addCostFunc6DOF(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
+        SFM::add_cost_func_6dof(ba, Xs[visit->second], x, cameras[cam_idx], ba_loss_width);
     }
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::ITERATIVE_SCHUR;
@@ -158,8 +174,8 @@ int main()
     ceres::Solve(options, &ba, &summary);
     std::cout << summary.FullReport() << std::endl;
 
-    // Mark erroneous points to reject them
-    std::vector<bool> is_noisy = maskNoisyPoints(Xs, img_keypoint, cameras, xs_visited, ba_loss_width);
+    // Find outlier points to exclude from the output
+    std::vector<bool> is_noisy = find_outlier_points(Xs, img_keypoint, cameras, xs_visited, reproj_error);
     int num_noisy = std::accumulate(is_noisy.begin(), is_noisy.end(), 0);
     printf("3DV Tutorial: # of 3D points: %zd (Rejected: %d)\n", Xs.size(), num_noisy);
     for (size_t j = 0; j < cameras.size(); j++)
