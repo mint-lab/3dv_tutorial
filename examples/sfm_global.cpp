@@ -1,40 +1,6 @@
 #include "sfm.hpp"
-#include <cmath>
 #include <numeric>
 #include <set>
-
-// Return a boolean mask identifying points behind a camera or with a large reprojection error.
-std::vector<bool> find_outlier_points(const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<SFM::Vec9d>& cameras, const SFM::VisibilityGraph& visibility, double reproj_error)
-{
-    std::vector<bool> is_noisy(Xs.size(), false);
-    for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
-    {
-        const cv::Point3d& X = Xs[visible->second];
-        int cam_idx = SFM::get_cam_idx(visible->first), x_idx = SFM::get_obs_idx(visible->first);
-        const cv::Point2d& x = xs[cam_idx][x_idx].pt;
-        const SFM::Vec9d& camera = cameras[cam_idx];
-
-        // X' = R*X + t
-        cv::Vec3d rvec(camera[0], camera[1], camera[2]);
-        cv::Matx33d R;
-        cv::Rodrigues(rvec, R);
-        cv::Point3d X_p = R * X + cv::Point3d(camera[3], camera[4], camera[5]);
-        if (!std::isfinite(X_p.x) || !std::isfinite(X_p.y) || !std::isfinite(X_p.z) || X_p.z <= 0)
-        {
-            is_noisy[visible->second] = true;
-            continue;
-        }
-
-        // x' = K*X'
-        const double &f = camera[6], &cx = camera[7], &cy = camera[8];
-        cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
-
-        // Reject the point if any observation exceeds the threshold (pixels).
-        cv::Point2d d = x - x_p;
-        if (reproj_error > 0 && d.dot(d) > reproj_error * reproj_error) is_noisy[visible->second] = true;
-    }
-    return is_noisy;
-}
 
 int main()
 {
@@ -175,7 +141,7 @@ int main()
     std::cout << summary.FullReport() << std::endl;
 
     // Find outlier points to exclude from the output
-    std::vector<bool> is_noisy = find_outlier_points(Xs, img_keypoint, cameras, xs_visited, reproj_error);
+    std::vector<bool> is_noisy = SFM::find_outlier_points(Xs, img_keypoint, cameras, xs_visited, reproj_error);
     int num_noisy = std::accumulate(is_noisy.begin(), is_noisy.end(), 0);
     printf("3DV Tutorial: # of 3D points: %zd (Rejected: %d)\n", Xs.size(), num_noisy);
     for (size_t j = 0; j < cameras.size(); j++)

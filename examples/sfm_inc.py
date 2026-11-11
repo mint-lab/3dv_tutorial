@@ -3,7 +3,7 @@ import cv2 as cv
 from scipy.optimize import least_squares
 from scipy.spatial.transform import Rotation
 from bundle_adjustment import plot_reconstruction
-from sfm_global import reprojection_error, bundle_adjustment_sparsity
+from sfm_global import reprojection_error, bundle_adjustment_sparsity, find_outlier_points
 
 
 def get_camera_mat(camera):
@@ -70,6 +70,7 @@ def main():
     img_resize, f_init, cx_init, cy_init, Z_limit = 0.25, 500, -1, -1, 100
     max_cos_parallax = np.cos(10 * np.pi / 180)
     ba_loss_width = 9 # Negative 'ba_loss_width' makes BA not to use a loss function.
+    reproj_error = 3 # Maximum reprojection error [pixels]
     min_inlier_num, ba_num_iter = 200, 200 # Negative 'ba_num_iter' uses the default value for BA minimization.
     show_match = False
 
@@ -284,13 +285,16 @@ def main():
         # 7) Optimize camera pose and 3D points together (bundle adjustment)
         bundle_adjust(cameras, Xs, img_keypoint, xs_visited, ba_loss_width, ba_num_iter)
         img_added.add(next_cam)
+    Xs, Xs_rgb = np.array(Xs), np.array(Xs_rgb)
+    # Find outlier points to exclude from the output
+    is_noisy = find_outlier_points(Xs, img_keypoint, cameras, xs_visited, reproj_error)
+    print(f'3DV Tutorial: # of 3D points: {len(Xs)} (Rejected: {np.count_nonzero(is_noisy)})')
     for j in sorted(img_added):
         camera = cameras[j]
         print(f"3DV Tutorial: Camera {j}'s (f, cx, cy) = ({camera[6]:.3f}, {camera[7]:.1f}, {camera[8]:.1f})")
 
     # Store the 3D points to an XYZ file
-    Xs, Xs_rgb = np.array(Xs), np.array(Xs_rgb)
-    keep = (Xs[:, 2] > -Z_limit) & (Xs[:, 2] < Z_limit)
+    keep = (Xs[:, 2] > -Z_limit) & (Xs[:, 2] < Z_limit) & ~is_noisy
     np.savetxt('sfm_inc(point).xyz', np.column_stack((Xs[keep], Xs_rgb[keep, ::-1])),
                fmt='%f %f %f %d %d %d') # Format: x, y, z, R, G, B
 

@@ -6,6 +6,7 @@
 #include "ceres/rotation.h"
 #include "bundle_adjustment.hpp"
 #include <unordered_map>
+#include <cmath>
 
 // Reprojection error for bundle adjustment with 7 DOF cameras
 // - 7 DOF = 3 DOF rotation + 3 DOF translation + 1 DOF focal length
@@ -57,6 +58,39 @@ public:
     static inline uint get_cam_idx(uint key) { return ((key >> 16) & 0xFFFF); }
 
     static inline uint get_obs_idx(uint key) { return (key & 0xFFFF); }
+
+    // Return a boolean mask identifying points behind a camera or with a large reprojection error.
+    static std::vector<bool> find_outlier_points(const std::vector<cv::Point3d>& Xs, const std::vector<std::vector<cv::KeyPoint>>& xs, const std::vector<Vec9d>& cameras, const VisibilityGraph& visibility, double reproj_error)
+    {
+        std::vector<bool> is_noisy(Xs.size(), false);
+        for (auto visible = visibility.begin(); visible != visibility.end(); visible++)
+        {
+            const cv::Point3d& X = Xs[visible->second];
+            int cam_idx = get_cam_idx(visible->first), x_idx = get_obs_idx(visible->first);
+            const cv::Point2d& x = xs[cam_idx][x_idx].pt;
+            const Vec9d& camera = cameras[cam_idx];
+
+            // X' = R*X + t
+            cv::Vec3d rvec(camera[0], camera[1], camera[2]);
+            cv::Matx33d R;
+            cv::Rodrigues(rvec, R);
+            cv::Point3d X_p = R * X + cv::Point3d(camera[3], camera[4], camera[5]);
+            if (!std::isfinite(X_p.x) || !std::isfinite(X_p.y) || !std::isfinite(X_p.z) || X_p.z <= 0)
+            {
+                is_noisy[visible->second] = true;
+                continue;
+            }
+
+            // x' = K*X'
+            const double &f = camera[6], &cx = camera[7], &cy = camera[8];
+            cv::Point2d x_p(f * X_p.x / X_p.z + cx, f * X_p.y / X_p.z + cy);
+
+            // Reject the point if any observation exceeds the threshold (pixels).
+            cv::Point2d d = x - x_p;
+            if (reproj_error > 0 && d.dot(d) > reproj_error * reproj_error) is_noisy[visible->second] = true;
+        }
+        return is_noisy;
+    }
 
     static bool add_cost_func_7dof(ceres::Problem& problem, const cv::Point3d& X, const cv::Point2d& x, const Vec9d& camera, double loss_width = -1)
     {

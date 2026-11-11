@@ -1,6 +1,7 @@
 #include "sfm.hpp"
 #include <unordered_set>
 #include <cmath>
+#include <numeric>
 
 cv::Mat get_camera_mat(const SFM::Vec9d& camera)
 {
@@ -72,6 +73,7 @@ int main()
 {
     const char* input = "../data/relief/%02d.jpg";
     double img_resize = 0.25, f_init = 500, cx_init = -1, cy_init = -1, Z_limit = 100, max_cos_parallax = cos(10 * CV_PI / 180), ba_loss_width = 9; // Negative 'ba_loss_width' makes BA not to use a loss function.
+    double reproj_error = 3; // Maximum reprojection error [pixels]
     int min_inlier_num = 200, ba_num_iter = 200; // Negative 'ba_num_iter' uses the default value for BA minimization
     bool show_match = false;
 
@@ -367,6 +369,10 @@ int main()
         bundle_adjust(cameras, Xs, img_keypoint, xs_visited, ba_loss_width, ba_num_iter);
         img_added.insert(next_cam);
     } // End of the 2nd 'while (true)'
+    // Find outlier points to exclude from the output
+    std::vector<bool> is_noisy = SFM::find_outlier_points(Xs, img_keypoint, cameras, xs_visited, reproj_error);
+    int num_noisy = std::accumulate(is_noisy.begin(), is_noisy.end(), 0);
+    printf("3DV Tutorial: # of 3D points: %zd (Rejected: %d)\n", Xs.size(), num_noisy);
     for (size_t j = 0; j < cameras.size(); j++)
         if (img_added.count(uint(j))) printf("3DV Tutorial: Camera %zd's (f, cx, cy) = (%.3f, %.1f, %.1f)\n", j, cameras[j][6], cameras[j][7], cameras[j][8]);
 
@@ -375,7 +381,7 @@ int main()
     if (fpts == NULL) return -1;
     for (size_t i = 0; i < Xs.size(); i++)
     {
-        if (Xs[i].z > -Z_limit && Xs[i].z < Z_limit)
+        if (Xs[i].z > -Z_limit && Xs[i].z < Z_limit && !is_noisy[i])
             fprintf(fpts, "%f %f %f %d %d %d\n", Xs[i].x, Xs[i].y, Xs[i].z, Xs_rgb[i][2], Xs_rgb[i][1], Xs_rgb[i][0]); // Format: x, y, z, R, G, B
     }
     fclose(fpts);
