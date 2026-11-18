@@ -31,65 +31,103 @@ In addition to tutorial slides, example codes are provided for educational purpo
 
 ### Example Codes
 * **Section 1. Introduction** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/01_introduction.pdf)
-* **Section 2. Single-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/02_single-view_geometry.pdf)
-  * Getting Started with 2D
-    * 3D rotation conversion [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/3d_rotation_conversion.py)
-  * Pinhole Camera Model
-    * Object localization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/object_localization.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/object_localization.cpp)
-    * Image formation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_formation.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_formation.cpp)
-  * Geometric Distortion Models
-    * Geometric distortion visualization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_visualization.py)
-    * Geometric distortion correction [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_correction.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_correction.cpp) [[result video]](https://youtu.be/HKetupWh4V8)
-    * Geometric distortion correction with virtual PTZ [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fisheye_virtual_ptz.py)
-  * Camera Calibration
-    * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration.cpp)
-  * Absolute Camera Pose Estimation (a.k.a. perspective-n-point; PnP)
-    * Pose estimation (chessboard) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.cpp) [[result video]](https://youtu.be/4nA1OQGL-ig)
-    * Pose estimation (book) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
-    * Pose estimation (book) with camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book2.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book2.cpp)
-    * Pose estimation (book) with camera calibration without initial $K$ [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book3.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book3.cpp) [[result video]](https://youtu.be/GYp4h0yyB3Y)
-* **Section 3. Two-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf)
-  * Planar Homography
-    * Perspective distortion correction [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/perspective_correction.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/perspective_correction.cpp)
-    * Planar image stitching [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_stitching.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_stitching.cpp)
-    * 2D video stabilization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/video_stabilization.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/video_stabilization.cpp) [[result video]](https://youtu.be/be_dzYicEzI)
-  * Epipolar Geometry
-    * Epipolar line visualization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/epipolar_line_visualization.py)
-  * Relative Camera Pose Estimation
-    * Fundamental matrix estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fundamental_mat_estimation.py)
-    * Monocular visual odometry (epipolar version) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/vo_epipolar.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/vo_epipolar.cpp) [[result video]](https://youtu.be/Pc_IYrSH3sI)
-  * Triangulation
-    * Triangulation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation.cpp)
-* **Section 4. Solving Problems** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/04_solving_problems.pdf)
-  * Solving Linear Equations in 3D Vision
-    * Affine transformation estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/affine_estimation_implement.py)
-    * Planar homography estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/homography_estimation_implement.py)
-      * Appendix) Image warping using homography [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_warping_implement.py)
-    * Fundamental matrix estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fundamental_mat_estimation_implement.py)
-    * Triangulation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation_implement.py)
-  * Solving Nonlinear Equations in 3D Vision
-    * Absolute camera pose estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_implement.py)
-    * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
-    * Camera calibration (with lens distortion) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement_k1.py)
-* **Section 5. Finding Correspondence** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf)
-  * Feature Points and Descriptors
-    * Harris corner (from scratch) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/harris_corner_implement.py)
-    * SuperPoint [[Github]](https://github.com/magicleap/SuperPointPretrainedNetwork)
-  * Feature Matching and Tracking
-    * Feature matching comparison [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_matching.py)
-    * SuperGlue [[Github]](https://github.com/magicleap/SuperGluePretrainedNetwork)
-    * Feature tracking with KLT tracker [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_tracking_klt.py)
-  * Outlier Rejection
-    * Line fitting with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
-    * Line fitting with M-estimator [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.cpp)
-    * Planar homography estimation with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_stitching_implement.py)
-* **Section 6. Multiple-view Geometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/06_multi-view_geometry.pdf)
-  * Bundle Adjustment [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.cpp)
-  * Structure-from-Motion (SfM)
-    * Global SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.cpp)
-    * Incremental SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.cpp)
-* **Section 7. Visual SLAM and Odometry** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/07_visual_slam.pdf)
-* **Section 8. 3D Representations** [[slides]](https://github.com/mint-lab/3dv_tutorial/blob/master/slides/08_3d_representations.pdf)
+* <details>
+  <summary><strong>Section 2. Single-view Geometry</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/02_single-view_geometry.pdf">[slides]</a></summary>
+
+    * Getting Started with 2D
+      * 3D rotation conversion [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/3d_rotation_conversion.py)
+    * Pinhole Camera Model
+      * Object localization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/object_localization.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/object_localization.cpp)
+      * Image formation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_formation.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_formation.cpp)
+    * Geometric Distortion Models
+      * Geometric distortion visualization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_visualization.py)
+      * Geometric distortion correction [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_correction.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/distortion_correction.cpp) [[result video]](https://youtu.be/HKetupWh4V8)
+      * Geometric distortion correction with virtual PTZ [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fisheye_virtual_ptz.py)
+    * Camera Calibration
+      * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration.cpp)
+    * Absolute Camera Pose Estimation (a.k.a. perspective-n-point; PnP)
+      * Pose estimation (chessboard) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_chessboard.cpp) [[result video]](https://youtu.be/4nA1OQGL-ig)
+      * Pose estimation (book) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book1.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book1.cpp)
+      * Pose estimation (book) with camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book2.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book2.cpp)
+      * Pose estimation (book) with camera calibration without initial $K$ [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book3.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_book3.cpp) [[result video]](https://youtu.be/GYp4h0yyB3Y)
+  </details>
+
+* <details>
+  <summary><strong>Section 3. Two-view Geometry</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/03_two-view_geometry.pdf">[slides]</a></summary>
+
+    * Planar Homography
+      * Perspective distortion correction [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/perspective_correction.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/perspective_correction.cpp)
+      * Planar image stitching [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_stitching.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_stitching.cpp)
+      * 2D video stabilization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/video_stabilization.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/video_stabilization.cpp) [[result video]](https://youtu.be/be_dzYicEzI)
+    * Epipolar Geometry
+      * Epipolar line visualization [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/epipolar_line_visualization.py)
+    * Relative Camera Pose Estimation
+      * Fundamental matrix estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fundamental_mat_estimation.py)
+      * Monocular visual odometry (epipolar version) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/vo_epipolar.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/vo_epipolar.cpp) [[result video]](https://youtu.be/Pc_IYrSH3sI)
+    * Triangulation
+      * Triangulation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation.cpp)
+    * Note) Toward 3D Vision Foundation Models: DUSt3R [[Github]](https://github.com/naver/dust3r)
+  </details>
+
+* <details>
+  <summary><strong>Section 4. Solving Problems</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/04_solving_problems.pdf">[slides]</a></summary>
+
+    * Solving Linear Equations in 3D Vision
+      * Affine transformation estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/affine_estimation_implement.py)
+      * Planar homography estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/homography_estimation_implement.py)
+        * Appendix) Image warping using homography [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_warping_implement.py)
+      * Fundamental matrix estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/fundamental_mat_estimation_implement.py)
+      * Triangulation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/triangulation_implement.py)
+    * Solving Nonlinear Equations in 3D Vision
+      * Absolute camera pose estimation [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/pose_estimation_implement.py)
+      * Camera calibration [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement.py)
+      * Camera calibration (with lens distortion) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/camera_calibration_implement_k1.py)
+  </details>
+
+* <details>
+  <summary><strong>Section 5. Finding Correspondence</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/05_correspondence.pdf">[slides]</a></summary>
+
+    * Feature Points and Descriptors
+      * Harris corner (from scratch) [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/harris_corner_implement.py)
+      * SuperPoint [[Github]](https://github.com/magicleap/SuperPointPretrainedNetwork)
+    * Feature Matching and Tracking
+      * Feature matching comparison [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_matching.py)
+      * SuperGlue [[Github]](https://github.com/magicleap/SuperGluePretrainedNetwork)
+      * Note) [Image Matching WebUI](https://huggingface.co/spaces/Realcat/image-matching-webui)
+      * Feature tracking with KLT tracker [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/feature_tracking_klt.py)
+    * Outlier Rejection
+      * Line fitting with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_ransac.cpp)
+      * Line fitting with M-estimator [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/line_fitting_m_estimator.cpp)
+      * Planar homography estimation with RANSAC [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/image_stitching_implement.py)
+  </details>
+
+* <details>
+  <summary><strong>Section 6. Multiple-view Geometry</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/06_multi-view_geometry.pdf">[slides]</a></summary>
+
+    * Bundle Adjustment [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/bundle_adjustment.cpp)
+    * Structure-from-Motion (SfM)
+      * Global SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_global.cpp)
+      * Incremental SfM [[python]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.py) [[cpp]](https://github.com/mint-lab/3dv_tutorial/blob/master/examples/sfm_inc.cpp)
+      * COLMAP [[Github]](https://github.com/colmap/colmap)
+    * Note) Toward 3D Vision Foundation Models: VGGT [[Github]](https://github.com/facebookresearch/vggt)
+  </details>
+
+* <details>
+  <summary><strong>Section 7. Visual SLAM and Odometry</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/07_visual_slam.pdf">[slides]</a></summary>
+
+    * ORB-SLAM2 [[Github]](https://github.com/raulmur/ORB_SLAM2) and ORB-SLAM3 [[Github]](https://github.com/UZ-SLAMLab/ORB_SLAM3)
+    * Droid-SLAM [[Github]](https://github.com/princeton-vl/droid-slam) and DPVO/SLAM [[Github]](https://github.com/princeton-vl/DPVO)
+    * VGGT-SLAM [[Github]](https://github.com/MIT-SPARK/VGGT-SLAM)
+    * Monocular visual odometry (PnP version)
+  </details>
+
+* <details>
+  <summary><strong>Section 8. 3D Representations</strong> <a href="https://github.com/mint-lab/3dv_tutorial/blob/master/slides/08_3d_representations.pdf">[slides]</a></summary>
+
+    * Neural Radiance Fields (NeRF) [[Github]](https://github.com/bmild/nerf)
+    * 3D Gaussian Splatting (3DGS) [[Github]](https://github.com/graphdeco-inria/gaussian-splatting)
+      * Tools: gsplat [[Github]](https://github.com/nerfstudio-project/gsplat), Spirula Studio [[Github]](https://github.com/harry7557558/spirula-studio)
+  </details>
 
 
 

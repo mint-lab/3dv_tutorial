@@ -1,7 +1,7 @@
 ## How to Run Python Example Codes
 
 ### Prerequisites
-* Install [Python](https://www.python.org/) (or [Anaconda](https://www.anaconda.com/))
+* Install [Python](https://www.python.org/)
 * Install the following required packages: `pip install -r requirements.txt`
   ```
   numpy
